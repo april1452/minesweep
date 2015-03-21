@@ -1,4 +1,4 @@
-package edu.brown.cs.hmiyazaki.maps;
+package edu.brown.cs.pdtran.minesweep;
 
 public class Main {
 
