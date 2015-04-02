@@ -5,4 +5,6 @@ public class RectangularBoard extends DefaultBoard implements Board {
   public RectangularBoard() {
     super();
   }
+
+
 }

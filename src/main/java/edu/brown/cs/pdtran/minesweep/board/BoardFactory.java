@@ -3,7 +3,7 @@ package edu.brown.cs.pdtran.minesweep.board;
 public class BoardFactory {
 
   public enum BoardType {
-    DEFAULT, RECTANGULAR;
+    DEFAULT, RECTANGULAR, TRIANGULAR;
   }
 
   private BoardFactory() {};
@@ -15,6 +15,9 @@ public class BoardFactory {
 
       case RECTANGULAR:
         return new RectangularBoard();
+
+      case TRIANGULAR:
+        return new TriangularBoard();
     }
     return null;
   }

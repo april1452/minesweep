@@ -2,6 +2,7 @@ package edu.brown.cs.pdtran.minesweep.board;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,6 +33,21 @@ public class DefaultBoard implements Board {
     this.height = height;
     this.bombCount = bombCount;
     initializeBoard();
+  }
+
+  private DefaultBoard(Tile[][] grid) {
+    this.width = grid[0].length;
+    this.height = grid.length;
+    int bombCount = 0;
+    for (Tile[] row : grid) {
+      for (Tile tile : row) {
+        if (tile.isBomb()) {
+          bombCount++;
+        }
+      }
+    }
+    this.bombCount = bombCount;
+    this.grid = grid;
   }
 
   private void initializeBoard() {
@@ -193,5 +209,10 @@ public class DefaultBoard implements Board {
 
   public boolean isWithinBoard(final int x, final int y) {
     return x >= 0 && x < width && y >= 0 && y < height;
+  }
+
+  @Override
+  public Object clone() {
+    return new DefaultBoard(Arrays.copyOf(grid, grid.length));
   }
 }
