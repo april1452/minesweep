@@ -2,16 +2,17 @@ package edu.brown.cs.pdtran.minesweep.routes;
 
 import java.util.Iterator;
 
-import edu.brown.cs.pdtran.minesweep.games.Game;
-
+import com.google.gson.Gson;
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
+import edu.brown.cs.pdtran.minesweep.metagame.RoomSession;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
 public class GamesRoute implements Route {
 
-  public RequestHandler handler;
+  private RequestHandler handler;
+  private final Gson gson = new Gson();
 
   public GamesRoute(RequestHandler handler) {
     this.handler = handler;
@@ -19,14 +20,14 @@ public class GamesRoute implements Route {
 
   @Override
   public Object handle(Request req, Response res) {
-    Iterator<Game> games = handler.getGames();
+    Iterator<RoomSession> sessions = handler.getRooms();
     StringBuilder sb = new StringBuilder();
 
-    while(games.hasNext()) {
-      Game game = games.next();
-      sb.append(game.)
+    while (sessions.hasNext()) {
+      RoomSession session = sessions.next();
+      sb.append(session.getRoom().getRoomInfo().toString());
     }
 
-    return null;
+    return gson.toJson(sb.toString());
   }
 }

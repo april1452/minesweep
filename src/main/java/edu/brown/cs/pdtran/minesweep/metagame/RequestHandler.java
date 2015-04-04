@@ -4,17 +4,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import edu.brown.cs.pdtran.minesweep.games.Game;
-
 public class RequestHandler {
 
-  private Map<Integer, Game> games;
+  private Map<Integer, RoomSession> rooms;
+  private Map<Integer, GameSession> games;
 
   public RequestHandler() {
-    games = new HashMap<Integer, Game>();
+    sessions = new HashMap<Integer, Session>();
   }
 
-  public Iterator<Game> getGames() {
-    return games.values().iterator();
+  public Iterator<RoomSession> getRooms() {
+    return rooms.values().iterator();
   }
+
+  public Session getSession(int id) {
+    return
+  }
+
 }

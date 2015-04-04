@@ -12,7 +12,7 @@ public class HomeRoute implements TemplateViewRoute {
 
   @Override
   public ModelAndView handle(Request arg0, Response arg1) {
-    Map<String, Object> variables = ImmutableMap.of("title", "Bacon");
+    Map<String, Object> variables = ImmutableMap.of("title", "Minesweep");
     return new ModelAndView(variables, "main.ftl");
   }
 
