@@ -37,7 +37,7 @@ public class Setup {
       String teamSpecs) {
     List<TeamFormation> teams = new ArrayList<>();
 
-    // Process team spec URL string to create teams
+    // TODO process team spec URL string to create teams
 
     return teams;
   }

@@ -9,6 +9,7 @@ import java.util.List;
  *
  */
 public class TeamFormation {
+  private String id;
   private List<Gamer> gamers;
   private int lives;
 
@@ -18,6 +19,7 @@ public class TeamFormation {
    * @param lives number of lives
    */
   public TeamFormation(List<Gamer> gamers, int lives) {
+    // TODO create ID
     this.gamers = gamers;
     this.lives = lives;
   }
