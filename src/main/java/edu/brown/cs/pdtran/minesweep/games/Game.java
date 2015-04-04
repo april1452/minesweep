@@ -5,11 +5,11 @@ import edu.brown.cs.pdtran.minesweep.player.Player;
 
 public interface Game {
 
-
-  public int getGameScore();
+  public int getGameScore(Player player);
 
   public void makeMove(Move m);
 
   public boolean play(Player player, Move m);
+
 
 }

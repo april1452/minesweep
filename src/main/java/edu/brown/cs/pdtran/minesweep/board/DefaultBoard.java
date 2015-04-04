@@ -17,7 +17,7 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
  * @author agokasla
  *
  */
-public class DefaultBoard implements Board {
+public class DefaultBoard implements Board, Cloneable {
 
   protected Tile[][] grid;
   private final int width;
@@ -48,6 +48,14 @@ public class DefaultBoard implements Board {
     }
     this.bombCount = bombCount;
     this.grid = grid;
+  }
+
+  public int getHeight() {
+    return height;
+  }
+
+  public int getwidth() {
+    return width;
   }
 
   private void initializeBoard() {
@@ -212,7 +220,7 @@ public class DefaultBoard implements Board {
   }
 
   @Override
-  public Object clone() {
+  public Board clone() {
     return new DefaultBoard(Arrays.copyOf(grid, grid.length));
   }
 }
