@@ -10,15 +10,20 @@ public class RequestHandler {
   private Map<Integer, GameSession> games;
 
   public RequestHandler() {
-    sessions = new HashMap<Integer, Session>();
+    rooms = new HashMap<Integer, RoomSession>();
+    games = new HashMap<Integer, GameSession>();
   }
 
   public Iterator<RoomSession> getRooms() {
     return rooms.values().iterator();
   }
 
-  public Session getSession(int id) {
-    return
+  public RoomSession getRoom(int id) {
+    return rooms.get(id);
+  }
+
+  public GameSession getGame(int id) {
+    return games.get(id);
   }
 
 }

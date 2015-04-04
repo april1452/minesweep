@@ -12,13 +12,16 @@ public class GameSession extends Session {
   public GameSession(RoomSession s) {
   }
 
-  public requestMove(Player p, Move m) {
+  public boolean requestMove(Player p, Move m) {
     if (ref.validateMove(m)) {
       game.play(p, m);
       sendUpdate();
+      return true;
+    } else {
+      return false;
     }
   }
 
-  public sendUpdate() {
+  public void sendUpdate() {
   }
 }
