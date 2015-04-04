@@ -9,4 +9,10 @@ public interface Board extends Cloneable {
   boolean isLosingBoard();
 
   boolean isGameOver();
+
+  Board clone();
+
+  int getHeight();
+
+  int getWidth();
 }

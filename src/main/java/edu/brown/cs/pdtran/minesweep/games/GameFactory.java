@@ -11,13 +11,17 @@ public class GameFactory {
 
   private GameFactory() {}
 
-  public Game generateGame(GameType game, Board board, Player player) {
+  public Game generateGame(GameType game, Board board, Player[] player) {
     switch (game) {
 
       case CLASSIC:
-        return new Classic(board, player);
+        return new ClassicGame(board, player);
 
+
+      case TERRITORY:
+        return new ClassicGame(board, player);
     }
+    return null;
   }
 
 }
