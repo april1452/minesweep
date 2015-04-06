@@ -25,5 +25,11 @@ public class RequestHandler {
   public GameSession getGame(int id) {
     return games.get(id);
   }
+  
+  public int addGame() {
+    
+  }
+  
+  
 
 }

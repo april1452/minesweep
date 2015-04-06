@@ -14,8 +14,7 @@ public class Metagame {
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.get("", new HomeRoute(), new FreeMarkerEngine());
     Spark.get("/games", new GamesRoute(handler));
-    // Spark.post("/pregame", new ResultsHandler(engine));
-    // Spark.get("/game/:gameId", new gameHandler(engine),
-    // new FreeMarkerEngine());
+    Spark.get("/room/:roomId", new ResultsHandler(engine));
+    Spark.get("/game/:gameId", new gameHandler(engine), new FreeMarkerEngine());
   }
 }
