@@ -1,5 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
+import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
+
 /**
  * This class represents what a human player controls when playing the game.
  * This gives the play the ability to make moves.
@@ -29,7 +31,7 @@ public class HumanPlayer implements Player {
    * moves.
    */
   public HumanPlayer(HumanGamer g) {
-    username = g.getUsername();
+    username = g.getUserName();
     score = 0;
     canPlay = true;
   }

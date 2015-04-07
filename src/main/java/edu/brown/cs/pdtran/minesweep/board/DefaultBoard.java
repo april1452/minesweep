@@ -54,7 +54,7 @@ public class DefaultBoard implements Board, Cloneable {
     return height;
   }
 
-  public int getwidth() {
+  public int getWidth() {
     return width;
   }
 
@@ -106,6 +106,10 @@ public class DefaultBoard implements Board, Cloneable {
         grid[i][j].setAdjacentBombs(adjacentBombCount);
       }
     }
+  }
+  
+  public Tile getTile (int row, int col) {
+    return grid[row][col];
   }
 
   public List<Tile> getAdjacentTiles(int row, int col) {
@@ -223,4 +227,5 @@ public class DefaultBoard implements Board, Cloneable {
   public Board clone() {
     return new DefaultBoard(Arrays.copyOf(grid, grid.length));
   }
+
 }

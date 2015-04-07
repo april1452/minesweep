@@ -18,23 +18,28 @@ public class MovePossibility {
   private int revealedMines;
   private int clearMines;
   private Tile tile;
+  private Tile[][] minePlacement;
   
   /**
    * Creates a MovePossibility using a given Tile from the Board.
    * @param tile A Tile object that is included in the Board used by the
    * players.
+   * @param mineProbability A double representing the likelihood that there is
+   * a mine on that space.
    */
-  public MovePossibility(Tile tile) {
+  public MovePossibility(Tile tile, double mineProbability) {
     this.tile = tile;
+    mineCount = tile.getAdjacentBombs();
+    this.mineProbability = mineProbability;
   }
   
-  /*public int getXCoord() {
+  public int getXCoord() {
     return xCoord;
   }
   
   public int getYCoord() {
     return yCoord;
-  }*/
+  }
   
   /**
    * Gets the probability of a mine being in that tile.

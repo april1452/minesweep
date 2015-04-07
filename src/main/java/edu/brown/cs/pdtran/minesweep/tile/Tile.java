@@ -97,4 +97,8 @@ public class Tile {
   public int getColumn() {
     return column;
   }
+  
+  public Boolean equals(Tile tile2) {
+    return (row == tile2.getRow() && column == tile2.getColumn());
+  }
 }

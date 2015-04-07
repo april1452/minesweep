@@ -3,6 +3,11 @@ package edu.brown.cs.pdtran.minesweep.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.brown.cs.pdtran.minesweep.board.Board;
+import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
+import edu.brown.cs.pdtran.minesweep.setup.Gamer;
+import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
+
 /**
  * Represents a Team of Players that works together in a game of Minesweep.
  * @author Clayton
@@ -16,6 +21,7 @@ public class Team {
   private Boolean isWinner;
   private Boolean isLoser;
   String id;
+  Board board;
   
   /**
    * Creates a new Team to last through a game.
@@ -23,11 +29,18 @@ public class Team {
    * to made into Player objects within the team.
    * @param lives The total number of lives for the team and its players.
    * @param id A unique string for the given team.
+   * @param board The Board object that the team holds.
    */
-  public Team(List<Gamer> gamers, int lives, String id) {
+  public Team(List<Gamer> gamers, int lives, String id, Board board) {
     members = new ArrayList<>();
     for (Gamer g: gamers) {
-      members.add(PlayerFactory.getPlayer(g));
+      if (g instanceof HumanGamer) {
+        HumanGamer h = (HumanGamer) g;
+        members.add(new HumanPlayer(h));
+      } else if (g instanceof AIGamer) {
+        AIGamer a = (AIGamer) g;
+        members.add(new AIPlayer(a, board));
+      }
     }
     this.members = members;
     score = 0;
@@ -35,6 +48,7 @@ public class Team {
     isWinner = false;
     isLoser = false;
     this.id = id;
+    this.board = board;
   }
   
   /**
