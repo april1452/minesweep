@@ -6,6 +6,10 @@ package edu.brown.cs.pdtran.minesweep.setup;
  */
 public class HumanGamer implements Gamer {
   private String name;
+  
+  public HumanGamer(String name) {
+    this.name = name;
+  }
 
   @Override
   public String getUserName() {

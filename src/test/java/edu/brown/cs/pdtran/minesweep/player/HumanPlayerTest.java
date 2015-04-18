@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
+
 public class HumanPlayerTest {
 
   @Test
@@ -12,7 +14,9 @@ public class HumanPlayerTest {
    * the characteristics expected of the Gamer, like username.
    */
   public void newHumanTest() {
-    fail("Not yet implemented");
+    HumanGamer myGamer = new HumanGamer("Clay");
+    HumanPlayer myPlayer = new HumanPlayer(myGamer);
+    assertTrue(myGamer.getUserName().equals(myPlayer.getUsername()));
   }
   
   @Test
