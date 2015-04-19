@@ -35,7 +35,7 @@ public class DefaultBoard implements Board, Cloneable {
     initializeBoard();
   }
 
-  private DefaultBoard(Tile[][] grid) {
+  public DefaultBoard(Tile[][] grid) {
     this.width = grid[0].length;
     this.height = grid.length;
     int bombCount = 0;
