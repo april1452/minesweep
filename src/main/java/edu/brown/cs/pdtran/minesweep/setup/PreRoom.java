@@ -2,7 +2,7 @@ package edu.brown.cs.pdtran.minesweep.setup;
 
 import java.util.List;
 
-public class Room {
+public class PreRoom {
   private int hostID;
   private GameSpecs specs;
   private List<TeamFormation> teams;
@@ -14,7 +14,7 @@ public class Room {
    * @param specs
    * @param teams
    */
-  public Room(int host, GameSpecs specs, List<TeamFormation> teams) {
+  public PreRoom(int host, GameSpecs specs, List<TeamFormation> teams) {
     this.hostID = host;
     this.specs = specs;
     this.teams = teams;

@@ -8,11 +8,8 @@
         </head>
         
         <body>
-            <form action="/setup">
-                <input type="submit" value="Host Game">
-            </form>
-            <p id="responseHolder"></p>
+            <button onclick="createGame();"> Create game. </button>
         </body>
         <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
-        <script src="../js/main.js"></script>
+        <script src="../js/setup.js"></script>
     </html>
