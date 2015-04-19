@@ -50,10 +50,12 @@ public class DefaultBoard implements Board, Cloneable {
     this.grid = grid;
   }
 
+  @Override
   public int getHeight() {
     return height;
   }
 
+  @Override
   public int getWidth() {
     return width;
   }
@@ -107,9 +109,13 @@ public class DefaultBoard implements Board, Cloneable {
       }
     }
   }
-  
-  public Tile getTile (int row, int col) {
+
+  public Tile getTile(int row, int col) {
     return grid[row][col];
+  }
+
+  public void setTile(Tile tile, int row, int col) {
+    grid[row][col] = tile;
   }
 
   public List<Tile> getAdjacentTiles(int row, int col) {
@@ -119,7 +125,7 @@ public class DefaultBoard implements Board, Cloneable {
     for (int ii = -1; ii <= 1; ii++) {
       for (int jj = -1; jj <= 1; jj++) {
         if (isWithinBoard(i + ii, j + jj)) {
-          out.add(grid[ii][jj]);
+          out.add(grid[i + ii][j + jj]);
         }
       }
     }
@@ -138,25 +144,17 @@ public class DefaultBoard implements Board, Cloneable {
           Deque<Tile> tilesWithNoAdjacentBombs = new ArrayDeque<Tile>();
           LinkedList<Tile> tilesToReveal = new LinkedList<Tile>();
           tilesWithNoAdjacentBombs.add(target);
-          Tile candidate, neighbor;
+          Tile candidate;
           int newRow, newColumn;
           // Determine adjacent 'empty' tiles
           while (!tilesWithNoAdjacentBombs.isEmpty()) {
             candidate = tilesWithNoAdjacentBombs.pop();
-            for (int i = -1; i <= 1; i++) {
-              for (int j = -1; j <= 1; j++) {
-                // Check all of candidate's neighbors
-                newRow = candidate.getRow() + i;
-                newColumn = candidate.getColumn() + j;
-                if ((i != 0 || j != 0) && isWithinBoard(newRow, newColumn)) {
-                  neighbor = grid[newRow][newColumn];
-                  // If is not already in list of tiles & should be revealed,
-                  // add
-                  if (!tilesToReveal.contains(neighbor)
-                      && neighbor.getAdjacentBombs() == 0) {
-                    tilesWithNoAdjacentBombs.add(neighbor);
-                  }
-                }
+            List<Tile> newCandidates =
+                this.getAdjacentTiles(candidate.getRow(), candidate.getColumn());
+            for (Tile neighbor : newCandidates) {
+              if (!tilesToReveal.contains(neighbor)
+                  && neighbor.getAdjacentBombs() == 0) {
+                tilesWithNoAdjacentBombs.add(neighbor);
               }
             }
             tilesToReveal.add(candidate);
