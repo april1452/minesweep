@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.brown.cs.pdtran.minesweep.board.Board;
+import edu.brown.cs.pdtran.minesweep.board.DefaultBoard;
 import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
 import edu.brown.cs.pdtran.minesweep.setup.Gamer;
 import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
@@ -31,7 +32,7 @@ public class Team {
    * @param id A unique string for the given team.
    * @param board The Board object that the team holds.
    */
-  public Team(List<Gamer> gamers, int lives, String id, Board board) {
+  public Team(List<Gamer> gamers, int lives, String id, DefaultBoard board) {
     members = new ArrayList<>();
     for (Gamer g: gamers) {
       if (g instanceof HumanGamer) {
@@ -42,7 +43,6 @@ public class Team {
         members.add(new AIPlayer(a, board));
       }
     }
-    this.members = members;
     score = 0;
     this.lives = lives;
     isWinner = false;
