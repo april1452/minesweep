@@ -16,14 +16,15 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
  */
 public class RectangularBoard extends DefaultBoard implements Board {
 
-  private Table<Integer, Integer, List<Tile>> neighborTable = HashBasedTable
-      .create();
+  private Table<Integer, Integer, List<Tile>> neighborTable;
 
   /**
    * The constructor.
    */
   public RectangularBoard() {
     super();
+    neighborTable = HashBasedTable.create();
+    assert (neighborTable != null);
     reconfigureBoard(getWidth() * getHeight() / 10);
   }
 
@@ -34,6 +35,8 @@ public class RectangularBoard extends DefaultBoard implements Board {
    */
   public RectangularBoard(Tile[][] grid) {
     super(grid);
+    neighborTable = HashBasedTable.create();
+    assert (neighborTable != null);
   }
 
   /**
@@ -47,16 +50,17 @@ public class RectangularBoard extends DefaultBoard implements Board {
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
           super
-              .getAdjacentTiles(row, col)
-              .stream()
-              .filter(
-                  (t) -> (t.getColumn() == col || t.getRow() == row)
-                      && !t.isBomb()).collect(Collectors.toList());
+          .getAdjacentTiles(row, col)
+          .stream()
+          .filter(
+              (t) -> (t.getColumn() == col || t.getRow() == row)
+              && !t.isBomb()).collect(Collectors.toList());
       Tile randomTile =
           candidateList.get((int) (Math.random() * candidateList.size()));
       assert (!randomTile.isBomb());
       assert (!randomTile.hasBeenVisited());
       mergeTiles(row, col, randomTile.getRow(), randomTile.getColumn());
+      assert (randomTile != null);
     }
   }
 
@@ -74,7 +78,8 @@ public class RectangularBoard extends DefaultBoard implements Board {
 
   @Override
   public List<Tile> getAdjacentTiles(int row, int col) {
-    if (neighborTable.contains(row, col)) {
+    System.out.println(neighborTable);// Something is wrong here...
+    if (neighborTable != null && neighborTable.contains(row, col)) {
       return neighborTable.get(row, col);
     } else {
       return super.getAdjacentTiles(row, col);
