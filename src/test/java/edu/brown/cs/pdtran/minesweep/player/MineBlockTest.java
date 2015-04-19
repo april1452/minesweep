@@ -2,6 +2,7 @@ package edu.brown.cs.pdtran.minesweep.player;
 
 import static org.junit.Assert.*;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -21,7 +22,7 @@ public class MineBlockTest {
     Tile tile2 = new Tile(false, 2, false, 5, 5);
     Tile tile3 = new Tile(false, 1, false, 6, 5);
     Tile tile4 = new Tile(false, 1, false, 6, 6);
-    Set<Tile> tiles = new TreeSet<>();
+    Set<Tile> tiles = new HashSet<>();
     tiles.add(tile1);
     tiles.add(tile2);
     tiles.add(tile3);
@@ -41,20 +42,20 @@ public class MineBlockTest {
     Tile tile2 = new Tile(false, 2, false, 5, 5);
     Tile tile3 = new Tile(false, 1, false, 6, 5);
     Tile tile4 = new Tile(false, 1, false, 6, 6);
-    Set<Tile> tiles1 = new TreeSet<>();
+    Set<Tile> tiles1 = new HashSet<>();
     tiles1.add(tile1);
     tiles1.add(tile2);
     tiles1.add(tile3);
     MineBlock block1 = new MineBlock(tiles1, 2);
-    Set<Tile> tiles2 = new TreeSet<>();
+    Set<Tile> tiles2 = new HashSet<>();
     tiles2.add(tile2);
     tiles2.add(tile3);
     MineBlock block2 = new MineBlock(tiles2, 1);
-    Set<Tile> tiles3 = new TreeSet<>();
+    Set<Tile> tiles3 = new HashSet<>();
     tiles3.add(tile3);
     tiles3.add(tile2);
     MineBlock block3 = new MineBlock(tiles3, 1);
-    Set<Tile> tiles4 = new TreeSet<>();
+    Set<Tile> tiles4 = new HashSet<>();
     tiles4.add(tile2);
     tiles4.add(tile3);
     tiles4.add(tile4);
@@ -64,7 +65,7 @@ public class MineBlockTest {
     assertTrue(block2.contains(block3));
     assertTrue(block3.contains(block2));
     assertTrue(block4.contains(block3));
-    assertTrue(block3.contains(block4));
+    assertTrue(!block3.contains(block4));
     assertTrue(!block1.contains(block4));
     assertTrue(!block4.contains(block1));
   }

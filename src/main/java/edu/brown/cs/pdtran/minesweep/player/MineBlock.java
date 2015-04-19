@@ -1,5 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -35,7 +36,7 @@ public class MineBlock {
    * @return A copy of the set of tiles.
    */
   public Set<Tile> getTiles() {
-    Set<Tile> toReturn = new TreeSet<>();
+    Set<Tile> toReturn = new HashSet<>();
     toReturn.addAll(tiles);
     return toReturn;
   }

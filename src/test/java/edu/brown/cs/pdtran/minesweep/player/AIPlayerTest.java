@@ -31,10 +31,6 @@ public class AIPlayerTest {
   
   
   @Before
-  /**
-   * Sets up a trie from dictionary.txt that can be used multiple times without
-   * needing the computational power to create it more than once.
-   */
   public void setUp() throws Exception {
     a1 = new Tile(true, 0, false, 0, 0);
     a2 = new Tile(false, 1, true, 1, 0);
@@ -52,8 +48,10 @@ public class AIPlayerTest {
     d2 = new Tile(false, 3, false, 1, 3);
     d3 = new Tile(true, 1, false, 2, 3);
     d4 = new Tile(false, 1, false, 3, 3);
-    Tile[][] tileArray = {{a1, b1, c1, d1}, {a2, b2, c2, d2},
-        {a3, b3, c3, d3}, {a4, b4, c4, d4}};
+    /*Tile[][] tileArray = {{a1, b1, c1, d1}, {a2, b2, c2, d2},
+        {a3, b3, c3, d3}, {a4, b4, c4, d4}};*/
+    Tile[][] tileArray = {{a1, a2, a3, a4}, {b1, b2, b3, b4},
+        {c1, c2, c3, c4}, {d1, d2, d3, d4}};
     simpleBoard = new DefaultBoard(tileArray);
   }
 
@@ -62,7 +60,7 @@ public class AIPlayerTest {
    * Uses several pre-established AIGamers and shows that the AIPlayers created
    * by them have the same characteristics (username, difficulty)
    */
-  public void newAIGamerTest() {
+  public void newAIPlayerTest() {
     AIPlayer c = new AIPlayer("Clay", 5, simpleBoard);
     assertTrue(c.getUsername().equals("Clay"));
     assertTrue(c.getScore() == 0);
@@ -98,6 +96,15 @@ public class AIPlayerTest {
     MovePossibility mpD2 = new MovePossibility(d2, 0);
     MovePossibility mpD3 = new MovePossibility(d3, .5);
     MovePossibility mpD4 = new MovePossibility(d4, .5);
+    for (MovePossibility m: p.getCertainMine()) {
+      System.out.println(m.getXCoord() + " " + m.getYCoord() + " " + m.getMineProbability());
+    }
+    for (MovePossibility m: p.getCertainNotMine()) {
+      System.out.println(m.getXCoord() + " " + m.getYCoord() + " " + m.getMineProbability());
+    }
+    for (MovePossibility m: p.getUncertain()) {
+      System.out.println(m.getXCoord() + " " + m.getYCoord() + " " + m.getMineProbability());
+    }
     assertTrue(p.getCertainMine().contains(mpC1));
     assertTrue(p.getCertainMine().contains(mpC2));
     assertTrue(p.getCertainNotMine().contains(mpD2));
