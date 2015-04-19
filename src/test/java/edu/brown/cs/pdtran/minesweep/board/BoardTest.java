@@ -79,4 +79,47 @@ public class BoardTest {
       }
     }
   }
+
+
+  @Test
+  public void lossTest() {
+    DefaultBoard board = new DefaultBoard();
+    checkLoss(board);
+  }
+
+  /**
+   * @param board
+   */
+  private void checkLoss(DefaultBoard board) {
+    Tile t = findBomb(board);
+    board.makeMove(t.getRow(), t.getColumn());
+    assertTrue(board.isGameOver());
+    assertTrue(board.isLosingBoard());
+    assertFalse(board.isWinningBoard());
+  }
+
+  @Test
+  public void lossTestRect() {
+    RectangularBoard board = new RectangularBoard();
+    checkLoss(board);
+  }
+
+  @Test
+  public void lossTestTri() {
+    TriangularBoard board = new TriangularBoard();
+    checkLoss(board);
+  }
+
+
+  private Tile findBomb(DefaultBoard board) {
+    for (int i = 0; i < board.getHeight(); i++) {
+      for (int j = 0; j < board.getWidth(); j++) {
+        Tile t = board.getTile(i, j);
+        if (t.isBomb()) {
+          return t;
+        }
+      }
+    }
+    return null;
+  }
 }

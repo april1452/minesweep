@@ -22,7 +22,7 @@ public class TriangularBoard extends DefaultBoard implements Board {
 
   /**
    * The Constructor.
-   * 
+   *
    * @param grid the tile grid. Use only for testing.
    */
   public TriangularBoard(Tile[][] grid) {
@@ -41,7 +41,7 @@ public class TriangularBoard extends DefaultBoard implements Board {
       tiles.add(grid[newRow][col]);
     }
 
-    for (int i = -1; i < 1; i++) {
+    for (int i = -1; i <= 1; i++) {
       if (isWithinBoard(row, col + i) && i != 0) {
         tiles.add(grid[row][col + i]);
       }

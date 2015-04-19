@@ -1,8 +1,10 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.TreeSet;
 
 import edu.brown.cs.pdtran.minesweep.board.Board;
@@ -47,11 +49,11 @@ public class AIPlayer implements Player {
   public AIPlayer(String username, int difficulty, DefaultBoard board) {
     this.username = username;
     score = 0;
+    this.board = board;
     generateMovePossibilities();
     this.difficulty = difficulty;
     moveTime = (int) (BASE_TIME - difficulty * TIME_MULTIPLIER);
     mistakeProbability = (MAX_DIFFICULTY - difficulty) * MISTAKE_MULTIPLIER;
-    this.board = board;
   }
   
   /**
@@ -116,35 +118,67 @@ public class AIPlayer implements Player {
     int height = board.getHeight();
     for (int w = 0; w < width; w++) {
       for (int h = 0; h < height; h++) {
-        Tile currentTile = board.getTile(w, h);
-        if (! currentTile.hasBeenVisited() && currentTile.getAdjacentBombs() > 0) {
+        Tile currentTile = board.getTile(h, w);
+        if (currentTile.hasBeenVisited() && currentTile.getAdjacentBombs() > 0) {
+          List<Tile> adjacentTiles = board.getAdjacentTiles(h, w);
+          adjacentTiles.remove(currentTile);
           MineBlock mb1 =
               blockFromTile(currentTile.getAdjacentBombs(),
-                  board.getAdjacentTiles(w, h));
+                  board.getAdjacentTiles(h, w));
+          
+          System.out.println(mb1.getNumMines());
+          for (Tile adj: mb1.getTiles()) {
+            System.out.println(adj.getRow() + " " + adj.getColumn());
+          }
+          System.out.println(" ");
+          
           Boolean needsCheck = true;
           while (needsCheck == true) {
             needsCheck = false;
+            MineBlock remove = null;
             for (MineBlock mb2: blocks) {
               if (mb2.contains(mb1)) {
                 mb2.subtract(mb1);
+                
+                System.out.println("Subtract FROM");
+                System.out.println(mb2.getNumMines());
+                for (Tile adj: mb2.getTiles()) {
+                  System.out.println(adj.getRow() + " " + adj.getColumn());
+                }
+                System.out.println(" ");
+                
                 needsCheck = true;
                 if (mb2.getTiles().isEmpty()) {
-                  blocks.remove(mb2);
+                  remove = mb2;
+                  break;
                 }
               } else if (mb1.contains(mb2)) {
                 mb1.subtract(mb2);
+                
+                System.out.println("Subtract");
+                System.out.println(mb1.getNumMines());
+                for (Tile adj: mb1.getTiles()) {
+                  System.out.println(adj.getRow() + " " + adj.getColumn());
+                }
+                System.out.println(" ");
+                
                 if (mb1.getTiles().isEmpty()) {
                   break;
                 }
                 needsCheck = true;
               }
             }
+            blocks.remove(remove);
           }
           blocks.add(mb1);
         }
       }
     }
     for (MineBlock mb: blocks) {
+      /*System.out.println(mb.getNumMines());
+      for (Tile adj: mb.getTiles()) {
+        System.out.println(adj.getRow() + " " + adj.getColumn());
+      }*/
       double probability = (double) mb.getNumMines() / mb.getTiles().size();   
       for (Tile adj: mb.getTiles()) {
         MovePossibility mp = new MovePossibility(adj, probability);
@@ -153,13 +187,19 @@ public class AIPlayer implements Player {
         } else if (probability == 1) {
           certainMine.add(mp);
         } else {
+          boolean contained = false;
           for (MovePossibility uncertainMp: uncertain) {
             if (uncertainMp.getXCoord() == mp.getXCoord()
-                && uncertainMp.getYCoord() == mp.getYCoord())
+                && uncertainMp.getYCoord() == mp.getYCoord()) {
+              contained = true;
               if (uncertainMp.getMineProbability() < probability) {
                 uncertain.remove(uncertainMp);
                 uncertain.add(mp);
               }
+            }
+          }
+          if (!contained) {
+            uncertain.add(mp);
           }
         }
       }
@@ -167,7 +207,7 @@ public class AIPlayer implements Player {
   } 
 
   private MineBlock blockFromTile(int totalSurrounding, List<Tile> adjacent) {
-    TreeSet<Tile> setTiles = new TreeSet<>();
+    Set<Tile> setTiles = new HashSet<>();
     for (Tile t: adjacent) {
       if (!t.hasBeenVisited()) {
         setTiles.add(t);

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Receives setup information from URL created by GUI 'Create Game' button.
- * Setup information: game mode (classic, layers, territory, path, FSU), number
- * of matches, board shape & dimensions, teams, players and player info (AI &
+ * Receives setup information created by GUI 'Create Game' button. Setup
+ * information: game mode (classic, layers, territory, path, FSU), number of
+ * matches, board shape & dimensions, teams, players and player info (AI &
  * difficulty vs.human), and each team's lives. Returns all setup information as
  * a Room, which is processed to become a game.
  *
