@@ -24,10 +24,20 @@ public class DefaultBoard implements Board, Cloneable {
   private final int height;
   private final int bombCount;
 
+  /**
+   * The default constructor.
+   */
   public DefaultBoard() {
     this(16, 16, 40);
   }
 
+  /**
+   * The constructor that provide the necessary seed information.
+   *
+   * @param width The width of the board.
+   * @param height Th height of the board.
+   * @param bombCount The number of bombs on the board.
+   */
   public DefaultBoard(int width, int height, int bombCount) {
     this.width = width;
     this.height = height;
@@ -35,6 +45,12 @@ public class DefaultBoard implements Board, Cloneable {
     initializeBoard();
   }
 
+  /**
+   * This board constructor allows you to specify the grid. You may find it
+   * useful for testing.
+   *
+   * @param grid The grid that you get to specify.
+   */
   public DefaultBoard(Tile[][] grid) {
     this.width = grid[0].length;
     this.height = grid.length;
@@ -87,6 +103,9 @@ public class DefaultBoard implements Board, Cloneable {
     updateBombNumbers();
   }
 
+  /**
+   * Updates the bomb number. It is protected so it can be overwrriten later.
+   */
   protected void updateBombNumbers() {
     // Calculate adjacent bomb values for each tile
     int adjacentBombCount;
@@ -110,14 +129,36 @@ public class DefaultBoard implements Board, Cloneable {
     }
   }
 
+  /**
+   * Gets the tile at the specified point.
+   *
+   * @param row The specified row.
+   * @param col The specified col.
+   * @return The tile you want.
+   */
   public Tile getTile(int row, int col) {
     return grid[row][col];
   }
 
+  /**
+   * Sets the tile at the specified row.
+   *
+   * @param tile The tile you want to swap.
+   * @param row The row you wish to swap out.
+   * @param col The col of the tile you wish to swap.
+   */
   public void setTile(Tile tile, int row, int col) {
     grid[row][col] = tile;
   }
 
+  /**
+   * Gets the tile adjacent to the one at the speciifed row and col. NOTE: You
+   * must override this method if you want to change the geometry of the board.
+   *
+   * @param row The row of tile you want.
+   * @param col The col of the tile you want.
+   * @return a list of adjacent tiles.
+   */
   public List<Tile> getAdjacentTiles(int row, int col) {
     int i = row;
     int j = col;
@@ -217,6 +258,13 @@ public class DefaultBoard implements Board, Cloneable {
     return isWinningBoard() || isLosingBoard();
   }
 
+  /**
+   * Tells you if it's within the board.
+   * 
+   * @param x The x position.
+   * @param y The y position.
+   * @return True if it's within th board, otherwise false.
+   */
   public boolean isWithinBoard(final int x, final int y) {
     return x >= 0 && x < width && y >= 0 && y < height;
   }
