@@ -48,8 +48,6 @@ public class AIPlayerTest {
     d2 = new Tile(false, 3, false, 1, 3);
     d3 = new Tile(true, 1, false, 2, 3);
     d4 = new Tile(false, 1, false, 3, 3);
-    /*Tile[][] tileArray = {{a1, b1, c1, d1}, {a2, b2, c2, d2},
-        {a3, b3, c3, d3}, {a4, b4, c4, d4}};*/
     Tile[][] tileArray = {{a1, a2, a3, a4}, {b1, b2, b3, b4},
         {c1, c2, c3, c4}, {d1, d2, d3, d4}};
     simpleBoard = new DefaultBoard(tileArray);
