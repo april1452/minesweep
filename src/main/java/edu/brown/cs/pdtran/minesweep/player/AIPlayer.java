@@ -119,7 +119,7 @@ public class AIPlayer implements Player {
     for (int w = 0; w < width; w++) {
       for (int h = 0; h < height; h++) {
         Tile currentTile = board.getTile(h, w);
-        if (!currentTile.hasBeenVisited() && currentTile.getAdjacentBombs() > 0) {
+        if (currentTile.hasBeenVisited() && currentTile.getAdjacentBombs() > 0) {
           List<Tile> adjacentTiles = board.getAdjacentTiles(h, w);
           adjacentTiles.remove(currentTile);
           MineBlock mb1 =
@@ -139,6 +139,14 @@ public class AIPlayer implements Player {
             for (MineBlock mb2: blocks) {
               if (mb2.contains(mb1)) {
                 mb2.subtract(mb1);
+                
+                System.out.println("Subtract FROM");
+                System.out.println(mb2.getNumMines());
+                for (Tile adj: mb2.getTiles()) {
+                  System.out.println(adj.getRow() + " " + adj.getColumn());
+                }
+                System.out.println(" ");
+                
                 needsCheck = true;
                 if (mb2.getTiles().isEmpty()) {
                   remove = mb2;
@@ -146,6 +154,14 @@ public class AIPlayer implements Player {
                 }
               } else if (mb1.contains(mb2)) {
                 mb1.subtract(mb2);
+                
+                System.out.println("Subtract");
+                System.out.println(mb1.getNumMines());
+                for (Tile adj: mb1.getTiles()) {
+                  System.out.println(adj.getRow() + " " + adj.getColumn());
+                }
+                System.out.println(" ");
+                
                 if (mb1.getTiles().isEmpty()) {
                   break;
                 }
@@ -171,13 +187,19 @@ public class AIPlayer implements Player {
         } else if (probability == 1) {
           certainMine.add(mp);
         } else {
+          boolean contained = false;
           for (MovePossibility uncertainMp: uncertain) {
             if (uncertainMp.getXCoord() == mp.getXCoord()
-                && uncertainMp.getYCoord() == mp.getYCoord())
+                && uncertainMp.getYCoord() == mp.getYCoord()) {
+              contained = true;
               if (uncertainMp.getMineProbability() < probability) {
                 uncertain.remove(uncertainMp);
                 uncertain.add(mp);
               }
+            }
+          }
+          if (!contained) {
+            uncertain.add(mp);
           }
         }
       }
