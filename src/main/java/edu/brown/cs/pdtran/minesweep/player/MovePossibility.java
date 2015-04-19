@@ -33,10 +33,18 @@ public class MovePossibility {
     this.mineProbability = mineProbability;
   }
   
+  /**
+   * Gets the value of the x coordinate.
+   * @return An integer representing the x coordinate of the tile.
+   */
   public int getXCoord() {
     return xCoord;
   }
   
+  /**
+   * Gets the value of the y coordinate.
+   * @return An integer representing the y coordinate of the tile.
+   */
   public int getYCoord() {
     return yCoord;
   }
@@ -57,6 +65,25 @@ public class MovePossibility {
    */
   public void setMineProbability(double mineProbability) {
     this.mineProbability = mineProbability;
+  }
+  
+  /**
+   * Gets the tile corresponding to the MovePossibility.
+   * @return The Tile object held in this spot.
+   */
+  public Tile getTile() {
+    return tile;
+  }
+  
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof MovePossibility) {
+      MovePossibility mp = (MovePossibility) o;
+      return (tile.equals(mp.getTile()) 
+          && mineProbability == mp.getMineProbability());
+    } else {
+      return false;
+    }
   }
 
 }
