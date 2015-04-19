@@ -1,9 +1,21 @@
-function getGames() {
+getGames();
 
-    $.get("/games", postParameters, function(responseJSON) {
+function getGames() {
+    $.get("/games", function(responseJSON) {
+        var roomList = new Array();
+    
         var response = JSON.parse(responseJSON);
-        document.getElementById("responseHolder").innerHTML = response;
+        $.each(response, function(index, roomInfo) {
+            roomList[roomList.length] = value.roomId;
+        });
+        
+        var listHtml = document.getElementById("responseHolder").innerHTML;
+        listHtml = "";
+        $.each(roomList, function(index, roomInfo) {
+            listHtml += ("<p>" + roomInfo + "<p>");
+        });
+        
+        document.getElementById("responseHolder").innerHTML = listHtml;
     });
 }
-
 

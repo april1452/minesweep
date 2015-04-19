@@ -18,8 +18,7 @@ public class Setup {
    * @param specsURL String URL representing game specifications
    * @return Room representing game specifications
    */
-  public static Room setup(String[] specsArr) {
-    // TODO change to querymap
+  public static PreRoom setup(String[] specsArr) {
     // hostID-mode-matches-shape-width-height-lives-[team#][AI/h][name/diff]...
 
     int[] dims = {Integer.parseInt(specsArr[4]), Integer.parseInt(specsArr[5])};
@@ -30,7 +29,7 @@ public class Setup {
     int hostID = Integer.parseInt(specsArr[0]);
     List<TeamFormation> teams = createTeams(hostID, specsArr[6], specsArr[7]);
 
-    return new Room(hostID, specs, teams);
+    return new PreRoom(hostID, specs, teams);
   }
 
   private static List<TeamFormation> createTeams(int host, String lives,

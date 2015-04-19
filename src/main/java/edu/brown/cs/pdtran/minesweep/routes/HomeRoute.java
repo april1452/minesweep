@@ -11,8 +11,11 @@ import spark.TemplateViewRoute;
 public class HomeRoute implements TemplateViewRoute {
 
   @Override
-  public ModelAndView handle(Request arg0, Response arg1) {
+  public ModelAndView handle(Request req, Response res) {
     Map<String, Object> variables = ImmutableMap.of("title", "Minesweep");
+
+    res.cookie(name, value);
+
     return new ModelAndView(variables, "main.ftl");
   }
 

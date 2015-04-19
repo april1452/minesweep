@@ -1,29 +1,35 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RequestHandler {
 
-  private Map<Integer, RoomSession> rooms;
-  private Map<Integer, GameSession> games;
+  private Set<Session> sessions;
+  private Map<UUID, RoomSession> rooms;
+  private Map<UUID, GameSession> games;
 
   public RequestHandler() {
-    rooms = new HashMap<Integer, RoomSession>();
-    games = new HashMap<Integer, GameSession>();
+    rooms = new ConcurrentHashMap<UUID, RoomSession>();
+    games = new ConcurrentHashMap<UUID, GameSession>();
   }
 
-  public Iterator<RoomSession> getRooms() {
-    return rooms.values().iterator();
+  public Map<Integer, RoomSession> getRooms() {
+    return sessions;
   }
 
-  public RoomSession getRoom(int id) {
+  public RoomSession getRoom(String id) {
     return rooms.get(id);
   }
 
-  public GameSession getGame(int id) {
+  public GameSession getGame(String id) {
     return games.get(id);
+  }
+
+  public int addGame() {
+
   }
 
 }

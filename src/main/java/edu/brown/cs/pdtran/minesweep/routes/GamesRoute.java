@@ -1,9 +1,12 @@
 package edu.brown.cs.pdtran.minesweep.routes;
 
-import java.util.Iterator;
+import java.util.Map;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
+import edu.brown.cs.pdtran.minesweep.metagame.RoomInfo;
 import edu.brown.cs.pdtran.minesweep.metagame.RoomSession;
 import spark.Request;
 import spark.Response;
@@ -12,7 +15,6 @@ import spark.Route;
 public class GamesRoute implements Route {
 
   private RequestHandler handler;
-  private final Gson gson = new Gson();
 
   public GamesRoute(RequestHandler handler) {
     this.handler = handler;
@@ -20,14 +22,25 @@ public class GamesRoute implements Route {
 
   @Override
   public Object handle(Request req, Response res) {
-    Iterator<RoomSession> sessions = handler.getRooms();
-    StringBuilder sb = new StringBuilder();
+    Map<Integer, RoomSession> sessions = handler.getRooms();
+    JsonArray sessionsJson = new JsonArray();
 
-    while (sessions.hasNext()) {
-      RoomSession session = sessions.next();
-      sb.append(session.getRoom().getRoomInfo().toString());
+    for (Map.Entry<Integer, RoomSession> entry : sessions.entrySet()) {
+      RoomInfo info = entry.getValue().getRoomInfo();
+      JsonObject sessionJson = new JsonObject();
+      sessionJson.addProperty("roomId", entry.getKey());
+      sessionJson.addProperty("roomName", info.getRoomName());
+      sessionJson.addProperty("gameMode", info.getGameMode());
+
+      JsonArray playersJson = new JsonArray();
+      for (String playerName : info.getPlayerNames()) {
+        playersJson.add(new JsonPrimitive(playerName));
+      }
+      sessionJson.add("playerNames", playersJson);
+
+      sessionsJson.add(sessionJson);
     }
 
-    return gson.toJson(sb.toString());
+    return sessionsJson.toString();
   }
 }

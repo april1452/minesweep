@@ -56,7 +56,7 @@ public class Tile {
 
   /**
    * determines the number of adjacent bombs
-   * 
+   *
    * @param num
    */
   public void setAdjacentBombs(final int num) {
@@ -96,5 +96,20 @@ public class Tile {
    */
   public int getColumn() {
     return column;
+  }
+
+  public Boolean equals(Tile tile2) {
+    return (row == tile2.getRow() && column == tile2.getColumn());
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "Tile [isBomb=" + isBomb + ", adjacentBombs=" + adjacentBombs
+        + ", visited=" + visited + ", row=" + row + ", column=" + column + "]";
   }
 }
