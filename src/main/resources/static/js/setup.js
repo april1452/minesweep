@@ -1,5 +1,3 @@
-
-
-function createGame() {
-
-}
+$("#createGame").submit(function( event ) {
+	$.post()
+});

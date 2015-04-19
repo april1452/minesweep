@@ -8,7 +8,13 @@
         </head>
         
         <body>
-            <button onclick="createGame();"> Create game. </button>
+            <form id="createGame">
+                Game mode: 
+                <select id="gameMode">
+                    <option value="classic">Classic</option>
+                </select>
+                <input type="submit" value="Host Game">
+            </form>
         </body>
         <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
         <script src="../js/setup.js"></script>

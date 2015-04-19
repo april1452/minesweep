@@ -1,7 +1,5 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
-interface Session {
-  public String getId();
-
+public interface Session {
   public RoomInfo getRoomInfo();
 }

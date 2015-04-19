@@ -6,7 +6,6 @@ public class Main {
 
   public static void main(String[] args) {
     Metagame metagame = new Metagame(4564);
-    System.out.println("Hello, world!");
   }
 
 }

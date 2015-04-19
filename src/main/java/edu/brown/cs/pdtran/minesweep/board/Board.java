@@ -1,5 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.board;
 
+
 /**
  * This is an interface for a standard board.
  *
@@ -11,8 +12,10 @@ public interface Board extends Cloneable {
   /**
    * Makes the move at the specified row and col.
    *
-   * @param row The row you want to move at.
-   * @param col The col you want to move at.
+   * @param row
+   *          The row you want to move at.
+   * @param col
+   *          The col you want to move at.
    */
   void makeMove(int row, int col);
 
@@ -57,4 +60,6 @@ public interface Board extends Cloneable {
    * @return the maximum width of the board.
    */
   int getWidth();
+
+  // Tile getTile();
 }

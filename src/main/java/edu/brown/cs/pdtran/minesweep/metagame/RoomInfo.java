@@ -6,16 +6,16 @@ import edu.brown.cs.pdtran.minesweep.options.GameMode;
 
 public class RoomInfo {
 
-  public enum SESSION_TYPE {
+  public enum SessionType {
     SETUP, IN_GAME;
   }
 
   private String roomName;
-  private SESSION_TYPE sessionType;
+  private SessionType sessionType;
   private GameMode gameMode;
   private List<String> playerNames;
 
-  public RoomInfo(String roomName, SESSION_TYPE sessionType, String gameMode,
+  public RoomInfo(String roomName, SessionType sessionType, GameMode gameMode,
     List<String> playerNames) {
     this.roomName = roomName;
     this.sessionType = sessionType;
@@ -27,11 +27,11 @@ public class RoomInfo {
     return roomName;
   }
 
-  public SESSION_TYPE sessionType() {
+  public SessionType sessionType() {
     return sessionType;
   }
 
-  public String getGameMode() {
+  public GameMode getGameMode() {
     return gameMode;
   }
 

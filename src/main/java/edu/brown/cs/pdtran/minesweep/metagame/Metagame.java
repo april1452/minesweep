@@ -21,7 +21,7 @@ public class Metagame {
     Spark.setPort(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     FreeMarkerEngine engine = createEngine();
-    Spark.get("/", new HomeRoute(), engine);
+    Spark.get("/", new HomeRoute(handler), engine);
     Spark.get("/games", new GamesRoute(handler));
     Spark.get("/setup", new SetupHandler(handler), engine);
     // Spark.get("/room/:roomId", new ResultsHandler(engine));

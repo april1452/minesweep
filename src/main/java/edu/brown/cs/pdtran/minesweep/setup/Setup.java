@@ -9,36 +9,32 @@ import java.util.List;
  * of matches, board shape & dimensions, teams, players and player info (AI &
  * difficulty vs.human), and each team's lives. Returns all setup information as
  * a Room, which is processed to become a game.
+ *
  * @author pdtran
  */
 public class Setup {
   /**
    * Set up game specifications and return a room representing those options.
    * Room will be used to create a game.
-   * @param specsURL String URL representing game specifications
+   *
+   * @param specsURL
+   *          String URL representing game specifications
    * @return Room representing game specifications
    */
-  public static PreRoom setup(String specsURL) {
-    // hostID-mode-matches-shape-width-height-lives-[team#][AI/h][name/diff]...
-    String[] specsArr = specsURL.split("-");
-
-    int[] dims = {Integer.parseInt(specsArr[4]), Integer.parseInt(specsArr[5])};
-    GameSpecs specs = new GameSpecs(specsArr[1], Integer.parseInt(specsArr[2]),
-        specsArr[3], dims);
-
+  public static PreRoom setup(String roomName, String hostId, String hostName,
+    GameSpecs specs) {
     // Host will always be 1st player on 1st team
-    int hostID = Integer.parseInt(specsArr[0]);
-    List<TeamFormation> teams = createTeams(hostID, specsArr[6], specsArr[7]);
+    List<TeamFormation> teams = new ArrayList<TeamFormation>();
 
-    return new PreRoom(hostID, specs, teams);
-  }
+    for (int i = 0; i < specs.getNumTeams(); i++) {
+      List<Gamer> gamers = new ArrayList<Gamer>();
+      if (i == 0) {
+        gamers.add(new HumanGamer(hostId, hostName));
+      }
+      TeamFormation team = new TeamFormation(gamers, specs.getTeamLives());
+      teams.add(team);
+    }
 
-  private static List<TeamFormation> createTeams(int host, String lives,
-      String teamSpecs) {
-    List<TeamFormation> teams = new ArrayList<>();
-
-    // TODO process team spec URL string to create teams
-
-    return teams;
+    return new PreRoom(roomName, specs, teams);
   }
 }

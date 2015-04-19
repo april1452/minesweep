@@ -11,6 +11,7 @@
             <form action="/setup">
                 <input type="submit" value="Host Game">
             </form>
+            <p> Existing Games: </p>
             <p id="responseHolder"></p>
         </body>
         <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
