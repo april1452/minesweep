@@ -11,13 +11,19 @@ function startLoop() {
 
 function getUpdate() {
     $.get("/roomUpdate", function(responseJSON) {
-        console.log(responseJSON);
+        if(responseJSON === "gameStarted") {
+            window.location.href = "/game";
+            return;
+        }
         var response = JSON.parse(responseJSON);
-        var names = response.playerNames;
+        var teams = response.teams;
         var innerBox = "";
         
-        $.each(names, function(index, value) {
-            innerBox += "<p>" + value + "</p>";
+        $.each(teams, function(i, team) {
+            innerBox += "<p>" + team.name + ": </p>";
+            $.each(team.players, function(j, player) {
+                innerBox += "<p>" + player.name + "</p>";
+            });
         });
         
         console.log(innerBox);
@@ -25,3 +31,7 @@ function getUpdate() {
         $("#usernameBox").html(innerBox);
     });
 }
+
+$("#start").click(function() {
+    $.post("/start");
+});

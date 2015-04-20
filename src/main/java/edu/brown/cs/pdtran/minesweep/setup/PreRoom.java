@@ -51,14 +51,17 @@ public class PreRoom {
   }
 
   // this isnt concurrent yet
-  public void addGamer(String id, String name) {
+  public int addGamer(String id, String name) {
     humanIds.add(id);
-    for (TeamFormation team : teams) {
-      List<Gamer> teamGamers = team.getGamers();
-      if (teamGamers.size() < specs.getNumTeamPlayers()) {
-        teamGamers.add(new HumanGamer(id, name));
-        return;
+    for (int i = 0; i < specs.getNumTeamPlayers(); i++) {
+      for (int j = 0; j < teams.size(); j++) {
+        List<Gamer> teamGamers = teams.get(j).getGamers();
+        if (teamGamers.size() < i + 1) {
+          teamGamers.add(new HumanGamer(id, name));
+          return j;
+        }
       }
     }
+    return 0;
   }
 }

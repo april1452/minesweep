@@ -22,7 +22,7 @@ public class Team {
   private int lives;
   private Boolean isWinner;
   private Boolean isLoser;
-  String id;
+  String name;
   Board board;
 
   /**
@@ -37,7 +37,7 @@ public class Team {
    *          A unique string for the given team.
    * @param (DEFAULT BOARD) board2 The Board object that the team holds.
    */
-  public Team(List<Gamer> gamers, int lives, String id, Board board) {
+  public Team(List<Gamer> gamers, int lives, String name, Board board) {
     members = new ArrayList<>();
     for (Gamer g : gamers) {
       if (g instanceof HumanGamer) {
@@ -52,7 +52,7 @@ public class Team {
     this.lives = lives;
     isWinner = false;
     isLoser = false;
-    this.id = id;
+    this.name = name;
     this.board = board;
   }
 
@@ -166,5 +166,13 @@ public class Team {
    */
   public Boolean getIsLoser() {
     return isLoser;
+  }
+
+  public List<Player> getPlayers() {
+    return members;
+  }
+
+  public String getName() {
+    return name;
   }
 }

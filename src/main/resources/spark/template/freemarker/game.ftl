@@ -8,17 +8,13 @@
         </head>
         
         <body>
-            <form action="/setup">
-                <input type="submit" value="Host Game">
-            </form>
-            <p> Existing Rooms: </p>
-            <form id="joinGame">
-                Game mode: 
-                <select id="gameId">
-                </select>
-                <input type="submit" value="Join Game">
-            </form>
+       
+        THIS IS THE GAME PAGE.
+        
+        <canvas id="board"></canvas>
+        
         </body>
+        
         <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
-        <script src="../js/main.js"></script>
+        <script src="../js/game.js"></script>
     </html>

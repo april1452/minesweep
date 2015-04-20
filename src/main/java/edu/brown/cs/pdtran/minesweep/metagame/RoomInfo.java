@@ -3,31 +3,28 @@ package edu.brown.cs.pdtran.minesweep.metagame;
 import java.util.List;
 
 import edu.brown.cs.pdtran.minesweep.options.GameMode;
+import edu.brown.cs.pdtran.minesweep.options.SessionType;
 
 public class RoomInfo {
-
-  public enum SessionType {
-    SETUP, IN_GAME;
-  }
 
   private String roomName;
   private SessionType sessionType;
   private GameMode gameMode;
-  private List<String> playerNames;
+  private List<TeamInfo> teams;
 
   public RoomInfo(String roomName, SessionType sessionType, GameMode gameMode,
-    List<String> playerNames) {
+    List<TeamInfo> teams) {
     this.roomName = roomName;
     this.sessionType = sessionType;
     this.gameMode = gameMode;
-    this.playerNames = playerNames;
+    this.teams = teams;
   }
 
   public String getRoomName() {
     return roomName;
   }
 
-  public SessionType sessionType() {
+  public SessionType getSessionType() {
     return sessionType;
   }
 
@@ -35,8 +32,8 @@ public class RoomInfo {
     return gameMode;
   }
 
-  public List<String> getPlayerNames() {
-    return playerNames;
+  public List<TeamInfo> getTeams() {
+    return teams;
   }
 
 }

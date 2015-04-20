@@ -14,7 +14,7 @@ public class RequestHandler {
   private ConcurrentMap<String, RoomSession> rooms;
   private ConcurrentMap<String, GameSession> games;
 
-  public RequestHandler(int port) throws IOException {
+  public RequestHandler() throws IOException {
     userIds = new ConcurrentHashMap<String, Boolean>();
     rooms = new ConcurrentHashMap<String, RoomSession>();
     games = new ConcurrentHashMap<String, GameSession>();
@@ -48,7 +48,7 @@ public class RequestHandler {
 
   public void convert(String id) {
     RoomSession room = rooms.get(id);
-    rooms.remove(id, room);
+    rooms.remove(id);
     games.put(id, new GameSession(room));
   }
 

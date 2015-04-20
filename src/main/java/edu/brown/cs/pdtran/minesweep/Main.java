@@ -8,7 +8,7 @@ public class Main {
 
   public static void main(String[] args) {
     try {
-      Metagame metagame = new Metagame(4564);
+      Metagame metagame = new Metagame(4686);
     } catch (IOException e) {
       System.out.println("ERROR: " + e.getMessage());
     }

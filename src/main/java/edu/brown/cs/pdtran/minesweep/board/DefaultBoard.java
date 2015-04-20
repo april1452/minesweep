@@ -285,7 +285,13 @@ public class DefaultBoard implements Board, Cloneable {
 
   @Override
   public Board clone() {
-    return new DefaultBoard(Arrays.copyOf(grid, grid.length));
+    DefaultBoard board = new DefaultBoard(Arrays.copyOf(grid, grid.length));
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        board.setTile(grid[i][j].getCopy(), i, j);
+      }
+    }
+    return board;
   }
 
   @Override
@@ -295,15 +301,15 @@ public class DefaultBoard implements Board, Cloneable {
     boardJson.addProperty("height", height);
     JsonArray tilesJson = new JsonArray();
     for (int i = 0; i < height; i++) {
-      for (int j = 0; j < width; i++) {
+      for (int j = 0; j < width; j++) {
         Tile tile = grid[i][j];
         JsonObject tileJson = new JsonObject();
         tileJson.addProperty("row", tile.getRow());
         tileJson.addProperty("column", tile.getColumn());
-        tileJson.addProperty("bomb", tile.isBomb());
+        tileJson.addProperty("isBomb", tile.isBomb());
         tileJson.addProperty("visited", tile.hasBeenVisited());
         if (tile.hasBeenVisited()) {
-          tileJson.addProperty("neighbours", tile.getAdjacentBombs());
+          tileJson.addProperty("adjacentBombs", tile.getAdjacentBombs());
         }
         tilesJson.add(tileJson);
       }

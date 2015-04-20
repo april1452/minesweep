@@ -54,4 +54,9 @@ public class ClassicGame implements Game {
     return score;
   }
 
+  @Override
+  public Team[] getTeams() {
+    return teams;
+  }
+
 }

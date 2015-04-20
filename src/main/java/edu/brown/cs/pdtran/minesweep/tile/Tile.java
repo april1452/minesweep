@@ -25,14 +25,19 @@ public class Tile {
   /**
    * Default constructor for a Tile.
    *
-   * @param bomb Boolean representing if tile is a bomb.
-   * @param adjacent Count for number of adjacent bombs.
-   * @param visit Whether or not the tile has been visited.
-   * @param x The row value of the tile.
-   * @param y The column value of the tile.
+   * @param bomb
+   *          Boolean representing if tile is a bomb.
+   * @param adjacent
+   *          Count for number of adjacent bombs.
+   * @param visit
+   *          Whether or not the tile has been visited.
+   * @param x
+   *          The row value of the tile.
+   * @param y
+   *          The column value of the tile.
    */
   public Tile(final boolean bomb, final int adjacent, final boolean visit,
-      final int x, final int y) {
+    final int x, final int y) {
     this.isBomb = bomb;
     this.adjacentBombs = adjacent;
     this.visited = visit;
@@ -102,14 +107,18 @@ public class Tile {
     return (row == tile2.getRow() && column == tile2.getColumn());
   }
 
+  public Tile getCopy() {
+    return new Tile(isBomb, adjacentBombs, visited, row, column);
+  }
+
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
     return "Tile [isBomb=" + isBomb + ", adjacentBombs=" + adjacentBombs
-        + ", visited=" + visited + ", row=" + row + ", column=" + column + "]";
+      + ", visited=" + visited + ", row=" + row + ", column=" + column + "]";
   }
 }

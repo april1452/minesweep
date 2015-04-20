@@ -46,6 +46,6 @@ public class CreateRoomRoute implements Route {
 
     res.cookie("minesweepRoomId", roomId);
 
-    return "";
+    return true;
   }
 }

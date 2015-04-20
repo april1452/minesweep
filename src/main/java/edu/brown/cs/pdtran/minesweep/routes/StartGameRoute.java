@@ -1,16 +1,15 @@
 package edu.brown.cs.pdtran.minesweep.routes;
 
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
-import edu.brown.cs.pdtran.minesweep.metagame.RoomSession;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class AddPlayerRoute implements Route {
+public class StartGameRoute implements Route {
 
-  private RequestHandler handler;
+  RequestHandler handler;
 
-  public AddPlayerRoute(RequestHandler handler) {
+  public StartGameRoute(RequestHandler handler) {
     this.handler = handler;
   }
 
@@ -19,11 +18,7 @@ public class AddPlayerRoute implements Route {
     String roomCookie = req.cookie("minesweepRoomId");
     String userCookie = req.cookie("minesweepId");
 
-    RoomSession roomSession = handler.getRoom(roomCookie);
-
-    int team = roomSession.getRoom().addGamer(userCookie, "TEMPORARY");
-
-    res.cookie("minesweepTeamNumber", Integer.toString(team));
+    handler.convert(roomCookie);
 
     return true;
   }

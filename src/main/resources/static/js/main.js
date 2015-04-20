@@ -1,21 +1,26 @@
-getGames();
+updateLoop();
+
+function updateLoop() {
+    window.setInterval("getGames()", 500);
+}
 
 function getGames() {
     $.get("/games", function(responseJSON) {
-        var roomList = new Array();
-    
         var response = JSON.parse(responseJSON);
+        var gameOptions = "";
         $.each(response, function(index, roomInfo) {
-            roomList[roomList.length] = roomInfo.roomId;
+            console.log(roomInfo);
+            if(roomInfo.sessionType === "setup") {
+                gameOptions += "<option value=\"" + roomInfo.roomId + "\">A Game</option>";
+            }
         });
         
-        var listHtml = document.getElementById("responseHolder").innerHTML;
-        listHtml = "";
-        $.each(roomList, function(index, roomInfo) {
-            listHtml += ("<p>" + roomInfo + "<p>");
-        });
-        
-        document.getElementById("responseHolder").innerHTML = listHtml;
+        $("#gameId").html(gameOptions);
     });
 }
 
+$("#joinGame").submit(function(event) {
+    event.preventDefault();
+    document.cookie = "minesweepRoomId=" + $("#gameId").val();
+    window.location.href = "/room";
+});

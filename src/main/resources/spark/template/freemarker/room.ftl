@@ -13,6 +13,7 @@
         
         </div>
         
+        <button type="button" id="start">Start Game!</button>
         
         </body>
         

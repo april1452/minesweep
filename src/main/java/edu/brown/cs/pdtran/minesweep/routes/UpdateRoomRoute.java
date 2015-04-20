@@ -2,10 +2,11 @@ package edu.brown.cs.pdtran.minesweep.routes;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import edu.brown.cs.pdtran.minesweep.metagame.PlayerInfo;
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.metagame.RoomInfo;
 import edu.brown.cs.pdtran.minesweep.metagame.RoomSession;
+import edu.brown.cs.pdtran.minesweep.metagame.TeamInfo;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -25,6 +26,10 @@ public class UpdateRoomRoute implements Route {
 
     RoomSession roomSession = handler.getRoom(roomCookie);
 
+    if (roomSession == null) {
+      return "gameStarted";
+    }
+
     RoomInfo info = roomSession.getRoomInfo();
 
     JsonObject roomJson = new JsonObject();
@@ -39,11 +44,21 @@ public class UpdateRoomRoute implements Route {
     }
     roomJson.addProperty("gameMode", gameModeString);
 
-    JsonArray playersJson = new JsonArray();
-    for (String playerName : info.getPlayerNames()) {
-      playersJson.add(new JsonPrimitive(playerName));
+    JsonArray teamsJson = new JsonArray();
+    for (TeamInfo team : info.getTeams()) {
+      JsonObject teamJson = new JsonObject();
+      JsonArray playersJson = new JsonArray();
+      for (PlayerInfo player : team.getPlayers()) {
+        JsonObject playerJson = new JsonObject();
+        playerJson.addProperty("name", player.getName());
+        playersJson.add(playerJson);
+      }
+      teamJson.addProperty("name", team.getName());
+      teamJson.add("players", playersJson);
+      teamsJson.add(teamJson);
     }
-    roomJson.add("playerNames", playersJson);
+
+    roomJson.add("teams", teamsJson);
 
     return roomJson.toString();
   }

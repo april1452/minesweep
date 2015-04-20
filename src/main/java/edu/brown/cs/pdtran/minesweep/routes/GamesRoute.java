@@ -5,10 +5,11 @@ import java.util.Map;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import edu.brown.cs.pdtran.minesweep.metagame.PlayerInfo;
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.metagame.RoomInfo;
 import edu.brown.cs.pdtran.minesweep.metagame.Session;
+import edu.brown.cs.pdtran.minesweep.metagame.TeamInfo;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -31,6 +32,18 @@ public class GamesRoute implements Route {
       JsonObject sessionJson = new JsonObject();
       sessionJson.addProperty("roomId", sessionEntry.getKey());
       sessionJson.addProperty("roomName", info.getRoomName());
+      String sessionType;
+      switch (info.getSessionType()) {
+        case IN_GAME:
+          sessionType = "inGame";
+          break;
+        case SETUP:
+          sessionType = "setup";
+          break;
+        default:
+          sessionType = "inGame";
+      }
+      sessionJson.addProperty("sessionType", sessionType);
       String gameModeString;
       switch (info.getGameMode()) {
         case CLASSIC:
@@ -41,11 +54,20 @@ public class GamesRoute implements Route {
       }
       sessionJson.addProperty("gameMode", gameModeString);
 
-      JsonArray playersJson = new JsonArray();
-      for (String playerName : info.getPlayerNames()) {
-        playersJson.add(new JsonPrimitive(playerName));
+      JsonArray teamsJson = new JsonArray();
+      for (TeamInfo team : info.getTeams()) {
+        JsonObject teamJson = new JsonObject();
+        JsonArray playersJson = new JsonArray();
+        for (PlayerInfo player : team.getPlayers()) {
+          JsonObject playerJson = new JsonObject();
+          playerJson.addProperty("name", player.getName());
+          playersJson.add(playerJson);
+        }
+        teamJson.addProperty("name", team.getName());
+        teamJson.add("players", playersJson);
+        teamsJson.add(teamJson);
       }
-      sessionJson.add("playerNames", playersJson);
+      sessionJson.add("teams", teamsJson);
 
       sessionsJson.add(sessionJson);
     }
