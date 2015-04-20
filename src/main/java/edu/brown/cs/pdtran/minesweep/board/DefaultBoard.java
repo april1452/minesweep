@@ -11,6 +11,7 @@ import java.util.Random;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
@@ -36,12 +37,9 @@ public class DefaultBoard implements Board, Cloneable {
   /**
    * The constructor that provide the necessary seed information.
    *
-   * @param width
-   *          The width of the board.
-   * @param height
-   *          Th height of the board.
-   * @param bombCount
-   *          The number of bombs on the board.
+   * @param width The width of the board.
+   * @param height Th height of the board.
+   * @param bombCount The number of bombs on the board.
    */
   public DefaultBoard(int width, int height, int bombCount) {
     this.width = width;
@@ -54,8 +52,7 @@ public class DefaultBoard implements Board, Cloneable {
    * This board constructor allows you to specify the grid. You may find it
    * useful for testing.
    *
-   * @param grid
-   *          The grid that you get to specify.
+   * @param grid The grid that you get to specify.
    */
   public DefaultBoard(Tile[][] grid) {
     this.width = grid[0].length;
@@ -137,10 +134,8 @@ public class DefaultBoard implements Board, Cloneable {
   /**
    * Gets the tile at the specified point.
    *
-   * @param row
-   *          The specified row.
-   * @param col
-   *          The specified col.
+   * @param row The specified row.
+   * @param col The specified col.
    * @return The tile you want.
    */
   public Tile getTile(int row, int col) {
@@ -150,12 +145,9 @@ public class DefaultBoard implements Board, Cloneable {
   /**
    * Sets the tile at the specified row.
    *
-   * @param tile
-   *          The tile you want to swap.
-   * @param row
-   *          The row you wish to swap out.
-   * @param col
-   *          The col of the tile you wish to swap.
+   * @param tile The tile you want to swap.
+   * @param row The row you wish to swap out.
+   * @param col The col of the tile you wish to swap.
    */
   public void setTile(Tile tile, int row, int col) {
     grid[row][col] = tile;
@@ -165,10 +157,8 @@ public class DefaultBoard implements Board, Cloneable {
    * Gets the tile adjacent to the one at the speciifed row and col. NOTE: You
    * must override this method if you want to change the geometry of the board.
    *
-   * @param row
-   *          The row of tile you want.
-   * @param col
-   *          The col of the tile you want.
+   * @param row The row of tile you want.
+   * @param col The col of the tile you want.
    * @return a list of adjacent tiles.
    */
   public List<Tile> getAdjacentTiles(int row, int col) {
@@ -203,10 +193,10 @@ public class DefaultBoard implements Board, Cloneable {
           while (!tilesWithNoAdjacentBombs.isEmpty()) {
             candidate = tilesWithNoAdjacentBombs.pop();
             List<Tile> newCandidates =
-              this.getAdjacentTiles(candidate.getRow(), candidate.getColumn());
+                this.getAdjacentTiles(candidate.getRow(), candidate.getColumn());
             for (Tile neighbor : newCandidates) {
               if (!tilesToReveal.contains(neighbor)
-                && neighbor.getAdjacentBombs() == 0) {
+                  && neighbor.getAdjacentBombs() == 0) {
                 tilesWithNoAdjacentBombs.add(neighbor);
               }
             }
@@ -222,7 +212,7 @@ public class DefaultBoard implements Board, Cloneable {
                 newColumn = candidate.getColumn() + j;
                 if (isWithinBoard(newRow, newColumn)) {
                   grid[candidate.getRow() + i][candidate.getColumn() + j]
-                    .setVisited();
+                      .setVisited();
                 }
               }
             }
@@ -273,10 +263,8 @@ public class DefaultBoard implements Board, Cloneable {
   /**
    * Tells you if it's within the board.
    *
-   * @param x
-   *          The x position.
-   * @param y
-   *          The y position.
+   * @param x The x position.
+   * @param y The y position.
    * @return True if it's within th board, otherwise false.
    */
   public boolean isWithinBoard(final int x, final int y) {
@@ -310,5 +298,53 @@ public class DefaultBoard implements Board, Cloneable {
     }
     boardJson.add("tiles", tilesJson);
     return boardJson.toString();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + bombCount;
+    result = prime * result + Arrays.hashCode(grid);
+    result = prime * result + height;
+    result = prime * result + width;
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof DefaultBoard)) {
+      return false;
+    }
+    DefaultBoard other = (DefaultBoard) obj;
+    if (bombCount != other.bombCount) {
+      return false;
+    }
+    if (!Arrays.deepEquals(grid, other.grid)) {
+      return false;
+    }
+    if (height != other.height) {
+      return false;
+    }
+    if (width != other.width) {
+      return false;
+    }
+    return true;
   }
 }

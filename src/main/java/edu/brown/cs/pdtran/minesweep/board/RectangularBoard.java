@@ -51,10 +51,13 @@ public class RectangularBoard extends DefaultBoard implements Board {
       List<Tile> candidateList =
           super
           .getAdjacentTiles(row, col)
-          .stream()
-          .filter(
-              (t) -> (t.getColumn() == col || t.getRow() == row)
-              && !t.isBomb()).collect(Collectors.toList());
+              .stream()
+              .filter(
+                  (t) -> (t.getColumn() == col || t.getRow() == row)
+                      && !t.isBomb()).collect(Collectors.toList());
+      if (candidateList.isEmpty()) {
+        continue;
+      }
       Tile randomTile =
           candidateList.get((int) (Math.random() * candidateList.size()));
       assert (!randomTile.isBomb());
@@ -85,5 +88,7 @@ public class RectangularBoard extends DefaultBoard implements Board {
       return super.getAdjacentTiles(row, col);
     }
   }
+
+
 
 }
