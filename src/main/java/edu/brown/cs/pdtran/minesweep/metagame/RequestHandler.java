@@ -1,27 +1,31 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
-import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import java.util.concurrent.ConcurrentMap;
 
 public class RequestHandler {
 
-  private Map<String, Boolean> userIds;
-  private Map<Session, String> sessions;
-  private Map<String, RoomSession> rooms;
-  private Map<String, GameSession> games;
+  private ConcurrentMap<String, Boolean> userIds;
+  private ConcurrentMap<String, RoomSession> rooms;
+  private ConcurrentMap<String, GameSession> games;
 
-  public RequestHandler() {
+  public RequestHandler(int port) throws IOException {
     userIds = new ConcurrentHashMap<String, Boolean>();
-    sessions = new ConcurrentHashMap<Session, Boolean>();
     rooms = new ConcurrentHashMap<String, RoomSession>();
     games = new ConcurrentHashMap<String, GameSession>();
   }
 
-  public Map<Session, String> getRooms() {
-    return sessions;
+  public List<Map.Entry<String, ? extends Session>> getRooms() {
+    List<Map.Entry<String, ? extends Session>> entries =
+      new ArrayList<Map.Entry<String, ? extends Session>>();
+    entries.addAll(rooms.entrySet());
+    entries.addAll(games.entrySet());
+    return entries;
   }
 
   public RoomSession getRoom(String id) {
@@ -32,7 +36,7 @@ public class RequestHandler {
     return games.get(id);
   }
 
-  private static <T> String addAndGetKey(Map<String, T> map, T value) {
+  private static <T> String addAndGetKey(ConcurrentMap<String, T> map, T value) {
     while (true) {
       String id = UUID.randomUUID().toString();
       T previous = map.putIfAbsent(id, value);
@@ -42,8 +46,14 @@ public class RequestHandler {
     }
   }
 
-  public String addRoom(PreRoom room) {
-    return addAndGetKey(rooms, room);
+  public void convert(String id) {
+    RoomSession room = rooms.get(id);
+    rooms.remove(id, room);
+    games.put(id, new GameSession(room));
+  }
+
+  public String addRoom(RoomSession session) {
+    return addAndGetKey(rooms, session);
   }
 
   public String getUserId() {

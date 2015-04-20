@@ -6,7 +6,7 @@ function getGames() {
     
         var response = JSON.parse(responseJSON);
         $.each(response, function(index, roomInfo) {
-            roomList[roomList.length] = value.roomId;
+            roomList[roomList.length] = roomInfo.roomId;
         });
         
         var listHtml = document.getElementById("responseHolder").innerHTML;
