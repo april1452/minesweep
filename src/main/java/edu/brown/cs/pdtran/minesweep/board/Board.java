@@ -1,6 +1,5 @@
 package edu.brown.cs.pdtran.minesweep.board;
 
-
 /**
  * This is an interface for a standard board.
  *
@@ -61,5 +60,5 @@ public interface Board extends Cloneable {
    */
   int getWidth();
 
-  // Tile getTile();
+  String toJson();
 }

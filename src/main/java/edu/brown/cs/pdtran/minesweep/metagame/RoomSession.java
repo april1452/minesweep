@@ -1,10 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import edu.brown.cs.pdtran.minesweep.metagame.RoomInfo.SessionType;
 import edu.brown.cs.pdtran.minesweep.setup.Gamer;
@@ -14,11 +11,9 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 public class RoomSession implements Session {
 
   private PreRoom room;
-  private Map<String, Socket> connections;
 
   public RoomSession(PreRoom room) {
     this.room = room;
-    connections = new ConcurrentHashMap<String, Socket>();
   }
 
   @Override
@@ -30,8 +25,8 @@ public class RoomSession implements Session {
         playerNames.add(gamer.getUserName());
       }
     }
-    return new RoomInfo(SessionType.SETUP, room.getGameSpecs().getMode(),
-      playerNames);
+    return new RoomInfo(room.getRoomName(), SessionType.SETUP, room
+      .getGameSpecs().getMode(), playerNames);
   }
 
   public PreRoom getRoom() {

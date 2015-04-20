@@ -1,5 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.routes;
 
+import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
+import edu.brown.cs.pdtran.minesweep.metagame.RoomSession;
 import edu.brown.cs.pdtran.minesweep.options.BoardType;
 import edu.brown.cs.pdtran.minesweep.options.GameMode;
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
@@ -11,6 +13,12 @@ import spark.Response;
 import spark.Route;
 
 public class CreateRoomRoute implements Route {
+
+  private RequestHandler handler;
+
+  public CreateRoomRoute(RequestHandler handler) {
+    this.handler = handler;
+  }
 
   @Override
   public Object handle(Request req, Response res) {
@@ -30,8 +38,14 @@ public class CreateRoomRoute implements Route {
     GameSpecs specs =
       new GameSpecs(gameMode, 2, 2, 2, 1, BoardType.DEFAULT, boardDims);
 
-    PreRoom room =
-      Setup.setup("TEMP", req.cookie("minesweepId"), "TEMP", specs);
+    PreRoom room = Setup.setup("TEMP", specs);
 
+    RoomSession session = new RoomSession(room);
+
+    String roomId = handler.addRoom(session);
+
+    res.cookie("minesweepRoomId", roomId);
+
+    return "";
   }
 }

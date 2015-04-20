@@ -3,9 +3,13 @@ package edu.brown.cs.pdtran.minesweep.metagame;
 import java.io.File;
 import java.io.IOException;
 
+import edu.brown.cs.pdtran.minesweep.routes.AddPlayerRoute;
+import edu.brown.cs.pdtran.minesweep.routes.CreateRoomRoute;
 import edu.brown.cs.pdtran.minesweep.routes.GamesRoute;
 import edu.brown.cs.pdtran.minesweep.routes.HomeRoute;
+import edu.brown.cs.pdtran.minesweep.routes.RoomHandler;
 import edu.brown.cs.pdtran.minesweep.routes.SetupHandler;
+import edu.brown.cs.pdtran.minesweep.routes.UpdateRoomRoute;
 import freemarker.template.Configuration;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
@@ -15,8 +19,8 @@ public class Metagame {
   private static final String FREEMARKER_LOCATION =
     "src/main/resources/spark/template/freemarker";
 
-  public Metagame(int port) {
-    RequestHandler handler = new RequestHandler();
+  public Metagame(int port) throws IOException {
+    RequestHandler handler = new RequestHandler(port + 1);
 
     Spark.setPort(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
@@ -24,7 +28,10 @@ public class Metagame {
     Spark.get("/", new HomeRoute(handler), engine);
     Spark.get("/games", new GamesRoute(handler));
     Spark.get("/setup", new SetupHandler(handler), engine);
-    // Spark.get("/room/:roomId", new ResultsHandler(engine));
+    Spark.post("/create", new CreateRoomRoute(handler));
+    Spark.get("/room", new RoomHandler(handler), engine);
+    Spark.post("/roomAdd", new AddPlayerRoute(handler));
+    Spark.get("/roomUpdate", new UpdateRoomRoute(handler));
     // Spark.get("/game/:gameId", new GameHandler(engine), new
     // FreeMarkerEngine());
   }

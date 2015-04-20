@@ -1,9 +1,11 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PreRoom {
   private String roomName;
+  private List<String> humanIds;
   private GameSpecs specs;
   private List<TeamFormation> teams;
 
@@ -17,12 +19,17 @@ public class PreRoom {
    */
   public PreRoom(String roomName, GameSpecs specs, List<TeamFormation> teams) {
     this.roomName = roomName;
+    humanIds = new ArrayList<String>();
     this.specs = specs;
     this.teams = teams;
   }
 
   public String getRoomName() {
     return roomName;
+  }
+
+  public List<String> getHumanIds() {
+    return humanIds;
   }
 
   /**
@@ -41,5 +48,17 @@ public class PreRoom {
    */
   public List<TeamFormation> getAllTeams() {
     return teams;
+  }
+
+  // this isnt concurrent yet
+  public void addGamer(String id, String name) {
+    humanIds.add(id);
+    for (TeamFormation team : teams) {
+      List<Gamer> teamGamers = team.getGamers();
+      if (teamGamers.size() < specs.getNumTeamPlayers()) {
+        teamGamers.add(new HumanGamer(id, name));
+        return;
+      }
+    }
   }
 }

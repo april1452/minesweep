@@ -21,16 +21,11 @@ public class Setup {
    *          String URL representing game specifications
    * @return Room representing game specifications
    */
-  public static PreRoom setup(String roomName, String hostId, String hostName,
-    GameSpecs specs) {
-    // Host will always be 1st player on 1st team
+  public static PreRoom setup(String roomName, GameSpecs specs) {
     List<TeamFormation> teams = new ArrayList<TeamFormation>();
 
     for (int i = 0; i < specs.getNumTeams(); i++) {
       List<Gamer> gamers = new ArrayList<Gamer>();
-      if (i == 0) {
-        gamers.add(new HumanGamer(hostId, hostName));
-      }
       TeamFormation team = new TeamFormation(gamers, specs.getTeamLives());
       teams.add(team);
     }

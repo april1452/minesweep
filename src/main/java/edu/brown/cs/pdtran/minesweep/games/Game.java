@@ -7,8 +7,8 @@ public interface Game {
 
   public int getGameScore(Player player);
 
-  public void makeMove(Move m);
+  public void makeMove(int team, Move m);
 
-  public boolean play(Player player, Move m);
+  public boolean play(int team, Move m);
 
 }
