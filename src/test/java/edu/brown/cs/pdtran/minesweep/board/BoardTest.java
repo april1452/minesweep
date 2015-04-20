@@ -87,9 +87,6 @@ public class BoardTest {
     checkLoss(board);
   }
 
-  /**
-   * @param board
-   */
   private void checkLoss(DefaultBoard board) {
     Tile t = findBomb(board);
     board.makeMove(t.getRow(), t.getColumn());
@@ -110,6 +107,31 @@ public class BoardTest {
     checkLoss(board);
   }
 
+  @Test
+  public void invalidMove() {
+    DefaultBoard board = new DefaultBoard();
+    checkInvalidMove(board);
+  }
+
+  @Test
+  public void invalidMoveRect() {
+    DefaultBoard board = new RectangularBoard();
+    checkInvalidMove(board);
+  }
+
+  @Test
+  public void invalidMoveTri() {
+    DefaultBoard board = new TriangularBoard();
+    checkInvalidMove(board);
+  }
+
+  private void checkInvalidMove(DefaultBoard board) {
+    board.makeMove(-1, -1);
+    board.makeMove(board.getWidth() * 2, board.getHeight() * 2);
+    assertFalse(board.isWithinBoard(-1, -1));
+    assertFalse(board
+        .isWithinBoard(board.getWidth() + 1, board.getHeight() + 1));
+  }
 
   private Tile findBomb(DefaultBoard board) {
     for (int i = 0; i < board.getHeight(); i++) {

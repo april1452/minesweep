@@ -2,12 +2,14 @@ package edu.brown.cs.pdtran.minesweep.routes;
 
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
-import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 import spark.TemplateViewRoute;
+
+import com.google.common.collect.ImmutableMap;
+
+import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 
 public class SetupHandler implements TemplateViewRoute {
 
@@ -19,7 +21,7 @@ public class SetupHandler implements TemplateViewRoute {
 
   @Override
   public ModelAndView handle(Request req, Response res) {
-    Map<String, Object> variables = ImmutableMap.of("title", "Minesweep");
+    Map<String, Object> variables = ImmutableMap.of("title", "Minesweep+");
 
     return new ModelAndView(variables, "setup.ftl");
   }

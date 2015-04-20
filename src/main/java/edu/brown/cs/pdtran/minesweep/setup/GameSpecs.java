@@ -22,24 +22,19 @@ public class GameSpecs {
   /**
    * Create game specifications.
    *
-   * @param mode
-   *          game mode (c, fsu, lay, path, terr)
-   * @param matches
-   *          number of matches/rounds to be played
-   * @param shape
-   *          board shape
-   * @param dims
-   *          board dimensions
+   * @param mode game mode (c, fsu, lay, path, terr)
+   * @param matches number of matches/rounds to be played
+   * @param shape board shape
+   * @param dims board dimensions
    */
-  public GameSpecs(GameMode mode, int numTeams, int numTeamPlayers,
-    int teamLives, int numMatches, BoardType boardType, int[] boardDims) {
+  public GameSpecs(GameMode mode, int matches, BoardType shape, int[] dims) {
     this.mode = mode;
-    this.numTeams = numTeams;
-    this.numTeamPlayers = numTeamPlayers;
-    this.teamLives = teamLives;
-    this.numMatches = numMatches;
-    this.boardType = boardType;
-    this.boardDims = boardDims;
+    // this.numTeams = numTeams;
+    // this.numTeamPlayers = numTeamPlayers;
+    // this.teamLives = teamLives;
+    this.numMatches = matches;
+    this.boardType = shape;
+    this.boardDims = dims;
   }
 
   public int getTeamLives() {

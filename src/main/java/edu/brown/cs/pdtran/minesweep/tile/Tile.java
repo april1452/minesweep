@@ -121,4 +121,56 @@ public class Tile {
     return "Tile [isBomb=" + isBomb + ", adjacentBombs=" + adjacentBombs
       + ", visited=" + visited + ", row=" + row + ", column=" + column + "]";
   }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + adjacentBombs;
+    result = prime * result + column;
+    result = prime * result + (isBomb ? 1231 : 1237);
+    result = prime * result + row;
+    result = prime * result + (visited ? 1231 : 1237);
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof Tile)) {
+      return false;
+    }
+    Tile other = (Tile) obj;
+    if (adjacentBombs != other.adjacentBombs) {
+      return false;
+    }
+    if (column != other.column) {
+      return false;
+    }
+    if (isBomb != other.isBomb) {
+      return false;
+    }
+    if (row != other.row) {
+      return false;
+    }
+    if (visited != other.visited) {
+      return false;
+    }
+    return true;
+  }
 }
