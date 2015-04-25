@@ -1,8 +1,9 @@
 $("#createGame").submit(function(event) {
     event.preventDefault();
     var postParameters = {
-        gameMode: $("#gameMode").val()
+        gameMode: $("input[name='gameMode']:checked").val()
     };
+    console.log(postParameters)
 	$.post("/create", postParameters, function(responseJSON) {
 	   window.location.href = "/room";
 	});

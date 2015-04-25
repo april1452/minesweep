@@ -36,7 +36,7 @@ public class CreateRoomRoute implements Route {
     // HARDCODED FOR NOW
     int[] boardDims = { 10, 10 };
     GameSpecs specs =
-      new GameSpecs(gameMode, 2, 2, 2, 1, BoardType.DEFAULT, boardDims);
+      new GameSpecs(gameMode, 1, BoardType.DEFAULT, boardDims);
 
     PreRoom room = Setup.setup("TEMP", specs);
 

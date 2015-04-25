@@ -29,9 +29,9 @@ public class GameSpecs {
    */
   public GameSpecs(GameMode mode, int matches, BoardType shape, int[] dims) {
     this.mode = mode;
-    // this.numTeams = numTeams;
-    // this.numTeamPlayers = numTeamPlayers;
-    // this.teamLives = teamLives;
+    this.numTeams = 2;
+    this.numTeamPlayers = 3;
+    this.teamLives = 2;
     this.numMatches = matches;
     this.boardType = shape;
     this.boardDims = dims;
