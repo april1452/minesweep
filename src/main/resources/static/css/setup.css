@@ -1,0 +1,21 @@
+div#form {
+	float: left; 
+}
+
+div#info {
+	float: left;
+	padding-left: 200px;
+}
+
+input[type="radio"] {
+	margin-left: 10px;
+}
+
+input[type="number"] {
+	margin-left: 5px;
+	width: 80px;
+}
+
+p[class="label"] {
+	margin-left: 10px;
+}
