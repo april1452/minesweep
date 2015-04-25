@@ -353,4 +353,8 @@ public class DefaultBoard implements Board, Cloneable {
     }
     return true;
   }
+  
+  public int getBombCount() {
+    return bombCount;
+  }
 }

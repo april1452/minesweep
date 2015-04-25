@@ -116,6 +116,23 @@ public class AIPlayer implements Player {
     List<MineBlock> blocks = new ArrayList<>();
     int width = board.getWidth();
     int height = board.getHeight();
+
+    // Creates a MineBlock for all undiscovered mines.
+    Set<Tile> undiscovered = new HashSet<>();
+    int bombCount = board.getBombCount();
+    for (int w = 0; w < width; w++) {
+      for (int h = 0; h < height; h++) {
+        Tile currentTile = board.getTile(h, w);
+        if (!currentTile.hasBeenVisited()) {
+          undiscovered.add(currentTile);
+        } else if (currentTile.isBomb()) {
+          bombCount--;
+        }
+      }
+    }
+    blocks.add(new MineBlock(undiscovered, bombCount));
+
+    // Creates a MineBlock for every discovered tile with neighboring mines
     for (int w = 0; w < width; w++) {
       for (int h = 0; h < height; h++) {
         Tile currentTile = board.getTile(h, w);
@@ -125,43 +142,37 @@ public class AIPlayer implements Player {
           MineBlock mb1 =
               blockFromTile(currentTile.getAdjacentBombs(),
                   board.getAdjacentTiles(h, w));
-          
-          System.out.println(mb1.getNumMines());
+          /*System.out.println(mb1.getNumMines());
           for (Tile adj: mb1.getTiles()) {
             System.out.println(adj.getRow() + " " + adj.getColumn());
           }
-          System.out.println(" ");
-          
+          System.out.println(" ");*/          
           Boolean needsCheck = true;
           while (needsCheck == true) {
             needsCheck = false;
             MineBlock remove = null;
             for (MineBlock mb2: blocks) {
               if (mb2.contains(mb1)) {
-                mb2.subtract(mb1);
-                
-                System.out.println("Subtract FROM");
+                mb2.subtract(mb1);                
+                /*System.out.println("Subtract FROM");
                 System.out.println(mb2.getNumMines());
                 for (Tile adj: mb2.getTiles()) {
                   System.out.println(adj.getRow() + " " + adj.getColumn());
                 }
-                System.out.println(" ");
-                
+                System.out.println(" ");*/                
                 needsCheck = true;
                 if (mb2.getTiles().isEmpty()) {
                   remove = mb2;
                   break;
                 }
               } else if (mb1.contains(mb2)) {
-                mb1.subtract(mb2);
-                
-                System.out.println("Subtract");
+                mb1.subtract(mb2);               
+                /*System.out.println("Subtract");
                 System.out.println(mb1.getNumMines());
                 for (Tile adj: mb1.getTiles()) {
                   System.out.println(adj.getRow() + " " + adj.getColumn());
                 }
-                System.out.println(" ");
-                
+                System.out.println(" ");*/               
                 if (mb1.getTiles().isEmpty()) {
                   break;
                 }
@@ -174,6 +185,8 @@ public class AIPlayer implements Player {
         }
       }
     }
+
+    // Converts MineBlocks to MovePossibilities
     for (MineBlock mb: blocks) {
       /*System.out.println(mb.getNumMines());
       for (Tile adj: mb.getTiles()) {
