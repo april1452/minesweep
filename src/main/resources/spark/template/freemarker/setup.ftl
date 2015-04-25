@@ -13,17 +13,30 @@
                 <input type="radio" name="gameMode" value="classic" checked>Classic
                 <input type="radio" name="gameMode" value="layers">Layers
                 <input type="radio" name="gameMode" value="territory">Territory
+                <input type="radio" name="gameMode" value="paths">Paths
+                <input type="radio" name="gameMode" value="fsu">F.S.U.
                 <br>
 
                 Board shape:<br>
-                <input type="radio" name="boardShape" value="default" checked>Default
                 <input type="radio" name="boardShape" value="rectangle">Rectangle
                 <input type="radio" name="boardShape" value="triangle">Triangle
                 <br>
 
                 Dimensions:<br>
-                <input type="number" name="width" placeholder="Width"> x
+                <input type="number" name="width" placeholder="Width">
                 <input type="number" name="height" placeholder="Height">
+                <br>
+
+                Number of teams:<br>
+                <input type="number" name="teams">
+                <br>
+
+                Players per team:<br>
+                <input type="number" name="players">
+                <br>
+
+                Lives per team:<br>
+                <input type="number" name="lives">
                 <br>
 
                 <input type="submit" value="Host Game">
