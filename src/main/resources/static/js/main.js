@@ -32,13 +32,16 @@ function getGames() {
                 var node = document.createElement("LI");
                 var textnode = document.createTextNode(roomInfo.gameMode + ": " + numPlayer + " players");
                 node.appendChild(textnode);
+                node.setAttribute("id", "gameTitle");
                 document.getElementById("gamesList").appendChild(node);
 
                 var box = document.createElement("DIV");
                 box.id = roomInfo.roomId;
 
-                var moreInfo = document.createTextNode("Text to come...");
-                box.appendChild(moreInfo);
+                var name = document.createTextNode(roomInfo.roomName);
+                box.appendChild(name);
+
+                box.appendChild(document.createElement("BR"));
 
                 var button = document.createElement("input");
                 button.setAttribute("type", "submit");
