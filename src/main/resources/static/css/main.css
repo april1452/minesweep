@@ -1,0 +1,18 @@
+li {
+	width: 150px;
+    padding: 5px;
+    background-color: navy;
+    margin: 2px;
+    color: white;
+    list-style-type: none;
+    border-radius: 10px;
+}
+
+ul {
+	float:left;
+	width:500px;
+}
+
+form {
+	float:right;
+}

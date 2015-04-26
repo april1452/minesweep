@@ -3,8 +3,11 @@
         <head>
             <meta charset="utf-8">
             <title>${title}</title>  
+            <link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
             <link rel="stylesheet" href="/css/normalize.css">
             <link rel="stylesheet" href="/css/html5bp.css">
+            <link rel="stylesheet" href="/css/all.css">
+            <link rel="stylesheet" href="/css/main.css">
         </head>
         
         <body>    
