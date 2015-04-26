@@ -11,21 +11,22 @@ import java.util.concurrent.ConcurrentMap;
 public class RequestHandler {
 
   private ConcurrentMap<String, Boolean> userIds;
-  private ConcurrentMap<String, RoomSession> rooms;
-  private ConcurrentMap<String, GameSession> games;
+  private ConcurrentMap<String, Session> sessions;
 
   public RequestHandler() throws IOException {
     userIds = new ConcurrentHashMap<String, Boolean>();
-    rooms = new ConcurrentHashMap<String, RoomSession>();
-    games = new ConcurrentHashMap<String, GameSession>();
+    sessions = new ConcurrentHashMap<String, Session>();
   }
 
   public List<Map.Entry<String, ? extends Session>> getRooms() {
     List<Map.Entry<String, ? extends Session>> entries =
       new ArrayList<Map.Entry<String, ? extends Session>>();
-    entries.addAll(rooms.entrySet());
-    entries.addAll(games.entrySet());
+    entries.addAll(sessions.entrySet());
     return entries;
+  }
+
+  public boolean joinIf(String sessionId, String userId) {
+    if(sessions.putIfAbsent(sessionId, new RoomSession())
   }
 
   public RoomSession getRoom(String id) {
@@ -35,6 +36,8 @@ public class RequestHandler {
   public GameSession getGame(String id) {
     return games.get(id);
   }
+
+  publ
 
   private static <T> String addAndGetKey(ConcurrentMap<String, T> map, T value) {
     while (true) {

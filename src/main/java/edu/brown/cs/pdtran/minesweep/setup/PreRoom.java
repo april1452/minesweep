@@ -2,12 +2,17 @@ package edu.brown.cs.pdtran.minesweep.setup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class PreRoom {
-  private String roomName;
-  private List<String> humanIds;
+import edu.brown.cs.pdtran.minesweep.metagame.PlayerInfo;
+import edu.brown.cs.pdtran.minesweep.metagame.RoomInfo;
+import edu.brown.cs.pdtran.minesweep.metagame.Session;
+import edu.brown.cs.pdtran.minesweep.metagame.TeamInfo;
+import edu.brown.cs.pdtran.minesweep.options.PlayerType;
+import edu.brown.cs.pdtran.minesweep.options.SessionType;
+
+public class PreRoom extends Session {
   private GameSpecs specs;
-  private List<TeamFormation> teams;
 
   /**
    * Create a room that has been processed from the GUI. This room contains
@@ -17,19 +22,14 @@ public class PreRoom {
    * @param specs
    * @param teams
    */
-  public PreRoom(String roomName, GameSpecs specs, List<TeamFormation> teams) {
-    this.roomName = roomName;
-    humanIds = new ArrayList<String>();
+  public PreRoom(String roomName, GameSpecs specs) {
+    this.name = roomName;
     this.specs = specs;
-    this.teams = teams;
+    teams = new ConcurrentHashMap<String, TeamFormation>();
   }
 
   public String getRoomName() {
     return roomName;
-  }
-
-  public List<String> getHumanIds() {
-    return humanIds;
   }
 
   /**
@@ -41,18 +41,8 @@ public class PreRoom {
     return specs;
   }
 
-  /**
-   * Return list of all preformed teams.
-   *
-   * @return list of teams where each team is a TeamFormation object
-   */
-  public List<TeamFormation> getAllTeams() {
-    return teams;
-  }
-
   // this isnt concurrent yet
   public int addGamer(String id, String name) {
-    humanIds.add(id);
     for (int i = 0; i < specs.getNumTeamPlayers(); i++) {
       for (int j = 0; j < teams.size(); j++) {
         List<Gamer> teamGamers = teams.get(j).getGamers();
@@ -63,5 +53,21 @@ public class PreRoom {
       }
     }
     return 0;
+  }
+
+  @Override
+  public RoomInfo getRoomInfo() {
+    List<TeamInfo> teamsInfo = new ArrayList<TeamInfo>();
+    for (TeamFormation team : teams.values()) {
+      List<Gamer> gamers = team.getGamers();
+      List<PlayerInfo> players = new ArrayList<PlayerInfo>();
+      for (Gamer gamer : gamers) {
+        players.add(new PlayerInfo(gamer.getUserName(), PlayerType.HUMAN)); // CHANGE
+        // THIS
+        // EVENTUALLY
+      }
+      teamsInfo.add(new TeamInfo("TEMPORARY TEAM", players));
+    }
+    return new RoomInfo(roomName, SessionType.SETUP, specs.getMode(), teamsInfo);
   }
 }
