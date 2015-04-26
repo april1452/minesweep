@@ -4,6 +4,7 @@ getGames();
 
 var clicked;
 var currentForm;// = document.createElement("form");
+var currentButton;
 
 function updateLoop() {
     window.setInterval("getGames()", 500);
@@ -20,7 +21,7 @@ function getGames() {
             //document.write("<div id='room'><p>" + roomInfo.gameMode + "</p></div>");
             /*if(roomInfo.sessionType === "setup") {
                 gameOptions += "<option value=\"" + roomInfo.roomId + "\">A Game</option>";
-            }*/         
+            }*/
             var numPlayer = 0;
             $.each(roomInfo.teams, function(index, team) {
                 $.each(team.players, function(index, player) {
@@ -39,18 +40,21 @@ function getGames() {
                 var moreInfo = document.createTextNode("Text to come...");
                 box.appendChild(moreInfo);
 
-                var form = document.createElement("form");
-                form.id = "joinForm";
-
-                var button = document.createElement("INPUT");
+                var button = document.createElement("input");
                 button.setAttribute("type", "submit");
                 button.setAttribute("value", "Join Game");
                 button.setAttribute("id", roomInfo.roomId);
-                form.appendChild(button);
-                box.appendChild(form);
+                box.appendChild(button);
+                button.onclick = function() {
+                    console.log("Hello");
+                    event.preventDefault();
+                    document.cookie = "minesweepRoomId=" + this.id;
+                    window.location.href = "/room";
+                }
+                //class gameButton = button;
 
                 if(clicked != roomInfo.roomId) {
-                  box.style.visibility = "hidden";
+                  box.style.display = "none";
                 }
                 node.appendChild(box);
             }
@@ -72,16 +76,23 @@ document.getElementById("gamesList").addEventListener("click",function(e) {
          clicked = e.toElement.childNodes[1].id;
          //console.log(clicked);
          //console.log(e.toElement);
-         currentForm = e.toElement.childNodes[1].childNodes[1];
-         console.log(currentForm);
-         console.log(document.getElementById("joinForm"));
-         e.toElement.childNodes[1].style.visibility = "visible";
+         currentButton = e.toElement.childNodes[1].childNodes[1];
+         console.log(currentButton);
+         //console.log(document.getElementById("joinForm"));
+         e.toElement.childNodes[1].style.display = "block";
     }
 });
 
-document.getElementById("joinForm").submit(function(event) {
+/*document.getElementById("joinForm").submit(function(event) {
     console.log("Here we go!");
     event.preventDefault();
     document.cookie = "minesweepRoomId=" + currentForm.childNodes[0].id;
+    window.location.href = "/room";
+});*/
+
+$("[value='Join Game']").click(function() {
+    console.log("Hello");
+    //event.preventDefault();
+    document.cookie = "minesweepRoomId=" + this.getId();
     window.location.href = "/room";
 });

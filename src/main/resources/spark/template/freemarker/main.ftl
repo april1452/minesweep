@@ -9,12 +9,12 @@
         
         <body>    
             <p> Existing Rooms: </p>
-            <form id="joinGame">
+            <!--<form id="joinGame">
                 Game mode: 
                 <select id="gameId">
                 </select>
                 <input type="submit" value="Join Game">
-            </form>
+            </form>-->
             <div id="games">
                 <ul id="gamesList">
                 </ul>
