@@ -14,7 +14,7 @@ public class HumanPlayerTest {
    * the characteristics expected of the Gamer, like username.
    */
   public void newHumanTest() {
-    HumanGamer myGamer = new HumanGamer("Clay");
+    HumanGamer myGamer = new HumanGamer("id", "Clay");
     HumanPlayer myPlayer = new HumanPlayer(myGamer);
     assertTrue(myGamer.getUserName().equals(myPlayer.getUsername()));
   }
