@@ -1,4 +1,4 @@
-$("#createGame").submit(function(event) {
+$("#create").submit(function(event) {
     event.preventDefault();
     var postParameters = {
         gameMode: $("input[name='gameMode']:checked").val()
@@ -8,3 +8,34 @@ $("#createGame").submit(function(event) {
 	   window.location.href = "/room";
 	});
 });
+
+$("[name='gameMode']").click(function() {
+	hideInfo();
+	var mode = this.getAttribute("value");
+	switch(mode) {
+		case "classic":
+			$("#classic").show();
+			break;
+		case "layers":
+			$("#layers").show();
+			break;
+		case "territory":
+			$("#territory").show();
+			break;
+		case "paths":
+			$("#paths").show();
+			break;
+		case "fsu":
+			$("#fsu").show();
+			break;
+	}
+});
+
+function hideInfo() {
+	$("#classic").hide();
+	$("#layers").hide();
+	$("#territory").hide();
+	$("#paths").hide();
+	$("#fsu").hide();
+}
+
