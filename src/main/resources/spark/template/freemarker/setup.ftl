@@ -11,9 +11,14 @@
 </head>
     
 <body>
+    <center><h1>minesweep+</h1></center>
     <div id="form">
     <form id="createGame">
-        <h3>Gameplay</h3>
+        <h3>Game name</h3>
+        <input type="text" name="gameName" placeholder="Insert game name here">
+        <br><br>
+
+        <h3>Play mode</h3>
         <input type="radio" name="gameMode" value="classic" checked>Classic
         <input type="radio" name="gameMode" value="layers">Layers
         <input type="radio" name="gameMode" value="territory">Territory
@@ -24,7 +29,7 @@
         <br>
 
         <h3>Board</h3>
-        <input type="radio" name="boardShape" value="rectangle">Rectangle
+        <input type="radio" name="boardShape" value="rectangle" checked>Rectangle
         <input type="radio" name="boardShape" value="triangle">Triangle
         <br>
         <p class="label">Dimensions:
@@ -38,12 +43,32 @@
         <p class="label">Players per team: 
         <input type="number" name="players"></p>
         <br>
-        <input type="submit" value="Host Game">
+        <input type="submit" id="create" value="Host Game">
     </form>
     </div>
 
     <div id="info">
-        Column 2
+        <div id="classic">
+            <h3>Classic Mode</h3>
+            
+        </div>
+        <div id="layers" style="display: none">
+            <h3>Layers Mode</h3>
+            
+        </div>
+        <div id="territory" style="display: none">
+            <h3>Territory Mode</h3>
+            
+        </div>
+        <div id="paths" style="display: none">
+            <h3>Paths Mode</h3>
+            
+        </div>
+        <div id="fsu" style="display: none">
+            <h3>F.S.U. Mode</h3>
+            
+        </div>
+
     </div>
 
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>

@@ -1,10 +1,19 @@
 div#form {
 	float: left; 
+	background-color: #f5f5f5;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+	border-radius: 10px;
 }
 
 div#info {
 	float: left;
-	padding-left: 200px;
+	padding-left: 100px;
+}
+
+input[name="gameName"] {
+	width: 200px;
 }
 
 input[type="radio"] {
@@ -14,6 +23,18 @@ input[type="radio"] {
 input[type="number"] {
 	margin-left: 5px;
 	width: 80px;
+}
+
+input[type="submit"] {
+	font-size: 14pt;
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	background-color: #419bf9;
+	color: white;
+	border-radius: 16px;
+	border: none;
 }
 
 p[class="label"] {

@@ -2,8 +2,6 @@ package edu.brown.cs.pdtran.minesweep.player;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -94,7 +92,7 @@ public class AIPlayerTest {
     MovePossibility mpD2 = new MovePossibility(d2, 0);
     MovePossibility mpD3 = new MovePossibility(d3, .5);
     MovePossibility mpD4 = new MovePossibility(d4, .5);
-    for (MovePossibility m: p.getCertainMine()) {
+    /*for (MovePossibility m: p.getCertainMine()) {
       System.out.println(m.getXCoord() + " " + m.getYCoord() + " " + m.getMineProbability());
     }
     for (MovePossibility m: p.getCertainNotMine()) {
@@ -102,7 +100,7 @@ public class AIPlayerTest {
     }
     for (MovePossibility m: p.getUncertain()) {
       System.out.println(m.getXCoord() + " " + m.getYCoord() + " " + m.getMineProbability());
-    }
+    }*/
     assertTrue(p.getCertainMine().contains(mpC1));
     assertTrue(p.getCertainMine().contains(mpC2));
     assertTrue(p.getCertainNotMine().contains(mpD2));
