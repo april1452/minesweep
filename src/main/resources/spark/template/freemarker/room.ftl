@@ -19,4 +19,5 @@
         
         <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
         <script src="../js/room.js"></script>
+        <script src="../js/js.cookie.js"></script>
     </html>

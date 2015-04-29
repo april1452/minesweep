@@ -1,24 +1,31 @@
 package edu.brown.cs.pdtran.minesweep.games;
 
-import edu.brown.cs.pdtran.minesweep.player.Move;
-import edu.brown.cs.pdtran.minesweep.player.Player;
-import edu.brown.cs.pdtran.minesweep.player.Team;
+import java.util.concurrent.ConcurrentMap;
 
-public class ClassicGame implements Game {
+import edu.brown.cs.pdtran.minesweep.metagame.Team;
+import edu.brown.cs.pdtran.minesweep.options.SessionType;
+import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
+import edu.brown.cs.pdtran.minesweep.player.Move;
+import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
+import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
+
+public class ClassicGame extends Game {
 
   private long startTime;
-  private Team[] teams;
+  private ConcurrentMap<String, PlayerTeam> teams;
   private int turn;
 
-  public ClassicGame(Team[] teams) {
-    startTime = System.currentTimeMillis();
+  public ClassicGame(String name, GameSpecs specs,
+    ConcurrentMap<String, PlayerTeam> teams) {
+    super(name, specs);
     this.teams = teams;
+    startTime = System.currentTimeMillis();
     this.turn = 0;
   }
 
   @Override
-  public void makeMove(int teamNumber, Move m) {
-    teams[teamNumber].getBoard().makeMove(m.getYCoord(), m.getXCoord());
+  public void makeMove(String teamId, Move m) {
+    teams.get(teamId).getBoard().makeMove(m.getYCoord(), m.getXCoord());
   }
 
   /**
@@ -34,7 +41,7 @@ public class ClassicGame implements Game {
    */
   @Override
   public boolean play(int teamNumber, Move m) {
-    makeMove(teamNumber, m);
+    makeMove("do something later", m);
     long endTime = System.currentTimeMillis();
     int score = (int) (endTime - startTime);
     // if (gameBoard.isGameOver()) {
@@ -48,15 +55,21 @@ public class ClassicGame implements Game {
    * @return This will calculate how many moves are left.
    */
   @Override
-  public int getGameScore(Player player) {
+  public int getGameScore(GamePlayer player) {
     int score = (int) (System.currentTimeMillis() - startTime);
     score = score / 1000; // Number of seconds
     return score;
   }
 
   @Override
-  public Team[] getTeams() {
-    return teams;
+  public SessionType getSessionType() {
+    return SessionType.IN_GAME;
+  }
+
+  @Override
+  public ConcurrentMap<String, ? extends Team> getTeams() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

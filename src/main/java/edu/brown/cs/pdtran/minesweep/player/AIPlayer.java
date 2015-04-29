@@ -3,101 +3,49 @@ package edu.brown.cs.pdtran.minesweep.player;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.TreeSet;
 
-import edu.brown.cs.pdtran.minesweep.board.Board;
-import edu.brown.cs.pdtran.minesweep.board.DefaultBoard;
-import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
+import edu.brown.cs.pdtran.minesweep.options.PlayerType;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
- * This class represents the AI that controls what moves the AI makes and how
- * it releases those moves.
+ * This class represents the AI that controls what moves the AI makes and how it
+ * releases those moves.
+ *
  * @author Clayton Sanford
  *
  */
-public class AIPlayer implements Player {
+public class AIPlayer extends GamePlayer {
 
-  private String username;
-  private int score;
   private List<MovePossibility> certainMine;
   private List<MovePossibility> certainNotMine;
   private List<MovePossibility> uncertain;
   private int difficulty;
   private int moveTime;
   private double mistakeProbability;
-  private Boolean canPlay;
-  private DefaultBoard board;
-  
   private static final double BASE_TIME = 5;
   private static final double TIME_MULTIPLIER = 25;
   private static final int MAX_DIFFICULTY = 10;
   private static final double MISTAKE_MULTIPLIER = .01;
   private static final double FLAG_PROBABILITY = .3;
-  
+
   /**
-   * Creates an AIPlayer with a username and a difficulty. This version will
-   * be used primarily for testing.
-   * @param username A string unique to that player.
-   * @param difficulty An integer from 1 to 10 with 10 being the most
-   * difficult.
-   * @param board The Board object used by the AI to determine good moves to
-   * make.
+   * Creates an AIPlayer with a username and a difficulty. This version will be
+   * used primarily for testing.
+   *
+   * @param username
+   *          A string unique to that player.
+   * @param difficulty
+   *          An integer from 1 to 10 with 10 being the most difficult.
+   * @param board
+   *          The Board object used by the AI to determine good moves to make.
    */
-  public AIPlayer(String username, int difficulty, DefaultBoard board) {
-    this.username = username;
-    score = 0;
-    this.board = board;
-    generateMovePossibilities();
+  public AIPlayer(String username, int difficulty) {
+    super(username);
     this.difficulty = difficulty;
+    generateMovePossibilities();
     moveTime = (int) (BASE_TIME - difficulty * TIME_MULTIPLIER);
     mistakeProbability = (MAX_DIFFICULTY - difficulty) * MISTAKE_MULTIPLIER;
-  }
-  
-  /**
-   * Uses an AIGamer to produce an AIPlayer.
-   * @param g An AIGamer produced for the purpose of being used in only the
-   * game setup. The actual AIPlayer has the characteristics needed to make
-   * moves.
-   * @param board The Board object used by the AI to determine good moves to
-   * make.
-   */
-  public AIPlayer(AIGamer g, DefaultBoard board) {
-    username = g.getUserName();
-    score = 0;
-    generateMovePossibilities();
-    difficulty = g.getDifficulty();
-    this.board = board;
-  }
-
-  @Override
-  /**
-   * Gets the username corresponding to the player.
-   * @return A unique string for a player's username.
-   */
-  public String getUsername() {
-    return username;
-  }
-
-  @Override
-  /**
-   * Gets the score corresponding to the player.
-   * @return An integer representing the player's score.
-   */
-  public int getScore() {
-    return score;
-  }
-
-  @Override
-  /**
-   * Increments the score by an entered value.
-   * @param change An integer to be added to the score. Negative if points are
-   * to be lost.
-   */
-  public void changeScore(int change) {
-    score += change;
   }
 
   @Override
@@ -108,7 +56,7 @@ public class AIPlayer implements Player {
   public void makeMove(Move move) {
     // TODO Auto-generated method stub
   }
-  
+
   private void generateMovePossibilities() {
     certainMine = new ArrayList<>();
     certainNotMine = new ArrayList<>();
@@ -140,39 +88,39 @@ public class AIPlayer implements Player {
           List<Tile> adjacentTiles = board.getAdjacentTiles(h, w);
           adjacentTiles.remove(currentTile);
           MineBlock mb1 =
-              blockFromTile(currentTile.getAdjacentBombs(),
-                  board.getAdjacentTiles(h, w));
-          /*System.out.println(mb1.getNumMines());
-          for (Tile adj: mb1.getTiles()) {
-            System.out.println(adj.getRow() + " " + adj.getColumn());
-          }
-          System.out.println(" ");*/          
+            blockFromTile(currentTile.getAdjacentBombs(),
+              board.getAdjacentTiles(h, w));
+          /*
+           * System.out.println(mb1.getNumMines()); for (Tile adj:
+           * mb1.getTiles()) { System.out.println(adj.getRow() + " " +
+           * adj.getColumn()); } System.out.println(" ");
+           */
           Boolean needsCheck = true;
           while (needsCheck == true) {
             needsCheck = false;
             MineBlock remove = null;
-            for (MineBlock mb2: blocks) {
+            for (MineBlock mb2 : blocks) {
               if (mb2.contains(mb1)) {
-                mb2.subtract(mb1);                
-                /*System.out.println("Subtract FROM");
-                System.out.println(mb2.getNumMines());
-                for (Tile adj: mb2.getTiles()) {
-                  System.out.println(adj.getRow() + " " + adj.getColumn());
-                }
-                System.out.println(" ");*/                
+                mb2.subtract(mb1);
+                /*
+                 * System.out.println("Subtract FROM");
+                 * System.out.println(mb2.getNumMines()); for (Tile adj:
+                 * mb2.getTiles()) { System.out.println(adj.getRow() + " " +
+                 * adj.getColumn()); } System.out.println(" ");
+                 */
                 needsCheck = true;
                 if (mb2.getTiles().isEmpty()) {
                   remove = mb2;
                   break;
                 }
               } else if (mb1.contains(mb2)) {
-                mb1.subtract(mb2);               
-                /*System.out.println("Subtract");
-                System.out.println(mb1.getNumMines());
-                for (Tile adj: mb1.getTiles()) {
-                  System.out.println(adj.getRow() + " " + adj.getColumn());
-                }
-                System.out.println(" ");*/               
+                mb1.subtract(mb2);
+                /*
+                 * System.out.println("Subtract");
+                 * System.out.println(mb1.getNumMines()); for (Tile adj:
+                 * mb1.getTiles()) { System.out.println(adj.getRow() + " " +
+                 * adj.getColumn()); } System.out.println(" ");
+                 */
                 if (mb1.getTiles().isEmpty()) {
                   break;
                 }
@@ -187,13 +135,13 @@ public class AIPlayer implements Player {
     }
 
     // Converts MineBlocks to MovePossibilities
-    for (MineBlock mb: blocks) {
-      /*System.out.println(mb.getNumMines());
-      for (Tile adj: mb.getTiles()) {
-        System.out.println(adj.getRow() + " " + adj.getColumn());
-      }*/
-      double probability = (double) mb.getNumMines() / mb.getTiles().size();   
-      for (Tile adj: mb.getTiles()) {
+    for (MineBlock mb : blocks) {
+      /*
+       * System.out.println(mb.getNumMines()); for (Tile adj: mb.getTiles()) {
+       * System.out.println(adj.getRow() + " " + adj.getColumn()); }
+       */
+      double probability = (double) mb.getNumMines() / mb.getTiles().size();
+      for (Tile adj : mb.getTiles()) {
         MovePossibility mp = new MovePossibility(adj, probability);
         if (probability == 0) {
           certainNotMine.add(mp);
@@ -201,9 +149,9 @@ public class AIPlayer implements Player {
           certainMine.add(mp);
         } else {
           boolean contained = false;
-          for (MovePossibility uncertainMp: uncertain) {
+          for (MovePossibility uncertainMp : uncertain) {
             if (uncertainMp.getXCoord() == mp.getXCoord()
-                && uncertainMp.getYCoord() == mp.getYCoord()) {
+              && uncertainMp.getYCoord() == mp.getYCoord()) {
               contained = true;
               if (uncertainMp.getMineProbability() < probability) {
                 uncertain.remove(uncertainMp);
@@ -217,11 +165,11 @@ public class AIPlayer implements Player {
         }
       }
     }
-  } 
+  }
 
   private MineBlock blockFromTile(int totalSurrounding, List<Tile> adjacent) {
     Set<Tile> setTiles = new HashSet<>();
-    for (Tile t: adjacent) {
+    for (Tile t : adjacent) {
       if (!t.hasBeenVisited()) {
         setTiles.add(t);
       }
@@ -237,7 +185,7 @@ public class AIPlayer implements Player {
       return new FlagTile(flag.getXCoord(), flag.getYCoord());
     } else {
       return checkTile();
-    }   
+    }
   }
 
   private Move checkTile() {
@@ -248,7 +196,7 @@ public class AIPlayer implements Player {
     } else {
       double probability = 1;
       MovePossibility currentMove = null;
-      for (MovePossibility m: uncertain) {
+      for (MovePossibility m : uncertain) {
         if (m.getMineProbability() < probability) {
           currentMove = m;
           probability = m.getMineProbability();
@@ -262,7 +210,7 @@ public class AIPlayer implements Player {
     }
     return new CheckTile(likliest.getXCoord(), likliest.getYCoord());
   }
-  
+
   private Move randomTile() {
     MovePossibility randomCheck = null;
     if (!uncertain.isEmpty()) {
@@ -273,7 +221,7 @@ public class AIPlayer implements Player {
     }
     return new CheckTile(randomCheck.getXCoord(), randomCheck.getYCoord());
   }
-  
+
   public void play() {
     while (canPlay) {
       try {
@@ -292,14 +240,14 @@ public class AIPlayer implements Player {
       }
     }
   }
-  
+
   @Override
   /**
    * Sets canPlay to true, meaning that the Player can make Moves.
    */
   public void beginPlay() {
     canPlay = true;
-    
+
   }
 
   @Override
@@ -309,17 +257,23 @@ public class AIPlayer implements Player {
   public void endPlay() {
     canPlay = false;
   }
-  
+
   public List<MovePossibility> getCertainMine() {
     return certainMine;
   }
-  
+
   public List<MovePossibility> getCertainNotMine() {
     return certainNotMine;
   }
-  
+
   public List<MovePossibility> getUncertain() {
     return uncertain;
   }
-  
+
+  @Override
+  public PlayerType getType() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

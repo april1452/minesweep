@@ -1,5 +1,22 @@
-addRoom();
-startLoop();
+var socket = new WebSocket("ws://localhost:7777");
+
+socket.onopen = function(event) {
+    var sendData = {
+        type: "joinRoom",
+        minesweepId: $.cookie("minesweepId"),
+        minesweepRoomId: $.cookie("minesweepRoomId"),
+        name: "test name"
+    };
+    socket.send(JSON.stringify(sendData));
+};
+
+socket.onmessage = function (event) {
+    console.log(event.data);
+}
+
+
+//addRoom();
+//startLoop();
 
 function addRoom() {
     $.post("/roomAdd");

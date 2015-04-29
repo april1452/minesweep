@@ -1,20 +1,27 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
+import edu.brown.cs.pdtran.minesweep.options.PlayerType;
+import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
+import edu.brown.cs.pdtran.minesweep.player.HumanPlayer;
+
 /**
  * Represents a human gamer. Will be turned into HumanPlayer object in game.
  *
  * @author pdtran
  */
-public class HumanGamer implements Gamer {
-  private String id;
-  private String name;
+public class HumanGamer extends Gamer {
 
-  public HumanGamer(String hostId, String name) {
-    this.name = name;
+  public HumanGamer(String name) {
+    super(name);
   }
 
   @Override
-  public String getUserName() {
-    return name;
+  public PlayerType getType() {
+    return PlayerType.HUMAN;
+  }
+
+  @Override
+  public GamePlayer toGamePlayer() {
+    return new HumanPlayer(name);
   }
 }

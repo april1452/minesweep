@@ -10,17 +10,40 @@ import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 public abstract class Session {
 
   protected String name;
-  protected GameSpecs gameSpecs;
-  protected ConcurrentMap<String, ? extends Team> teams;
+  protected GameSpecs specs;
+
+  public Session(String name, GameSpecs specs) {
+    this.name = name;
+    this.specs = specs;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public GameSpecs getSpecs() {
+    return specs;
+  }
+
+  public List<String> getUsers() {
+    List<String> users = new ArrayList<String>();
+    for (Team t : getTeams().values()) {
+      for (String id : t.getPlayers().keySet()) {
+        users.add(id);
+      }
+    }
+    return users;
+  }
 
   public abstract SessionType getSessionType();
 
+  public abstract ConcurrentMap<String, ? extends Team> getTeams();
+
   public RoomInfo getRoomInfo() {
     List<TeamInfo> teamsInfo = new ArrayList<TeamInfo>();
-    for (Team team : teams.values()) {
+    for (Team team : getTeams().values()) {
       teamsInfo.add(team.getTeamInfo());
     }
-    return new RoomInfo(name, getSessionType(), room.getGameSpecs().getMode(),
-      teams);
+    return new RoomInfo(name, getSessionType(), specs, teamsInfo);
   }
 }

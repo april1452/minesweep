@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import edu.brown.cs.pdtran.minesweep.metagame.PlayerInfo;
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.metagame.RoomInfo;
-import edu.brown.cs.pdtran.minesweep.metagame.Session;
 import edu.brown.cs.pdtran.minesweep.metagame.TeamInfo;
 import spark.Request;
 import spark.Response;
@@ -24,13 +23,13 @@ public class GamesRoute implements Route {
 
   @Override
   public Object handle(Request req, Response res) {
-    List<Map.Entry<String, ? extends Session>> sessions = handler.getRooms();
+    List<Map.Entry<String, RoomInfo>> infos = handler.getRooms();
     JsonArray sessionsJson = new JsonArray();
 
-    for (Map.Entry<String, ? extends Session> sessionEntry : sessions) {
-      RoomInfo info = sessionEntry.getValue().getRoomInfo();
+    for (Map.Entry<String, RoomInfo> entry : infos) {
+      RoomInfo info = entry.getValue();
       JsonObject sessionJson = new JsonObject();
-      sessionJson.addProperty("roomId", sessionEntry.getKey());
+      sessionJson.addProperty("roomId", entry.getKey());
       sessionJson.addProperty("roomName", info.getRoomName());
       String sessionType;
       switch (info.getSessionType()) {
@@ -45,7 +44,7 @@ public class GamesRoute implements Route {
       }
       sessionJson.addProperty("sessionType", sessionType);
       String gameModeString;
-      switch (info.getGameMode()) {
+      switch (info.getGameSpecs().getMode()) {
         case CLASSIC:
           gameModeString = "Classic";
           break;

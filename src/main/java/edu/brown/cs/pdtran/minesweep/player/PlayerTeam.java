@@ -1,13 +1,11 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.board.Board;
-import edu.brown.cs.pdtran.minesweep.board.DefaultBoard;
-import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
-import edu.brown.cs.pdtran.minesweep.setup.Gamer;
-import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
+import edu.brown.cs.pdtran.minesweep.metagame.Player;
+import edu.brown.cs.pdtran.minesweep.metagame.Team;
 
 /**
  * Represents a Team of Players that works together in a game of Minesweep.
@@ -15,15 +13,14 @@ import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
  * @author Clayton
  *
  */
-public class Team {
+public class PlayerTeam extends Team {
 
-  private List<Player> members;
+  private ConcurrentMap<String, GamePlayer> players;
   private int score;
   private int lives;
   private Boolean isWinner;
   private Boolean isLoser;
-  String name;
-  Board board;
+  private Board board;
 
   /**
    * Creates a new Team to last through a game.
@@ -37,23 +34,16 @@ public class Team {
    *          A unique string for the given team.
    * @param (DEFAULT BOARD) board2 The Board object that the team holds.
    */
-  public Team(List<Gamer> gamers, int lives, String name, Board board) {
-    members = new ArrayList<>();
-    for (Gamer g : gamers) {
-      if (g instanceof HumanGamer) {
-        HumanGamer h = (HumanGamer) g;
-        members.add(new HumanPlayer(h));
-      } else if (g instanceof AIGamer) {
-        AIGamer a = (AIGamer) g;
-        members.add(new AIPlayer(a, (DefaultBoard) board)); // TEMPORARY
-      }
-    }
-    score = 0;
+  public PlayerTeam(String name, int lives,
+    ConcurrentMap<String, GamePlayer> players, Board board) {
+    super(name);
     this.lives = lives;
+    this.players = players;
+    this.board = board;
+
+    score = 0;
     isWinner = false;
     isLoser = false;
-    this.name = name;
-    this.board = board;
   }
 
   public Board getBoard() {
@@ -61,28 +51,14 @@ public class Team {
   }
 
   /**
-   * Adds a new Player to the List of Players in the Team.
+   * Searches for the id for a player and removes that player from the team and
+   * from play.
    *
-   * @param player
-   *          The object for a Player that is to be added to the team.
-   */
-  public void addPlayer(Player player) {
-    members.add(player);
-  }
-
-  /**
-   * Searches for the username for a player and removes that player from the
-   * team and from play.
-   *
-   * @param username
+   * @param id
    *          A unique string for a player on the team.
    */
-  public void removePlayer(String username) {
-    for (Player p : members) {
-      if (p.getUsername().equals(username)) {
-        members.remove(p);
-      }
-    }
+  public void removePlayer(String id) {
+    players.remove(id);
   }
 
   /**
@@ -101,7 +77,7 @@ public class Team {
    */
   public void updateScore() {
     int newScore = 0;
-    for (Player p : members) {
+    for (GamePlayer p : players.values()) {
       newScore += p.getScore();
     }
     score = newScore;
@@ -132,7 +108,7 @@ public class Team {
    */
   public void setIsWinner() {
     isWinner = true;
-    for (Player p : members) {
+    for (GamePlayer p : players.values()) {
       p.endPlay();
     }
   }
@@ -153,7 +129,7 @@ public class Team {
    */
   public void setIsLoser() {
     isLoser = true;
-    for (Player p : members) {
+    for (GamePlayer p : players.values()) {
       p.endPlay();
     }
   }
@@ -168,11 +144,13 @@ public class Team {
     return isLoser;
   }
 
-  public List<Player> getPlayers() {
-    return members;
-  }
-
+  @Override
   public String getName() {
     return name;
+  }
+
+  @Override
+  public Map<String, ? extends Player> getPlayers() {
+    return players;
   }
 }

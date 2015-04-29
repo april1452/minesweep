@@ -1,12 +1,10 @@
 package edu.brown.cs.pdtran.minesweep.routes;
 
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
-import edu.brown.cs.pdtran.minesweep.metagame.RoomSession;
 import edu.brown.cs.pdtran.minesweep.options.BoardType;
 import edu.brown.cs.pdtran.minesweep.options.GameMode;
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
-import edu.brown.cs.pdtran.minesweep.setup.Setup;
 import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
@@ -35,14 +33,11 @@ public class CreateRoomRoute implements Route {
 
     // HARDCODED FOR NOW
     int[] boardDims = { 10, 10 };
-    GameSpecs specs =
-      new GameSpecs(gameMode, 1, BoardType.DEFAULT, boardDims);
+    GameSpecs specs = new GameSpecs(gameMode, 1, BoardType.DEFAULT, boardDims);
 
-    PreRoom room = Setup.setup("TEMP", specs);
+    PreRoom room = new PreRoom("Room name.", specs);
 
-    RoomSession session = new RoomSession(room);
-
-    String roomId = handler.addRoom(session);
+    String roomId = handler.addRoom(room);
 
     res.cookie("minesweepRoomId", roomId);
 

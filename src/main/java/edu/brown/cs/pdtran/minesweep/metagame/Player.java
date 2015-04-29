@@ -1,24 +1,22 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
-import org.java_websocket.WebSocket;
-
 import edu.brown.cs.pdtran.minesweep.options.PlayerType;
 
 public abstract class Player {
 
   protected String name;
-  protected WebSocket connection;
-  protected PlayerType type;
+
+  public Player(String name) {
+    this.name = name;
+  }
 
   public String getName() {
     return name;
   }
 
-  public void sendMessage(String message) {
-    connection.send(message);
-  }
+  public abstract PlayerType getType();
 
   public PlayerInfo getPlayerInfo() {
-    return new PlayerInfo(name, type);
+    return new PlayerInfo(getName(), getType());
   }
 }

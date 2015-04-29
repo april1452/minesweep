@@ -22,5 +22,5 @@ function getGames() {
 $("#joinGame").submit(function(event) {
     event.preventDefault();
     document.cookie = "minesweepRoomId=" + $("#gameId").val();
-    window.location.href = "/room";
+    window.location.href = "/play";
 });

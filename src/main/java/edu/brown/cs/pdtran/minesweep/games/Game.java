@@ -1,17 +1,20 @@
 package edu.brown.cs.pdtran.minesweep.games;
 
+import edu.brown.cs.pdtran.minesweep.metagame.Session;
+import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.Move;
-import edu.brown.cs.pdtran.minesweep.player.Player;
-import edu.brown.cs.pdtran.minesweep.player.Team;
+import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 
-public interface Game {
+public abstract class Game extends Session {
 
-  public int getGameScore(Player player);
+  public Game(String name, GameSpecs specs) {
+    super(name, specs);
+  }
 
-  public void makeMove(int team, Move m);
+  public abstract int getGameScore(GamePlayer player);
 
-  public boolean play(int team, Move m);
+  public abstract void makeMove(String teamId, Move m);
 
-  public Team[] getTeams();
+  public abstract boolean play(int team, Move m);
 
 }
