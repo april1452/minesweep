@@ -5,6 +5,7 @@ $("#create").submit(function(event) {
     };
     console.log(postParameters)
 	$.post("/create", postParameters, function(responseJSON) {
+	   console.log("something");
 	   window.location.href = "/play";
 	});
 });

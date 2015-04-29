@@ -226,6 +226,7 @@ public class AIPlayer extends GamePlayer {
     while (canPlay) {
       try {
         Thread.sleep(moveTime);
+
         generateMovePossibilities();
         double moveChoice = Math.random();
         if (moveChoice < mistakeProbability) {
