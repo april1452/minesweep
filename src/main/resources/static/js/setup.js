@@ -39,3 +39,25 @@ function hideInfo() {
 	$("#fsu").hide();
 }
 
+$("[name='boardShape']").click(function() {
+	hideInfo();
+	var board = this.getAttribute("value");
+	switch(board) {
+		case "classic":
+			$("#classic").show();
+			break;
+		case "layers":
+			$("#layers").show();
+			break;
+		case "territory":
+			$("#territory").show();
+			break;
+		case "paths":
+			$("#paths").show();
+			break;
+		case "fsu":
+			$("#fsu").show();
+			break;
+	}
+});
+

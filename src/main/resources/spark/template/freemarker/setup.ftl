@@ -11,6 +11,7 @@
 </head>
     
 <body>
+    <center><h1>minesweep+</h1></center>
     <div id="form">
     <form id="createGame">
         <h3>Game name</h3>
@@ -28,7 +29,7 @@
         <br>
 
         <h3>Board</h3>
-        <input type="radio" name="boardShape" value="rectangle">Rectangle
+        <input type="radio" name="boardShape" value="rectangle" checked>Rectangle
         <input type="radio" name="boardShape" value="triangle">Triangle
         <br>
         <p class="label">Dimensions:
