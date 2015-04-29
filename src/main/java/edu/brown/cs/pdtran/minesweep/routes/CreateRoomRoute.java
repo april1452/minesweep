@@ -20,6 +20,8 @@ public class CreateRoomRoute implements Route {
 
   @Override
   public Object handle(Request req, Response res) {
+    System.out.println("test2");
+
     QueryParamsMap params = req.queryMap();
     String gameModeString = params.value("gameMode");
     GameMode gameMode;
@@ -40,6 +42,8 @@ public class CreateRoomRoute implements Route {
     String roomId = handler.addRoom(room);
 
     res.cookie("minesweepRoomId", roomId);
+
+    System.out.println("test");
 
     return true;
   }

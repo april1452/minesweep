@@ -52,7 +52,7 @@ function getGames() {
                     console.log("Hello");
                     event.preventDefault();
                     document.cookie = "minesweepRoomId=" + this.id;
-                    window.location.href = "/room";
+                    window.location.href = "/play";
                 }
                 //class gameButton = button;
 
@@ -90,12 +90,12 @@ document.getElementById("gamesList").addEventListener("click",function(e) {
     console.log("Here we go!");
     event.preventDefault();
     document.cookie = "minesweepRoomId=" + currentForm.childNodes[0].id;
-    window.location.href = "/room";
+    window.location.href = "/play";
 });*/
 
 $("[value='Join Game']").click(function() {
     console.log("Hello");
     //event.preventDefault();
     document.cookie = "minesweepRoomId=" + this.getId();
-    window.location.href = "/room";
+    window.location.href = "/play";
 });

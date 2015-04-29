@@ -7,7 +7,7 @@ import edu.brown.cs.pdtran.minesweep.routes.CreateRoomRoute;
 import edu.brown.cs.pdtran.minesweep.routes.GamesRoute;
 import edu.brown.cs.pdtran.minesweep.routes.HomeRoute;
 import edu.brown.cs.pdtran.minesweep.routes.MoveRoute;
-import edu.brown.cs.pdtran.minesweep.routes.RoomHandler;
+import edu.brown.cs.pdtran.minesweep.routes.PlayHandler;
 import edu.brown.cs.pdtran.minesweep.routes.SetupHandler;
 import freemarker.template.Configuration;
 import spark.Spark;
@@ -28,7 +28,7 @@ public class Metagame {
     Spark.get("/games", new GamesRoute(handler));
     Spark.get("/setup", new SetupHandler(handler), engine);
     Spark.post("/create", new CreateRoomRoute(handler));
-    Spark.get("/play", new RoomHandler(handler), engine);
+    Spark.get("/play", new PlayHandler(handler), engine);
     Spark.post("/move", new MoveRoute(handler));
 
     GameServer server = new GameServer(wsPort, handler);

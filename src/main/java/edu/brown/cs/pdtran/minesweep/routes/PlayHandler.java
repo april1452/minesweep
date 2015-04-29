@@ -9,11 +9,11 @@ import spark.Request;
 import spark.Response;
 import spark.TemplateViewRoute;
 
-public class RoomHandler implements TemplateViewRoute {
+public class PlayHandler implements TemplateViewRoute {
 
   private RequestHandler handler;
 
-  public RoomHandler(RequestHandler handler) {
+  public PlayHandler(RequestHandler handler) {
     this.handler = handler;
   }
 
@@ -21,7 +21,7 @@ public class RoomHandler implements TemplateViewRoute {
   public ModelAndView handle(Request req, Response res) {
     Map<String, Object> variables = ImmutableMap.of("title", "Minesweep");
 
-    return new ModelAndView(variables, "room.ftl");
+    return new ModelAndView(variables, "play.ftl");
   }
 
 }

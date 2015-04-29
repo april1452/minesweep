@@ -1,4 +1,4 @@
-$("#create").submit(function(event) {
+$("#createGame").submit(function(event) {
     event.preventDefault();
     var postParameters = {
         gameMode: $("input[name='gameMode']:checked").val()

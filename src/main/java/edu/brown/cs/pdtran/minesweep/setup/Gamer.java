@@ -13,7 +13,6 @@ public abstract class Gamer extends Player {
 
   public Gamer(String name) {
     super(name);
-    // TODO Auto-generated constructor stub
   }
 
   public abstract GamePlayer toGamePlayer();
