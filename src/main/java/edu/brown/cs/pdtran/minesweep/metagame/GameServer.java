@@ -40,27 +40,39 @@ public class GameServer extends WebSocketServer {
   @Override
   public void onMessage(WebSocket conn, String message) {
     JsonObject messageJson = parser.parse(message).getAsJsonObject();
+    String userId = messageJson.get("minesweepId").getAsString();
+    String sessionId = messageJson.get("minesweepRoomId").getAsString();
     String messageType = messageJson.get("type").getAsString();
     switch (messageType) {
       case "joinRoom":
-        String userId = messageJson.get("minesweepId").getAsString();
-        String sessionId = messageJson.get("minesweepRoomId").getAsString();
         String name = messageJson.get("name").getAsString();
         clients.put(userId, conn);
         try {
           String teamId = handler.joinIfAbsent(sessionId, userId, name);
-          conn.send(teamId);
+          JsonObject joinResponse = new JsonObject();
+          joinResponse.addProperty("type", "joinResponse");
+          joinResponse.addProperty("data", teamId);
+          conn.send(joinResponse.toString());
+
+          JsonObject update = new JsonObject();
+          update.addProperty("type", "update");
+          update.add("data", handler.getRoomInfo(sessionId).toJson());
+
           List<String> users = handler.getUsers(sessionId);
           for (String id : users) {
-            clients.get(id).send(handler.getRoomInfo(id).toJson());
+            clients.get(id).send(update.toString());
           }
         } catch (NoSuchSessionException e) {
           System.out.println("Could not find room.");
         }
         break;
-      case "test":
-        System.out.println("success");
-        // case "startGame":
+      case "startGame":
+        try {
+          handler.startGame(sessionId);
+        } catch (NoSuchSessionException e) {
+          System.out
+          .println("Could not find room (perhaps it was already started?).");
+        }
     }
   }
 

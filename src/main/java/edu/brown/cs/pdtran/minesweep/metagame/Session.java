@@ -1,7 +1,9 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.options.SessionType;
@@ -40,10 +42,10 @@ public abstract class Session {
   public abstract ConcurrentMap<String, ? extends Team> getTeams();
 
   public RoomInfo getRoomInfo() {
-    List<TeamInfo> teamsInfo = new ArrayList<TeamInfo>();
-    for (Team team : getTeams().values()) {
-      teamsInfo.add(team.getTeamInfo());
+    Map<String, TeamInfo> teams = new HashMap<String, TeamInfo>();
+    for (Map.Entry<String, ? extends Team> entry : getTeams().entrySet()) {
+      teams.put(entry.getKey(), entry.getValue().getTeamInfo());
     }
-    return new RoomInfo(name, getSessionType(), specs, teamsInfo);
+    return new RoomInfo(name, getSessionType(), specs, teams);
   }
 }

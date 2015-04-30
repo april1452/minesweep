@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.options.PlayerType;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
@@ -23,6 +24,7 @@ public class AIPlayer extends GamePlayer {
   private int difficulty;
   private int moveTime;
   private double mistakeProbability;
+  private BoardData boardData;
   private static final double BASE_TIME = 5;
   private static final double TIME_MULTIPLIER = 25;
   private static final int MAX_DIFFICULTY = 10;
@@ -40,9 +42,10 @@ public class AIPlayer extends GamePlayer {
    * @param board
    *          The Board object used by the AI to determine good moves to make.
    */
-  public AIPlayer(String username, int difficulty) {
+  public AIPlayer(String username, int difficulty, BoardData data) {
     super(username);
     this.difficulty = difficulty;
+    this.boardData = data;
     generateMovePossibilities();
     moveTime = (int) (BASE_TIME - difficulty * TIME_MULTIPLIER);
     mistakeProbability = (MAX_DIFFICULTY - difficulty) * MISTAKE_MULTIPLIER;

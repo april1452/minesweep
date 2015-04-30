@@ -1,5 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
+import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.options.PlayerType;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.HumanPlayer;
@@ -21,7 +22,7 @@ public class HumanGamer extends Gamer {
   }
 
   @Override
-  public GamePlayer toGamePlayer() {
+  public GamePlayer toGamePlayer(BoardData data) {
     return new HumanPlayer(name);
   }
 }

@@ -1,5 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
+import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.metagame.Player;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 
@@ -15,6 +16,6 @@ public abstract class Gamer extends Player {
     super(name);
   }
 
-  public abstract GamePlayer toGamePlayer();
+  public abstract GamePlayer toGamePlayer(BoardData data);
 
 }

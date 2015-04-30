@@ -4,11 +4,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.games.Game;
+import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.metagame.Session;
 import edu.brown.cs.pdtran.minesweep.options.SessionType;
 
 public class PreRoom extends Session {
+  private String host;
   private ConcurrentMap<String, TeamFormation> teams;
 
   /**
@@ -22,11 +23,9 @@ public class PreRoom extends Session {
   public PreRoom(String name, GameSpecs specs) {
     super(name, specs);
     teams = new ConcurrentHashMap<String, TeamFormation>();
-  }
-
-  public Game toGame() {
-    return null;
-    // return GameFactory.generateGame(name, specs, teams);
+    for (int i = 0; i < specs.getNumTeams(); i++) {
+      RequestHandler.addAndGetKey(teams, new TeamFormation("Team " + (i + 1)));
+    }
   }
 
   @Override
@@ -41,13 +40,6 @@ public class PreRoom extends Session {
         tf.addPlayer(id, g);
         return entry.getKey();
       }
-    }
-    System.out.println(specs);
-    if (teams.size() < specs.getNumTeams()) {
-      TeamFormation teamFormation = new TeamFormation("sample name");
-      teams.put("sampleId", teamFormation);
-      teamFormation.addPlayer(id, g);
-      return "sampleId";
     }
     // TODO throw GAME FULL EXCEPTIOn
     return null;

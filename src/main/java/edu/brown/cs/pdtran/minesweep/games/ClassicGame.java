@@ -1,6 +1,10 @@
 package edu.brown.cs.pdtran.minesweep.games;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 
 import edu.brown.cs.pdtran.minesweep.metagame.Team;
 import edu.brown.cs.pdtran.minesweep.options.SessionType;
@@ -8,19 +12,27 @@ import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
+import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 
 public class ClassicGame extends Game {
 
   private long startTime;
   private ConcurrentMap<String, PlayerTeam> teams;
-  private int turn;
 
   public ClassicGame(String name, GameSpecs specs,
     ConcurrentMap<String, PlayerTeam> teams) {
     super(name, specs);
     this.teams = teams;
     startTime = System.currentTimeMillis();
-    this.turn = 0;
+  }
+
+  public ClassicGame(PreRoom room) {
+    super(room.getName(), room.getSpecs());
+    teams = new ConcurrentHashMap<String, PlayerTeam>();
+    for(Map.Entry<String, TeamFormation> entry : room.getTeams().entrySet()) {
+      teams.put(entry.getKey(), new PlayerTeam(entry.getValue());
+    }
+
   }
 
   @Override
@@ -68,8 +80,7 @@ public class ClassicGame extends Game {
 
   @Override
   public ConcurrentMap<String, ? extends Team> getTeams() {
-    // TODO Auto-generated method stub
-    return null;
+    return teams;
   }
 
 }

@@ -1,6 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
-import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -11,14 +11,14 @@ public class RoomInfo {
   private String roomName;
   private SessionType sessionType;
   private GameSpecs gameSpecs;
-  private List<TeamInfo> teams;
+  private Map<String, TeamInfo> teams;
 
   public RoomInfo(String roomName, SessionType sessionType,
-    GameSpecs gameSpecs, List<TeamInfo> teamsInfo) {
+    GameSpecs gameSpecs, Map<String, TeamInfo> teams) {
     this.roomName = roomName;
     this.sessionType = sessionType;
     this.gameSpecs = gameSpecs;
-    this.teams = teamsInfo;
+    this.teams = teams;
   }
 
   public String getRoomName() {
@@ -33,11 +33,11 @@ public class RoomInfo {
     return gameSpecs;
   }
 
-  public List<TeamInfo> getTeams() {
+  public Map<String, TeamInfo> getTeams() {
     return teams;
   }
 
-  public String toJson() {
+  public JsonObject toJson() {
     JsonObject roomJson = new JsonObject();
     roomJson.addProperty("roomName", getRoomName());
     String gameModeString;
@@ -51,22 +51,24 @@ public class RoomInfo {
     roomJson.addProperty("gameMode", gameModeString);
 
     JsonArray teamsJson = new JsonArray();
-    for (TeamInfo team : getTeams()) {
+    for (Map.Entry<String, TeamInfo> entry : teams.entrySet()) {
       JsonObject teamJson = new JsonObject();
       JsonArray playersJson = new JsonArray();
+      TeamInfo team = entry.getValue();
       for (PlayerInfo player : team.getPlayers()) {
         JsonObject playerJson = new JsonObject();
         playerJson.addProperty("name", player.getName());
         playersJson.add(playerJson);
       }
       teamJson.addProperty("name", team.getName());
+      teamJson.addProperty("id", entry.getKey());
       teamJson.add("players", playersJson);
       teamsJson.add(teamJson);
     }
 
     roomJson.add("teams", teamsJson);
 
-    return roomJson.toString();
+    return roomJson;
   }
 
 }

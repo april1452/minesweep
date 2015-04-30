@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.games.Game;
+import edu.brown.cs.pdtran.minesweep.games.GameFactory;
 import edu.brown.cs.pdtran.minesweep.setup.Gamer;
 import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
@@ -53,7 +54,7 @@ public class RequestHandler {
     return room.addGamer(userId, g);
   }
 
-  private static <T> String addAndGetKey(ConcurrentMap<String, T> map, T value) {
+  public static <T> String addAndGetKey(ConcurrentMap<String, T> map, T value) {
     while (true) {
       String id = UUID.randomUUID().toString();
       T previous = map.putIfAbsent(id, value);
@@ -73,7 +74,7 @@ public class RequestHandler {
     if (room == null || sessions.remove(id) == null) {
       throw new NoSuchSessionException();
     }
-    Game game = room.toGame();
+    Game game = GameFactory.generateGame(room);
     games.put(id, game);
     sessions.put(id, game);
   }

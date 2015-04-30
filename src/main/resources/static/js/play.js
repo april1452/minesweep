@@ -11,20 +11,11 @@ socket.onopen = function(event) {
 };
 
 socket.onmessage = function (event) {
-    console.log(event.data);
+    var responseJson = JSON.parse(event.data);
+    if(responseJson.type === "joinResponse") {
+        $.cookie("minesweepTeamId", responseJson.teamId)
 }
 
-
-//addRoom();
-//startLoop();
-
-function addRoom() {
-    $.post("/roomAdd");
-}
-
-function startLoop() {
-    window.setInterval("getUpdate()", 500);
-}
 
 function getUpdate() {
     $.get("/roomUpdate", function(responseJSON) {

@@ -1,11 +1,16 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.board.Board;
+import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.metagame.Player;
 import edu.brown.cs.pdtran.minesweep.metagame.Team;
+import edu.brown.cs.pdtran.minesweep.setup.Gamer;
+import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 
 /**
  * Represents a Team of Players that works together in a game of Minesweep.
@@ -13,14 +18,15 @@ import edu.brown.cs.pdtran.minesweep.metagame.Team;
  * @author Clayton
  *
  */
-public class PlayerTeam extends Team {
+public class PlayerTeam extends Team implements BoardData {
 
   private ConcurrentMap<String, GamePlayer> players;
   private int score;
   private int lives;
   private Boolean isWinner;
   private Boolean isLoser;
-  private Board board;
+  private List<Board> boards;
+  private int boardIndex;
 
   /**
    * Creates a new Team to last through a game.
@@ -34,20 +40,25 @@ public class PlayerTeam extends Team {
    *          A unique string for the given team.
    * @param (DEFAULT BOARD) board2 The Board object that the team holds.
    */
-  public PlayerTeam(String name, int lives,
-    ConcurrentMap<String, GamePlayer> players, Board board) {
-    super(name);
+  public PlayerTeam(TeamFormation tf, int lives, List<Board> boards) {
+    super(tf.getName());
     this.lives = lives;
-    this.players = players;
-    this.board = board;
+    this.boards = boards;
+    boardIndex = 0;
+    ConcurrentMap<String, GamePlayer> gamePlayers =
+      new ConcurrentHashMap<String, GamePlayer>();
+    for (Map.Entry<String, Gamer> entry : tf.getPlayers().entrySet()) {
+      gamePlayers.put(entry.getKey(), entry.getValue().toGamePlayer(this));
+    }
 
     score = 0;
     isWinner = false;
     isLoser = false;
   }
 
-  public Board getBoard() {
-    return board;
+  @Override
+  public Board getCurrentBoard() {
+    return boards.get(boardIndex);
   }
 
   /**
