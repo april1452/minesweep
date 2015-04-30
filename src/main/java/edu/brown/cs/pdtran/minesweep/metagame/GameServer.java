@@ -3,6 +3,8 @@ package edu.brown.cs.pdtran.minesweep.metagame;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -12,6 +14,9 @@ import org.java_websocket.server.WebSocketServer;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import edu.brown.cs.pdtran.minesweep.board.Board;
+import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
+import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 
 public class GameServer extends WebSocketServer {
 
@@ -67,8 +72,21 @@ public class GameServer extends WebSocketServer {
         try {
           handler.startGame(sessionId);
 
-          // JsonObject
+          JsonObject gameData = new JsonObject();
+          gameData.addProperty("type", "gameData");
+          for (Entry<String, PlayerTeam> teamEntry : handler.getGame(sessionId)
+            .getTeams().entrySet()) {
+            Board board = teamEntry.getValue().getCurrentBoard();
+            gameData.addProperty("data", board.toJson());
+            Map<String, GamePlayer> players = teamEntry.getValue().getPlayers();
+            System.out.println(players);
+            assert (players != null);
 
+            for (String playerId : players.keySet()) {
+              clients.get(playerId).send(gameData.toString());
+            }
+            gameData.remove("data");
+          }
         } catch (NoSuchSessionException e) {
           System.out
             .println("Could not find room (perhaps it was already started?).");

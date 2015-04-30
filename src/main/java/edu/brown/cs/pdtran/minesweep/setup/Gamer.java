@@ -1,7 +1,8 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
-import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.metagame.Player;
+
+import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 
 /**

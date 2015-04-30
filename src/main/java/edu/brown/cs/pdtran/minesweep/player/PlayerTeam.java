@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
-import edu.brown.cs.pdtran.minesweep.metagame.Player;
 import edu.brown.cs.pdtran.minesweep.metagame.Team;
 import edu.brown.cs.pdtran.minesweep.setup.Gamer;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
@@ -45,10 +44,9 @@ public class PlayerTeam extends Team implements BoardData {
     this.lives = lives;
     this.boards = boards;
     boardIndex = 0;
-    ConcurrentMap<String, GamePlayer> gamePlayers =
-      new ConcurrentHashMap<String, GamePlayer>();
+    players = new ConcurrentHashMap<String, GamePlayer>();
     for (Map.Entry<String, Gamer> entry : tf.getPlayers().entrySet()) {
-      gamePlayers.put(entry.getKey(), entry.getValue().toGamePlayer(this));
+      players.put(entry.getKey(), entry.getValue().toGamePlayer(this));
     }
 
     score = 0;
@@ -161,7 +159,7 @@ public class PlayerTeam extends Team implements BoardData {
   }
 
   @Override
-  public Map<String, ? extends Player> getPlayers() {
+  public Map<String, GamePlayer> getPlayers() {
     return players;
   }
 }

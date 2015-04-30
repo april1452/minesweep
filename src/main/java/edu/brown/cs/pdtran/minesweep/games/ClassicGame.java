@@ -1,6 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.games;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,12 +9,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.board.BoardFactory;
-import edu.brown.cs.pdtran.minesweep.metagame.Team;
 import edu.brown.cs.pdtran.minesweep.options.SessionType;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
-import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 
@@ -22,21 +21,18 @@ public class ClassicGame extends Game {
   private long startTime;
   private ConcurrentMap<String, PlayerTeam> teams;
 
-  public ClassicGame(String name, GameSpecs specs,
-    ConcurrentMap<String, PlayerTeam> teams) {
-    super(name, specs);
-    this.teams = teams;
-    startTime = System.currentTimeMillis();
-  }
-
   public ClassicGame(PreRoom room) {
     super(room.getName(), room.getSpecs());
     teams = new ConcurrentHashMap<String, PlayerTeam>();
     List<Board> boardsToPlay = new ArrayList<>();
     boardsToPlay.add(BoardFactory.makeBoard(specs.getBoardType()));
     for (Map.Entry<String, TeamFormation> entry : room.getTeams().entrySet()) {
+      List<Board> copy = new ArrayList<>();
+      for (Board board : boardsToPlay) {
+        copy.add(board.clone());
+      }
       teams.put(entry.getKey(),
-        new PlayerTeam(entry.getValue(), specs.getTeamLives(), boardsToPlay));
+        new PlayerTeam(entry.getValue(), specs.getTeamLives(), copy));
     }
 
   }
@@ -85,8 +81,18 @@ public class ClassicGame extends Game {
   }
 
   @Override
-  public ConcurrentMap<String, ? extends Team> getTeams() {
+  public ConcurrentMap<String, PlayerTeam> getTeams() {
     return teams;
+  }
+
+  @Override
+  public Board getBoard(String teamId) {
+    return teams.get(teamId).getCurrentBoard();
+  }
+
+  @Override
+  public Collection<String> getPlayers(String teamId) {
+    return teams.get(teamId).getPlayers().keySet();
   }
 
 }

@@ -13,7 +13,7 @@ public class GameFactory {
         return new ClassicGame(room);
 
       case TERRITORY:
-        return new ClassicGame(room);
+        return new TerritoryGame(room);
 
       case LAYERS:
         return new ClassicGame(room);

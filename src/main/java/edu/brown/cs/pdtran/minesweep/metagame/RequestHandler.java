@@ -47,6 +47,14 @@ public class RequestHandler {
     return room;
   }
 
+  public Game getGame(String id) throws NoSuchSessionException {
+    Game game = games.get(id);
+    if (game == null) {
+      throw new NoSuchSessionException();
+    }
+    return game;
+  }
+
   public String joinIfAbsent(String sessionId, String userId, String name)
     throws NoSuchSessionException {
     PreRoom room = getRoom(sessionId);

@@ -11,7 +11,7 @@
        
         THIS IS THE GAME PAGE.
         
-        <canvas id="board"></canvas>
+
         
         </body>
         

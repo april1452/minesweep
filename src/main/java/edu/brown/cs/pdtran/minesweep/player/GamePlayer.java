@@ -2,6 +2,7 @@ package edu.brown.cs.pdtran.minesweep.player;
 
 import edu.brown.cs.pdtran.minesweep.metagame.Player;
 
+
 /**
  * This interface represents what a player controls within a game of Minesweep
  * to make moves.

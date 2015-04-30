@@ -15,6 +15,8 @@
         
         <button type="button" id="start">Start Game!</button>
         
+        <canvas id="board"></canvas>
+        
         </body>
         
         <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
