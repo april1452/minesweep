@@ -67,17 +67,24 @@ public class GameServer extends WebSocketServer {
     String sessionId = messageJson.get("minesweepRoomId").getAsString();
     String messageType = messageJson.get("type").getAsString();
     switch (messageType) {
+      case "init":
+        try {
+          JsonObject update = new JsonObject();
+          update.addProperty("type", "update");
+          update.add("data", handler.getRoomInfo(sessionId).toJson());
+
+          conn.send(update.toString());
+        } catch (NoSuchSessionException e) {
+          System.out.println("Could not find room.");
+        }
+        break;
       case "joinRoom":
         try {
           String name = messageJson.get("name").getAsString();
           clients.put(userId, conn);
           String teamId = messageJson.get("minesweepTeamId").getAsString();
           Gamer gamer = new HumanGamer(name);
-          String teamId = handler.joinIfAbsent(sessionId, teamId, userId, name);
-          JsonObject joinResponse = new JsonObject();
-          joinResponse.addProperty("type", "joinResponse");
-          joinResponse.addProperty("data", teamId);
-          conn.send(joinResponse.toString());
+          handler.joinIfAbsent(sessionId, teamId, userId, gamer);
 
           JsonObject update = new JsonObject();
           update.addProperty("type", "update");
@@ -89,22 +96,26 @@ public class GameServer extends WebSocketServer {
         }
         break;
       case "addAIPlayer":
-        String difficultyString = messageJson.get("difficulty").getAsString();
-        AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
-        String teamId = messageJson.get("minesweepTeamId").getAsString();
-        String aiId = handler.getUserId();
-        Gamer gamer = new AIGamer("John Jannottibot", aiDifficulty);
-        handler.joinIfAbsent(sessionId, teamId, aiId, gamer);
-
-
-
+        try {
+          String difficultyString = messageJson.get("difficulty").getAsString();
+          AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
+          String teamId = messageJson.get("minesweepTeamId").getAsString();
+          String aiId = handler.getUserId();
+          Gamer gamer = new AIGamer("John Jannottibot", aiDifficulty);
+          handler.joinIfAbsent(sessionId, teamId, aiId, gamer);
+          // TODO FINISH
+          break;
+        } catch (NoSuchSessionException e) {
+          System.out
+          .println("Could not find room (perhaps it was already started?).");
+        }
       case "startGame":
         try {
           handler.startGame(sessionId);
           updateBoards(sessionId);
         } catch (NoSuchSessionException e) {
           System.out
-              .println("Could not find room (perhaps it was already started?).");
+          .println("Could not find room (perhaps it was already started?).");
         }
         break;
       case "makeMove":
