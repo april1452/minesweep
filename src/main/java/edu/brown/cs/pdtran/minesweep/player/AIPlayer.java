@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.brown.cs.pdtran.minesweep.types.PlayerType;
-
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
+import edu.brown.cs.pdtran.minesweep.types.AiDifficulty;
+import edu.brown.cs.pdtran.minesweep.types.PlayerType;
 
 /**
  * This class represents the AI that controls what moves the AI makes and
@@ -32,9 +32,13 @@ public class AIPlayer extends GamePlayer {
   private static final double FLAG_PROBABILITY = .3;
   private static final double RANDOM_SUBTRACTOR = .5;
   private static final double CUTOFF_PROBABILITY = .5;
+  private static final int EASY = 1;
+  private static final int MEDIUM = 5;
+  private static final int HARD = 9;
+
 
   /**
-   * Creates an AIPlayer with a username and a difficulty. This version
+   * Creates an AIPlayer with a username and an AI difficulty. This version
    * will be used primarily for testing.
    * @param username A string unique to that player.
    * @param difficulty An integer from 1 to 10 with 10 being the most
@@ -42,9 +46,15 @@ public class AIPlayer extends GamePlayer {
    * @param data The BoardData object used by the AI to determine good
    *        moves to make.
    */
-  public AIPlayer(String username, int difficulty, BoardData data) {
+  public AIPlayer(String username, AiDifficulty difficultyEnum, BoardData data) {
     super(username);
-    this.difficulty = difficulty;
+    if (difficultyEnum == AiDifficulty.EASY) {
+      difficulty = EASY;
+    } else if (difficultyEnum == AiDifficulty.MEDIUM) {
+      difficulty = MEDIUM;
+    } else {
+      difficulty = HARD;
+    }
     this.boardData = data;
     generateMovePossibilities();
     moveTime = (int) (BASE_TIME - difficulty * TIME_MULTIPLIER);
