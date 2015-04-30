@@ -19,7 +19,8 @@ public class TeamFormation extends Team {
   /**
    * Create team formation.
    *
-   * @param name The name of the specified team.
+   * @param name
+   *          The name of the specified team.
    */
   public TeamFormation(String name) {
     super(name);

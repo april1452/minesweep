@@ -1,8 +1,8 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 

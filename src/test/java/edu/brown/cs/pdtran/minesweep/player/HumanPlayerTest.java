@@ -1,8 +1,9 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
 
@@ -18,7 +19,7 @@ public class HumanPlayerTest {
     HumanPlayer myPlayer = new HumanPlayer(myGamer);
     assertTrue(myGamer.getUserName().equals(myPlayer.getUsername()));
   }
-  
+
   @Test
   /**
    * Verifies that a simple change in score is recorded and that the updated
@@ -34,7 +35,7 @@ public class HumanPlayerTest {
     p.changeScore(200);
     assertTrue(p.getScore() == 150);
   }
-  
+
   @Test
   /**
    * This test checks that the player can make a move and see that same move be

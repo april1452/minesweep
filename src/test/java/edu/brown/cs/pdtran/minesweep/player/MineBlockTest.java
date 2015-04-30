@@ -1,11 +1,11 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
-import static org.junit.Assert.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
@@ -30,7 +30,7 @@ public class MineBlockTest {
     assertTrue(block1.getNumMines() == 2);
     assertTrue(block1.getTiles().equals(tiles));
   }
-  
+
   @Test
   /**
    * Verifies that the contains method works when all points of one set of

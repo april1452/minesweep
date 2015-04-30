@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
@@ -31,7 +30,8 @@ public class EntangledBoard extends DefaultBoard implements Board {
   /**
    * The constructor.
    *
-   * @param grid Allows you to specify a grid.
+   * @param grid
+   *          Allows you to specify a grid.
    */
   public EntangledBoard(Tile[][] grid) {
     super(grid);
@@ -42,21 +42,22 @@ public class EntangledBoard extends DefaultBoard implements Board {
   /**
    * Reconfigures the grid as you see fit.
    *
-   * @param mergeNum The number you wish to merge together.
+   * @param mergeNum
+   *          The number you wish to merge together.
    */
   public void reconfigureBoard(int mergeNum) {
     for (int i = 0; i < mergeNum; i++) {
       int row = (int) (Math.random() * getHeight());
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
-          super.getAdjacentTiles(row, col).stream()
+        super.getAdjacentTiles(row, col).stream()
           .filter((t) -> t.isBomb() == getTile(row, col).isBomb())
           .collect(Collectors.toList());
       if (candidateList.isEmpty()) {
         continue;
       }
       Tile randomTile =
-          candidateList.get((int) (Math.random() * candidateList.size()));
+        candidateList.get((int) (Math.random() * candidateList.size()));
       assert (!randomTile.isBomb());
       assert (!randomTile.hasBeenVisited());
       mergeTiles(row, col, randomTile.getRow(), randomTile.getColumn());
@@ -68,7 +69,7 @@ public class EntangledBoard extends DefaultBoard implements Board {
     Tile tile = getTile(row, col);
     Tile tile2merge = getTile(row2, col2);
     tile.setAdjacentBombs(tile.getAdjacentBombs()
-        + tile2merge.getAdjacentBombs());
+      + tile2merge.getAdjacentBombs());
     List<Tile> neighbors = super.getAdjacentTiles(row, col);
     neighbors.addAll(super.getAdjacentTiles(row2, col2));
     neighborTable.put(row, col, neighbors);
@@ -85,7 +86,5 @@ public class EntangledBoard extends DefaultBoard implements Board {
       return super.getAdjacentTiles(row, col);
     }
   }
-
-
 
 }

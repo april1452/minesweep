@@ -1,12 +1,10 @@
 package edu.brown.cs.pdtran.minesweep.board;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
@@ -32,7 +30,8 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
   /**
    * The constructor.
    *
-   * @param grid Allows you to specify a grid.
+   * @param grid
+   *          Allows you to specify a grid.
    */
   public RectangularBoard(Tile[][] grid) {
     super(grid);
@@ -43,41 +42,42 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
   /**
    * The constructor.
    *
-   * @param grid Allows you to specify a grid.
+   * @param grid
+   *          Allows you to specify a grid.
    * 
-   * @param neighborTile A table that contains neighbors mapped to a certain
-   * spot on the board.
+   * @param neighborTile
+   *          A table that contains neighbors mapped to a certain spot on the
+   *          board.
    */
-  public RectangularBoard(
-      Tile[][] grid, Table<Integer, Integer, List<Tile>> neighborTile) {
+  public RectangularBoard(Tile[][] grid,
+    Table<Integer, Integer, List<Tile>> neighborTile) {
     this(grid);
     this.neighborTable = neighborTile;
     assert (neighborTable != null);
   }
 
-  
-  
   /**
    * Reconfigures the grid as you see fit.
    *
-   * @param mergeNum The number you wish to merge together.
+   * @param mergeNum
+   *          The number you wish to merge together.
    */
   public void reconfigureBoard(int mergeNum) {
     for (int i = 0; i < mergeNum; i++) {
       int row = (int) (Math.random() * getHeight());
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
-          super
+        super
           .getAdjacentTiles(row, col)
-              .stream()
-              .filter(
-                  (t) -> (t.getColumn() == col || t.getRow() == row)
-                      && !t.isBomb()).collect(Collectors.toList());
+          .stream()
+          .filter(
+            (t) -> (t.getColumn() == col || t.getRow() == row) && !t.isBomb())
+          .collect(Collectors.toList());
       if (candidateList.isEmpty()) {
         continue;
       }
       Tile randomTile =
-          candidateList.get((int) (Math.random() * candidateList.size()));
+        candidateList.get((int) (Math.random() * candidateList.size()));
       assert (!randomTile.isBomb());
       assert (!randomTile.hasBeenVisited());
       mergeTiles(row, col, randomTile.getRow(), randomTile.getColumn());
@@ -89,7 +89,7 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
     Tile tile = getTile(row, col);
     Tile tile2merge = getTile(row2, col2);
     tile.setAdjacentBombs(tile.getAdjacentBombs()
-        + tile2merge.getAdjacentBombs());
+      + tile2merge.getAdjacentBombs());
     List<Tile> neighbors = super.getAdjacentTiles(row, col);
     neighbors.addAll(super.getAdjacentTiles(row2, col2));
     neighborTable.put(row, col, neighbors);
@@ -107,11 +107,10 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
     }
   }
 
-
-  public RectangularBoard clone(){
+  public RectangularBoard clone() {
     Tile[][] newGrid = new Tile[getHeight()][getWidth()];
-    for(int i = 0; i < newGrid.length; i++){
-      for(int j = 0; j < grid[0].length; j++){
+    for (int i = 0; i < newGrid.length; i++) {
+      for (int j = 0; j < grid[0].length; j++) {
         newGrid[i][j] = grid[i][j].clone();
       }
     }

@@ -2,14 +2,12 @@ package edu.brown.cs.pdtran.minesweep.routes;
 
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 import spark.TemplateViewRoute;
-
-import com.google.common.collect.ImmutableMap;
-
-import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 
 public class SetupHandler implements TemplateViewRoute {
 

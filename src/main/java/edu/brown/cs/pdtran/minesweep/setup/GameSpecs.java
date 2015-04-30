@@ -22,10 +22,14 @@ public class GameSpecs {
   /**
    * Create game specifications.
    *
-   * @param mode game mode (c, fsu, lay, path, terr)
-   * @param matches number of matches/rounds to be played
-   * @param shape board shape
-   * @param dims board dimensions
+   * @param mode
+   *          game mode (c, fsu, lay, path, terr)
+   * @param matches
+   *          number of matches/rounds to be played
+   * @param shape
+   *          board shape
+   * @param dims
+   *          board dimensions
    */
   public GameSpecs(GameMode mode, int matches, BoardType shape, int[] dims) {
     this.mode = mode;

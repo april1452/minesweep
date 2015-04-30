@@ -63,34 +63,38 @@ public interface Board extends Cloneable {
    * @return the maximum width of the board.
    */
   int getWidth();
-  
+
   /**
    * Gets the total number of bombs on the board.
    * 
    * @return the total number of bombs on the board.
    */
   int getBombCount();
-  
+
   /**
    * Gets the object corresponding to a specified tile.
    * 
-   * @param h value for the "height" of the tile in the coordinates
+   * @param h
+   *          value for the "height" of the tile in the coordinates
    * 
-   * @param w value for the "width" of the tile in the coordinates
+   * @param w
+   *          value for the "width" of the tile in the coordinates
    * 
    * @return the Tile represented in the given location
    */
   Tile getTile(int h, int w);
-  
+
   /**
    * Gets all tiles that surround a specified tile.
    * 
-   * @param h value for the "height" of the tile in the coordinates
+   * @param h
+   *          value for the "height" of the tile in the coordinates
    * 
-   * @param w value for the "width" of the tile in the coordinates
+   * @param w
+   *          value for the "width" of the tile in the coordinates
    * 
    * @return a List of Tiles that all surround the location specified by the
-   * coordinates
+   *         coordinates
    */
   List<Tile> getAdjacentTiles(int h, int w);
 

@@ -1,14 +1,14 @@
 package edu.brown.cs.pdtran.minesweep.board;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
-
-import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 public class BoardTest {
 
@@ -28,7 +28,7 @@ public class BoardTest {
   @Test
   public void testDumbBoard() {
     DefaultBoard board =
-        new DefaultBoard(Arrays.copyOf(dumbBoard, dumbBoard.length));
+      new DefaultBoard(Arrays.copyOf(dumbBoard, dumbBoard.length));
     for (int i = 0; i < board.getHeight(); i++) {
       for (int j = 0; j < board.getWidth(); j++) {
         assertFalse(board.getTile(i, j).hasBeenVisited());
@@ -47,7 +47,7 @@ public class BoardTest {
   @Test
   public void dumbRectangularBoard() {
     RectangularBoard board =
-        new RectangularBoard(Arrays.copyOf(dumbBoard, dumbBoard.length));
+      new RectangularBoard(Arrays.copyOf(dumbBoard, dumbBoard.length));
     for (int i = 0; i < board.getHeight(); i++) {
       for (int j = 0; j < board.getWidth(); j++) {
         assertFalse(board.getTile(i, j).isBomb());
@@ -65,7 +65,7 @@ public class BoardTest {
   @Test
   public void dumbTriangularBoard() {
     TriangularBoard board =
-        new TriangularBoard(Arrays.copyOf(dumbBoard, dumbBoard.length));
+      new TriangularBoard(Arrays.copyOf(dumbBoard, dumbBoard.length));
     for (int i = 0; i < board.getHeight(); i++) {
       for (int j = 0; j < board.getWidth(); j++) {
         assertFalse(board.getTile(i, j).isBomb());
@@ -79,7 +79,6 @@ public class BoardTest {
       }
     }
   }
-
 
   @Test
   public void lossTest() {
@@ -126,47 +125,47 @@ public class BoardTest {
   }
 
   @Test
-  public void cloneTest(){
+  public void cloneTest() {
     DefaultBoard board = new DefaultBoard();
     DefaultBoard board2 = board.clone();
     assertTrue(board != board2);
-    for(int row = 0; row < board.getHeight(); row++){
-      for(int col = 0; col < board.getWidth(); col++){
+    for (int row = 0; row < board.getHeight(); row++) {
+      for (int col = 0; col < board.getWidth(); col++) {
         assertTrue(board.getTile(row, col) != board2.getTile(row, col));
       }
     }
   }
-  
+
   @Test
-  public void cloneTestRec(){
+  public void cloneTestRec() {
     RectangularBoard board = new RectangularBoard();
     RectangularBoard board2 = board.clone();
     assertTrue(board != board2);
-    for(int row = 0; row < board.getHeight(); row++){
-      for(int col = 0; col < board.getWidth(); col++){
+    for (int row = 0; row < board.getHeight(); row++) {
+      for (int col = 0; col < board.getWidth(); col++) {
         assertTrue(board.getTile(row, col) != board2.getTile(row, col));
       }
     }
   }
-    
-    @Test
-    public void cloneTestTri(){
-      TriangularBoard board = new TriangularBoard();
-      TriangularBoard board2 = board.clone();
-      assertTrue(board != board2);
-      for(int row = 0; row < board.getHeight(); row++){
-        for(int col = 0; col < board.getWidth(); col++){
-          assertTrue(board.getTile(row, col) != board2.getTile(row, col));
-        }
+
+  @Test
+  public void cloneTestTri() {
+    TriangularBoard board = new TriangularBoard();
+    TriangularBoard board2 = board.clone();
+    assertTrue(board != board2);
+    for (int row = 0; row < board.getHeight(); row++) {
+      for (int col = 0; col < board.getWidth(); col++) {
+        assertTrue(board.getTile(row, col) != board2.getTile(row, col));
       }
+    }
   }
-  
+
   private void checkInvalidMove(DefaultBoard board) {
     board.makeMove(-1, -1);
     board.makeMove(board.getWidth() * 2, board.getHeight() * 2);
     assertFalse(board.isWithinBoard(-1, -1));
     assertFalse(board
-        .isWithinBoard(board.getWidth() + 1, board.getHeight() + 1));
+      .isWithinBoard(board.getWidth() + 1, board.getHeight() + 1));
   }
 
   private Tile findBomb(DefaultBoard board) {

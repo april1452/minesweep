@@ -1,9 +1,9 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.fail;
 
 import edu.brown.cs.pdtran.minesweep.board.DefaultBoard;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
@@ -26,8 +26,7 @@ public class TeamTest {
   private Tile d2;
   private Tile d3;
   private Tile d4;
-  
-  
+
   @Before
   public void setUp() throws Exception {
     a1 = new Tile(true, 0, false, 0, 0);
@@ -46,8 +45,9 @@ public class TeamTest {
     d2 = new Tile(false, 3, false, 1, 3);
     d3 = new Tile(true, 1, false, 2, 3);
     d4 = new Tile(false, 1, false, 3, 3);
-    Tile[][] tileArray = {{a1, a2, a3, a4}, {b1, b2, b3, b4},
-        {c1, c2, c3, c4}, {d1, d2, d3, d4}};
+    Tile[][] tileArray =
+      { { a1, a2, a3, a4 }, { b1, b2, b3, b4 }, { c1, c2, c3, c4 },
+        { d1, d2, d3, d4 } };
     simpleBoard = new DefaultBoard(tileArray);
   }
 
@@ -60,7 +60,7 @@ public class TeamTest {
   public void constructorTest() {
     fail("Not yet implemented");
   }
-  
+
   @Test
   /**
    * Verifies that the score counter adjusts to the changes in Players' scores.
@@ -68,7 +68,7 @@ public class TeamTest {
   public void scoreTest() {
     fail("Not yet implemented");
   }
-  
+
   @Test
   /**
    * Verifies that a team can add or remove players and that the team's
@@ -77,7 +77,7 @@ public class TeamTest {
   public void addRemovePlayerTest() {
     fail("Not yet implemented");
   }
-  
+
   @Test
   /**
    * Verifies that a team from the start is neither a winner not a loser until

@@ -62,7 +62,8 @@ public class Tile implements Cloneable {
   /**
    * determines the number of adjacent bombs
    *
-   * @param num The number of adjacent bombs to the tile
+   * @param num
+   *          The number of adjacent bombs to the tile
    */
   public void setAdjacentBombs(final int num) {
     adjacentBombs = num;
@@ -114,7 +115,7 @@ public class Tile implements Cloneable {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

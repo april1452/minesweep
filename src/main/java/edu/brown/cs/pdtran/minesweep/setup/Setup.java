@@ -1,6 +1,5 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
-
 /**
  * Receives setup information created by GUI 'Create Game' button. Setup
  * information: game mode (classic, layers, territory, path, FSU), number of
@@ -18,8 +17,7 @@ public class Setup {
    * @param roomName
    *          The name of the room to be set up
    * @param specs
-   *          The GameSpecs object that contains the specifications of the
-   *          game.
+   *          The GameSpecs object that contains the specifications of the game.
    * @return A PreRoom object with the specified conditions in the specs.
    */
   // public static PreRoom setup(String[] specsArr) {

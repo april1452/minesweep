@@ -64,15 +64,15 @@ public class AIPlayer extends GamePlayer {
 
   /**
    * Specifies how the AI thread makes moves in real time. The AI waits a
-   * specified amount of time with a degree of randomness and then makes a
-   * move. By random number, the AI will either touch a space without a mine,
-   * place a flag, or make a mistake. The cycle repeats until the game is over.
+   * specified amount of time with a degree of randomness and then makes a move.
+   * By random number, the AI will either touch a space without a mine, place a
+   * flag, or make a mistake. The cycle repeats until the game is over.
    */
   public void play() {
     while (canPlay) {
       try {
         int moveTimeRandomness =
-            (int) Math.round((Math.random() - .5) * moveTime);
+          (int) Math.round((Math.random() - .5) * moveTime);
         Thread.sleep(moveTime + moveTimeRandomness);
 
         generateMovePossibilities();
@@ -252,6 +252,7 @@ public class AIPlayer extends GamePlayer {
 
   /**
    * Gets the list of MovePossibilities that are certainly mines.
+   * 
    * @return the list of MovePossibilities that are certainly mines
    */
   public List<MovePossibility> getCertainMine() {
@@ -260,6 +261,7 @@ public class AIPlayer extends GamePlayer {
 
   /**
    * Gets the list of MovePossibilities that are certainly not mines.
+   * 
    * @return the list of MovePossibilities that are certainly not mines
    */
   public List<MovePossibility> getCertainNotMine() {
@@ -268,6 +270,7 @@ public class AIPlayer extends GamePlayer {
 
   /**
    * Gets the list of MovePossibilities that may or may not contain mines.
+   * 
    * @return the list of MovePossibilities that may or may not contain mines.
    */
   public List<MovePossibility> getUncertain() {

@@ -16,8 +16,10 @@ public class PreRoom extends Session {
    * Create a room that has been processed from the GUI. This room contains
    * specs that will be used to create an actual game.
    *
-   * @param name The string corresponding to the name of the game.
-   * @param specs The specifications for the room from the Setup page.
+   * @param name
+   *          The string corresponding to the name of the game.
+   * @param specs
+   *          The specifications for the room from the Setup page.
    */
   public PreRoom(String name, GameSpecs specs) {
     super(name, specs);

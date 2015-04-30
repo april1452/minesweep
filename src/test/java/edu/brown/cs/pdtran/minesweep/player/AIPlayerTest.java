@@ -1,9 +1,10 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import edu.brown.cs.pdtran.minesweep.board.DefaultBoard;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
@@ -27,8 +28,7 @@ public class AIPlayerTest {
   private Tile d2;
   private Tile d3;
   private Tile d4;
-  
-  
+
   @Before
   public void setUp() throws Exception {
     a1 = new Tile(true, 0, false, 0, 0);
@@ -47,8 +47,9 @@ public class AIPlayerTest {
     d2 = new Tile(false, 3, false, 1, 3);
     d3 = new Tile(true, 1, false, 2, 3);
     d4 = new Tile(false, 1, false, 3, 3);
-    Tile[][] tileArray = {{a1, a2, a3, a4}, {b1, b2, b3, b4},
-        {c1, c2, c3, c4}, {d1, d2, d3, d4}};
+    Tile[][] tileArray =
+      { { a1, a2, a3, a4 }, { b1, b2, b3, b4 }, { c1, c2, c3, c4 },
+        { d1, d2, d3, d4 } };
     simpleBoard = new DefaultBoard(tileArray);
   }
 
@@ -62,7 +63,7 @@ public class AIPlayerTest {
     assertTrue(c.getUsername().equals("Clay"));
     assertTrue(c.getScore() == 0);
   }
-  
+
   @Test
   /**
    * Verifies that a simple change in score is recorded and that the updated
@@ -78,7 +79,7 @@ public class AIPlayerTest {
     p.changeScore(200);
     assertTrue(p.getScore() == 150);
   }
-  
+
   @Test
   /**
    * Using a simple partially-solved board, this test verifies that the AI can
@@ -93,15 +94,15 @@ public class AIPlayerTest {
     MovePossibility mpD2 = new MovePossibility(d2, 0);
     MovePossibility mpD3 = new MovePossibility(d3, .5);
     MovePossibility mpD4 = new MovePossibility(d4, .5);
-    /*for (MovePossibility m: p.getCertainMine()) {
-      System.out.println(m.getXCoord() + " " + m.getYCoord() + " " + m.getMineProbability());
-    }
-    for (MovePossibility m: p.getCertainNotMine()) {
-      System.out.println(m.getXCoord() + " " + m.getYCoord() + " " + m.getMineProbability());
-    }
-    for (MovePossibility m: p.getUncertain()) {
-      System.out.println(m.getXCoord() + " " + m.getYCoord() + " " + m.getMineProbability());
-    }*/
+    /*
+     * for (MovePossibility m: p.getCertainMine()) {
+     * System.out.println(m.getXCoord() + " " + m.getYCoord() + " " +
+     * m.getMineProbability()); } for (MovePossibility m: p.getCertainNotMine())
+     * { System.out.println(m.getXCoord() + " " + m.getYCoord() + " " +
+     * m.getMineProbability()); } for (MovePossibility m: p.getUncertain()) {
+     * System.out.println(m.getXCoord() + " " + m.getYCoord() + " " +
+     * m.getMineProbability()); }
+     */
     assertTrue(p.getCertainMine().contains(mpC1));
     assertTrue(p.getCertainMine().contains(mpC2));
     assertTrue(p.getCertainNotMine().contains(mpD2));
@@ -110,7 +111,7 @@ public class AIPlayerTest {
     assertTrue(p.getUncertain().contains(mpD3));
     assertTrue(p.getUncertain().contains(mpD4));
   }
-  
+
   @Test
   /**
    * This test shows that if there are no squares on the board that for sure
@@ -120,7 +121,7 @@ public class AIPlayerTest {
   public void moveEstimateCheck() {
     fail("Not yet implemented");
   }
-  
+
   @Test
   /**
    * This test checks similar things as the above tests, but for a tesslated
@@ -129,7 +130,7 @@ public class AIPlayerTest {
   public void tesselatedMoveGeneratorCheck() {
     fail("Not yet implemented");
   }
-  
+
   @Test
   /**
    * This test checks similar things as the above tests, but for a rectangular
@@ -138,7 +139,7 @@ public class AIPlayerTest {
   public void rectangularMoveGeneratorCheck() {
     fail("Not yet implemented");
   }
-  
+
   @Test
   /**
    * This test checks that the AI can also handle moving its opponent's mines
@@ -147,7 +148,7 @@ public class AIPlayerTest {
   public void FSUMoveGeneratorCheck() {
     fail("Not yet implemented");
   }
-  
+
   @Test
   /**
    * This test checks that the AI can also handle moving through each level of
@@ -156,7 +157,7 @@ public class AIPlayerTest {
   public void layersMoveGeneratorCheck() {
     fail("Not yet implemented");
   }
-  
+
   @Test
   /**
    * This test checks that the AI can also working to maximize its "territory"
@@ -174,7 +175,7 @@ public class AIPlayerTest {
   public void raceMoveGeneratorCheck() {
     fail("Not yet implemented");
   }
-  
+
   @Test
   /**
    * This test checks that the player can make a move and see that same move be
