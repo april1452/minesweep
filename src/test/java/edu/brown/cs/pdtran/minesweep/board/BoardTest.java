@@ -125,6 +125,42 @@ public class BoardTest {
     checkInvalidMove(board);
   }
 
+  @Test
+  public void cloneTest(){
+    DefaultBoard board = new DefaultBoard();
+    DefaultBoard board2 = board.clone();
+    assertTrue(board != board2);
+    for(int row = 0; row < board.getHeight(); row++){
+      for(int col = 0; col < board.getWidth(); col++){
+        assertTrue(board.getTile(row, col) != board2.getTile(row, col));
+      }
+    }
+  }
+  
+  @Test
+  public void cloneTestRec(){
+    RectangularBoard board = new RectangularBoard();
+    RectangularBoard board2 = board.clone();
+    assertTrue(board != board2);
+    for(int row = 0; row < board.getHeight(); row++){
+      for(int col = 0; col < board.getWidth(); col++){
+        assertTrue(board.getTile(row, col) != board2.getTile(row, col));
+      }
+    }
+  }
+    
+    @Test
+    public void cloneTestTri(){
+      TriangularBoard board = new TriangularBoard();
+      TriangularBoard board2 = board.clone();
+      assertTrue(board != board2);
+      for(int row = 0; row < board.getHeight(); row++){
+        for(int col = 0; col < board.getWidth(); col++){
+          assertTrue(board.getTile(row, col) != board2.getTile(row, col));
+        }
+      }
+  }
+  
   private void checkInvalidMove(DefaultBoard board) {
     board.makeMove(-1, -1);
     board.makeMove(board.getWidth() * 2, board.getHeight() * 2);

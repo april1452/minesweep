@@ -1,6 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.tile;
 
-public class Tile {
+public class Tile implements Cloneable {
   /**
    * Whether or not the tile contains a bomb.
    */
@@ -107,7 +107,8 @@ public class Tile {
     return (row == tile2.getRow() && column == tile2.getColumn());
   }
 
-  public Tile getCopy() {
+  @Override
+  public Tile clone() {
     return new Tile(isBomb, adjacentBombs, visited, row, column);
   }
 

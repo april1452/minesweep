@@ -1,5 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.board;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
  * @author agokasla
  *
  */
-public class RectangularBoard extends DefaultBoard implements Board {
+public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
 
@@ -39,6 +40,19 @@ public class RectangularBoard extends DefaultBoard implements Board {
     assert (neighborTable != null);
   }
 
+  /**
+   * The constructor.
+   *
+   * @param grid Allows you to specify a grid.
+   */
+  public RectangularBoard(Tile[][] grid, Table<Integer, Integer, List<Tile>> neighborTile) {
+    this(grid);
+    this.neighborTable = neighborTile;
+    assert (neighborTable != null);
+  }
+
+  
+  
   /**
    * Reconfigures the grid as you see fit.
    *
@@ -90,5 +104,14 @@ public class RectangularBoard extends DefaultBoard implements Board {
   }
 
 
+  public RectangularBoard clone(){
+    Tile[][] newGrid = new Tile[getHeight()][getWidth()];
+    for(int i = 0; i < newGrid.length; i++){
+      for(int j = 0; j < grid[0].length; j++){
+        newGrid[i][j] = grid[i][j].clone();
+      }
+    }
+    return new RectangularBoard(newGrid, HashBasedTable.create(neighborTable));
+  }
 
 }

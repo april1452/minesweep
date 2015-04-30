@@ -3,6 +3,8 @@ package edu.brown.cs.pdtran.minesweep.board;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.HashBasedTable;
+
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
@@ -11,7 +13,7 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
  * @author agokasla
  *
  */
-public class TriangularBoard extends DefaultBoard implements Board {
+public class TriangularBoard extends DefaultBoard implements Board, Cloneable {
 
   /**
    * The constructor.
@@ -48,4 +50,16 @@ public class TriangularBoard extends DefaultBoard implements Board {
     }
     return tiles;
   }
+
+  @Override
+  public TriangularBoard clone(){
+    Tile[][] newGrid = new Tile[getHeight()][getWidth()];
+    for(int i = 0; i < newGrid.length; i++){
+      for(int j = 0; j < grid[0].length; j++){
+        newGrid[i][j] = grid[i][j].clone();
+      }
+    }
+    return new TriangularBoard(newGrid);
+  }
+
 }
