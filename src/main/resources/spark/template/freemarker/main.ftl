@@ -1,37 +1,22 @@
-<!DOCTYPE html>
-    <html>
-        <head>
-            <meta charset="utf-8">
-            <title>${title}</title>  
-            <link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
-            <link rel="stylesheet" href="/css/normalize.css">
-            <link rel="stylesheet" href="/css/html5bp.css">
-            <link rel="stylesheet" href="/css/all.css">
-            <link rel="stylesheet" href="/css/main.css">
-        </head>
-        
-        <body> 
-            <h1>Minesweep+</h1> 
-            <div id="games">  
-            <h3> Existing Rooms: </h3>
-            <!--<form id="joinGame">
-                Game mode: 
-                <select id="gameId">
-                </select>
-                <input type="submit" value="Join Game">
-            </form>-->
-            
-                <ul id="gamesList">
-                </ul>
-            </div>
-            <div id="new">
-            <h3> Create New Room: </h3>
-            <form action="/setup">
-                <input type="submit" value="Host Game">
-            </form>
-            </div>
+<#assign body>
+<link rel="stylesheet" href="/css/main.css">
+<div class="row">
+    <div id="games" class="span-6">  
+        <h4>Existing Rooms:</h4>
+    <!--<form id="joinGame">
+        Game mode: 
+        <select id="gameId">
+        </select>
+        <input type="submit" value="Join Game">
+    </form>-->
+    
+        <ul id="gamesList">
+        </ul>
 
-        </body>
-        <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
-        <script src="../js/main.js"></script>
-    </html>
+        <a href="/setup" class="button line-red">Host New Game</a>
+    </div>
+</div>
+
+<script src="/js/main.js"></script>    
+</#assign>
+<#include "layout.ftl">
