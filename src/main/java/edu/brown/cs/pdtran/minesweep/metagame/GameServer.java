@@ -2,7 +2,6 @@ package edu.brown.cs.pdtran.minesweep.metagame;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.nio.channels.NotYetConnectedException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,14 +21,25 @@ import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 
+/**
+ * This class extends WebSocketServer to create a server that multiple games can
+ * be run through at once.
+ * @author Clayton
+ */
 public class GameServer extends WebSocketServer {
 
   private JsonParser parser;
   private ConcurrentMap<String, WebSocket> clients;
   private RequestHandler handler;
 
+  /**
+   * Constructs a GameServer.
+   * @param port An integer representing the port to use.
+   * @param handler A RequestHandler for the server to use.
+   * @throws UnknownHostException Thrown when there is no known host.
+   */
   public GameServer(int port, RequestHandler handler)
-    throws UnknownHostException {
+      throws UnknownHostException {
     super(new InetSocketAddress(port));
     this.handler = handler;
     parser = new JsonParser();
@@ -78,8 +88,9 @@ public class GameServer extends WebSocketServer {
           updateBoards(sessionId);
         } catch (NoSuchSessionException e) {
           System.out
-          .println("Could not find room (perhaps it was already started?).");
+              .println("Could not find room (perhaps it was already started?).");
         }
+        break;
       case "makeMove":
         try {
           String teamId = messageJson.get("minesweepTeamId").getAsString();
@@ -96,37 +107,41 @@ public class GameServer extends WebSocketServer {
         } catch (NoSuchSessionException e) {
           System.out.println("Could not find game.");
         }
-    }
-
-    private void updateUsers(String sessionId, String message)
-      throws NoSuchSessionException {
-      List<String> users = handler.getUsers(sessionId);
-      for (String id : users) {
-        clients.get(id).send(message);
-      }
-    }
-
-    private void updateBoards(String sessionId) throws NotYetConnectedException,
-    NoSuchSessionException {
-      JsonObject gameData = new JsonObject();
-      gameData.addProperty("type", "gameData");
-      for (Entry<String, PlayerTeam> teamEntry : handler.getGame(sessionId)
-        .getTeams().entrySet()) {
-        Board board = teamEntry.getValue().getCurrentBoard();
-        gameData.addProperty("data", board.toJson());
-        Map<String, GamePlayer> players = teamEntry.getValue().getPlayers();
-
-        assert (players != null);
-
-        for (String playerId : players.keySet()) {
-          clients.get(playerId).send(gameData.toString());
-        }
-        gameData.remove("data");
-      }
-    }
-
-    @Override
-    public void onError(WebSocket conn, Exception ex) {
-      ex.printStackTrace();
+        break;
+      default:
+        System.out.println("No known types reached.");
     }
   }
+
+  private void updateUsers(String sessionId, String message)
+      throws NoSuchSessionException {
+    List<String> users = handler.getUsers(sessionId);
+    for (String id : users) {
+      clients.get(id).send(message);
+    }
+  }
+
+
+  private void updateBoards(String sessionId) throws NoSuchSessionException {
+    JsonObject gameData = new JsonObject();
+    gameData.addProperty("type", "gameData");
+    for (Entry<String, PlayerTeam> teamEntry : handler.getGame(sessionId)
+        .getTeams().entrySet()) {
+      Board board = teamEntry.getValue().getCurrentBoard();
+      gameData.addProperty("data", board.toJson());
+      Map<String, GamePlayer> players = teamEntry.getValue().getPlayers();
+
+      assert (players != null);
+
+      for (String playerId : players.keySet()) {
+        clients.get(playerId).send(gameData.toString());
+      }
+      gameData.remove("data");
+    }
+  }
+
+  @Override
+  public void onError(WebSocket conn, Exception ex) {
+    ex.printStackTrace();
+  }
+}
