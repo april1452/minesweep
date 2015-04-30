@@ -12,10 +12,8 @@ public interface Board extends Cloneable {
 
   /**
    * Makes the move at the specified row and col.
-   * @param row
-   *          The row you want to move at.
-   * @param col
-   *          The col you want to move at.
+   * @param row The row you want to move at.
+   * @param col The col you want to move at.
    */
   void makeMove(int row, int col);
 
@@ -63,28 +61,24 @@ public interface Board extends Cloneable {
 
   /**
    * Gets the object corresponding to a specified tile.
-   * @param h
-   *          value for the "height" of the tile in the coordinates
-   * @param w
-   *          value for the "width" of the tile in the coordinates
+   * @param h value for the "height" of the tile in the coordinates
+   * @param w value for the "width" of the tile in the coordinates
    * @return the Tile represented in the given location
    */
   Tile getTile(int h, int w);
 
   /**
    * Gets all tiles that surround a specified tile.
-   * @param h
-   *          value for the "height" of the tile in the coordinates
-   * @param w
-   *          value for the "width" of the tile in the coordinates
-   * @return a List of Tiles that all surround the location specified by the
-   *         coordinates
+   * @param h value for the "height" of the tile in the coordinates
+   * @param w value for the "width" of the tile in the coordinates
+   * @return a List of Tiles that all surround the location specified by
+   *         the coordinates
    */
   List<Tile> getAdjacentTiles(int h, int w);
 
   /**
-   * Converts the Board object to a JSON object
-   * @return a JSON string representing the board
+   * Converts the Board object to a JSON object.
+   * @return a JSON string representing the board.
    */
   String toJson();
 }
