@@ -86,6 +86,7 @@ public class GameServer extends WebSocketServer {
         }
         break;
       case "addAIPlayer":
+
         String teamId = messageJson.get("minesweepTeamId").getAsString();
         String aiId = handler.getUserId();
         AIGamer gamer = new AIGamer("John Jannottibot", );
