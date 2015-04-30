@@ -20,8 +20,26 @@ socket.onopen = function(event) {
         minesweepRoomId: $.cookie("minesweepRoomId"),
         name: "test name"
     };
+    console.log($.cookie)
     socket.send(JSON.stringify(sendData));
 };
+
+$("#start").click(function() {
+console.log($.cookie)
+$.getScript("../js/js.cookie.js", function(){
+
+  
+    var sendData = {
+        type: "startGame",
+        minesweepId: $.cookie("minesweepId"),
+        minesweepRoomId: $.cookie("minesweepRoomId"),
+    };
+    socket.send(JSON.stringify(sendData));
+
+   // Use anything defined in the loaded script...
+});
+});
+
 
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
@@ -99,14 +117,6 @@ function drawBoard(responseJSON) {
     _ctx.stroke();
 }
 
-$("#start").click(function() {
-    var sendData = {
-        type: "startGame",
-        minesweepId: $.cookie("minesweepId"),
-        minesweepRoomId: $.cookie("minesweepRoomId")
-    };
-    socket.send(JSON.stringify(sendData));
-});
 
 $("#board").bind('click', function(event){
     var board = $("#board")[0];
@@ -117,13 +127,12 @@ $("#board").bind('click', function(event){
     var row = Math.floor(y / tileHeight);
     var column = Math.floor(x / tileWidth);
     
-    var sendData = {
-        type: "makeMove",
-        minesweepId: $.cookie("minesweepId"),
-        minesweepRoomId: $.cookie("minesweepRoomId"),
-        minesweepTeamId: $.cookie("minesweepTeamId"),
+    var postParameters = {
         row: row,
-        col: column
+        column: column,
     };
-    socket.send(JSON.stringify(sendData));
+
+    console.log(postParameters);
+
+    $.post("/move", postParameters);
 });

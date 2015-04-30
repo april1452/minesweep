@@ -78,7 +78,7 @@ public class GameServer extends WebSocketServer {
           updateBoards(sessionId);
         } catch (NoSuchSessionException e) {
           System.out
-            .println("Could not find room (perhaps it was already started?).");
+          .println("Could not find room (perhaps it was already started?).");
         }
       case "makeMove":
         try {
@@ -97,37 +97,36 @@ public class GameServer extends WebSocketServer {
           System.out.println("Could not find game.");
         }
     }
-  }
 
-  private void updateUsers(String sessionId, String message)
-    throws NoSuchSessionException {
-    List<String> users = handler.getUsers(sessionId);
-    for (String id : users) {
-      clients.get(id).send(message);
-    }
-  }
-
-  private void updateBoards(String sessionId) throws NotYetConnectedException,
-  NoSuchSessionException {
-    JsonObject gameData = new JsonObject();
-    gameData.addProperty("type", "gameData");
-    for (Entry<String, PlayerTeam> teamEntry : handler.getGame(sessionId)
-      .getTeams().entrySet()) {
-      Board board = teamEntry.getValue().getCurrentBoard();
-      gameData.addProperty("data", board.toJson());
-      Map<String, GamePlayer> players = teamEntry.getValue().getPlayers();
-
-      assert (players != null);
-
-      for (String playerId : players.keySet()) {
-        clients.get(playerId).send(gameData.toString());
+    private void updateUsers(String sessionId, String message)
+      throws NoSuchSessionException {
+      List<String> users = handler.getUsers(sessionId);
+      for (String id : users) {
+        clients.get(id).send(message);
       }
-      gameData.remove("data");
+    }
+
+    private void updateBoards(String sessionId) throws NotYetConnectedException,
+    NoSuchSessionException {
+      JsonObject gameData = new JsonObject();
+      gameData.addProperty("type", "gameData");
+      for (Entry<String, PlayerTeam> teamEntry : handler.getGame(sessionId)
+        .getTeams().entrySet()) {
+        Board board = teamEntry.getValue().getCurrentBoard();
+        gameData.addProperty("data", board.toJson());
+        Map<String, GamePlayer> players = teamEntry.getValue().getPlayers();
+
+        assert (players != null);
+
+        for (String playerId : players.keySet()) {
+          clients.get(playerId).send(gameData.toString());
+        }
+        gameData.remove("data");
+      }
+    }
+
+    @Override
+    public void onError(WebSocket conn, Exception ex) {
+      ex.printStackTrace();
     }
   }
-
-  @Override
-  public void onError(WebSocket conn, Exception ex) {
-    ex.printStackTrace();
-  }
-}

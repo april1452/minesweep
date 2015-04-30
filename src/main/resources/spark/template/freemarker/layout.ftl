@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/css/layout.css">
 
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script src="/js/js.cookie.js"></script>
     <script id="webplate-stack" src="/webplate/stack.js"></script>
 </head>
 
