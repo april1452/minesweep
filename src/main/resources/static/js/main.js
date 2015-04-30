@@ -1,4 +1,4 @@
-getGames();
+document.onload = getGames();
 
 $("#refresh").click(function() {
     getGames();
@@ -11,30 +11,30 @@ var currentButton;
 function getGames() {
     $.get("/games", function(responseJSON) {
         var response = JSON.parse(responseJSON);
-        var gameOptions = "";
         $("ul").empty();
         gameIds = new Array();
-        $.each(response, function(index, roomInfo) {
+        console.log(response);
+        $.each(response, function(roomId, roomInfo) {
             console.log(roomInfo);
-            //document.write("<div id='room'><p>" + roomInfo.gameMode + "</p></div>");
-            /*if(roomInfo.sessionType === "setup") {
-                gameOptions += "<option value=\"" + roomInfo.roomId + "\">A Game</option>";
-            }*/
             var numPlayer = 0;
             $.each(roomInfo.teams, function(index, team) {
                 $.each(team.players, function(index, player) {
                     numPlayer++;
                 })
             })
-            if(roomInfo.sessionType === "setup") { 
+            console.log(roomInfo.sessionType);
+            if(roomInfo.sessionType === "SETUP") { 
                 var node = document.createElement("LI");
-                var textnode = document.createTextNode(roomInfo.gameMode + ": " + numPlayer + " players");
+                var textnode = document.createTextNode(roomInfo.gameSpecs.mode + ": " + numPlayer + " players");
                 node.appendChild(textnode);
                 node.setAttribute("id", "gameTitle");
-                document.getElementById("gamesList").appendChild(node);
+                var  list = $("#gamesList");
+                console.log(list);
+                list.append(node);
+                console.log("NODE APPENDED");
 
                 var box = document.createElement("DIV");
-                box.id = roomInfo.roomId;
+                box.id = roomId;
 
                 var name = document.createTextNode(roomInfo.roomName);
                 box.appendChild(name);
@@ -44,12 +44,13 @@ function getGames() {
                 var button = document.createElement("input");
                 button.setAttribute("type", "submit");
                 button.setAttribute("value", "Join Game");
-                button.setAttribute("id", roomInfo.roomId);
+                button.setAttribute("id", roomId);
                 box.appendChild(button);
                 button.onclick = function() {
                     console.log("Hello");
-                    event.preventDefault();
-                    document.cookie = "minesweepRoomId=" + this.id;
+                    //event.preventDefault();
+                    document.cookie = "minesweepRoomId=" + roomId;
+                    console.log(document.cookie);
                     window.location.href = "/play";
                 }
                 //class gameButton = button;
@@ -60,8 +61,7 @@ function getGames() {
                 node.appendChild(box);
             }
         });
-        
-        $("#gameId").html(gameOptions);
+
     });
 }
 
@@ -69,6 +69,19 @@ $("#joinGame").submit(function(event) {
     event.preventDefault();
     document.cookie = "minesweepRoomId=" + $("#gameId").val();
     window.location.href = "/play";
+});
+
+$("#gamesList").click(function(e) {
+    if(e.target && e.target.nodeName == "LI") {
+         //console.log(e.target.id + " was clicked");
+         clicked = e.toElement.childNodes[1].id;
+         //console.log(clicked);
+         //console.log(e.toElement);
+         currentButton = e.toElement.childNodes[1].childNodes[1];
+         console.log(currentButton);
+         //console.log(document.getElementById("joinForm"));
+         e.toElement.childNodes[1].style.display = "block";
+    }
 });
 
 document.getElementById("gamesList").addEventListener("click",function(e) {
