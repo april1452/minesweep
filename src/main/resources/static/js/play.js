@@ -13,20 +13,14 @@ socket.onopen = function(event) {
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
     if(responseJson.type === "joinResponse") {
-        $.cookie("minesweepTeamId", responseJson.teamId)
-}
-
-
-function getUpdate() {
-    $.get("/roomUpdate", function(responseJSON) {
-        if(responseJSON === "gameStarted") {
-            window.location.href = "/game";
-            return;
-        }
-        var response = JSON.parse(responseJSON);
-        var teams = response.teams;
+        $.cookie("minesweepTeamId", responseJson.data);
+    } else if (responseJson.type === "update") {
         var innerBox = "";
         
+        var roomInfo = responseJson.data;
+
+        var teams = roomInfo.teams;
+
         $.each(teams, function(i, team) {
             innerBox += "<p>" + team.name + ": </p>";
             $.each(team.players, function(j, player) {
@@ -34,12 +28,15 @@ function getUpdate() {
             });
         });
         
-        console.log(innerBox);
-        
         $("#usernameBox").html(innerBox);
-    });
+    }
 }
 
 $("#start").click(function() {
-    $.post("/start");
+    var sendData = {
+        type: "startGame",
+        minesweepId: $.cookie("minesweepId"),
+        minesweepRoomId: $.cookie("minesweepRoomId"),
+    };
+    socket.send(JSON.stringify(sendData));
 });

@@ -5,7 +5,7 @@ import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 
-public abstract class Game extends Session implements BoardData {
+public abstract class Game extends Session {
 
   public Game(String name, GameSpecs specs) {
     super(name, specs);

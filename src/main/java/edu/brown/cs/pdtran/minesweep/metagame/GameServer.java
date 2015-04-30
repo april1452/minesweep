@@ -58,10 +58,7 @@ public class GameServer extends WebSocketServer {
           update.addProperty("type", "update");
           update.add("data", handler.getRoomInfo(sessionId).toJson());
 
-          List<String> users = handler.getUsers(sessionId);
-          for (String id : users) {
-            clients.get(id).send(update.toString());
-          }
+          updateUsers(sessionId, update.toString());
         } catch (NoSuchSessionException e) {
           System.out.println("Could not find room.");
         }
@@ -69,10 +66,21 @@ public class GameServer extends WebSocketServer {
       case "startGame":
         try {
           handler.startGame(sessionId);
+
+          // JsonObject
+
         } catch (NoSuchSessionException e) {
           System.out
-          .println("Could not find room (perhaps it was already started?).");
+            .println("Could not find room (perhaps it was already started?).");
         }
+    }
+  }
+
+  private void updateUsers(String sessionId, String message)
+    throws NoSuchSessionException {
+    List<String> users = handler.getUsers(sessionId);
+    for (String id : users) {
+      clients.get(id).send(message);
     }
   }
 

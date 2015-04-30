@@ -1,11 +1,13 @@
 package edu.brown.cs.pdtran.minesweep.games;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
-
+import edu.brown.cs.pdtran.minesweep.board.Board;
+import edu.brown.cs.pdtran.minesweep.board.BoardFactory;
 import edu.brown.cs.pdtran.minesweep.metagame.Team;
 import edu.brown.cs.pdtran.minesweep.options.SessionType;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
@@ -13,6 +15,7 @@ import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 
 public class ClassicGame extends Game {
 
@@ -29,15 +32,18 @@ public class ClassicGame extends Game {
   public ClassicGame(PreRoom room) {
     super(room.getName(), room.getSpecs());
     teams = new ConcurrentHashMap<String, PlayerTeam>();
-    for(Map.Entry<String, TeamFormation> entry : room.getTeams().entrySet()) {
-      teams.put(entry.getKey(), new PlayerTeam(entry.getValue());
+    List<Board> boardsToPlay = new ArrayList<>();
+    boardsToPlay.add(BoardFactory.makeBoard(specs.getBoardType()));
+    for (Map.Entry<String, TeamFormation> entry : room.getTeams().entrySet()) {
+      teams.put(entry.getKey(),
+        new PlayerTeam(entry.getValue(), specs.getTeamLives(), boardsToPlay));
     }
 
   }
 
   @Override
   public void makeMove(String teamId, Move m) {
-    teams.get(teamId).getBoard().makeMove(m.getYCoord(), m.getXCoord());
+    teams.get(teamId).getCurrentBoard().makeMove(m.getYCoord(), m.getXCoord());
   }
 
   /**
