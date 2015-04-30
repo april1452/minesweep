@@ -354,6 +354,7 @@ public class DefaultBoard implements Board, Cloneable {
     return true;
   }
   
+  @Override
   public int getBombCount() {
     return bombCount;
   }

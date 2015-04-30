@@ -19,10 +19,7 @@ public class TeamFormation extends Team {
   /**
    * Create team formation.
    *
-   * @param gamers
-   *          list of gamers
-   * @param lives
-   *          number of lives
+   * @param name The name of the specified team.
    */
   public TeamFormation(String name) {
     super(name);

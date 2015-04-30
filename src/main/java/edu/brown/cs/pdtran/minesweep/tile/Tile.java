@@ -62,7 +62,7 @@ public class Tile implements Cloneable {
   /**
    * determines the number of adjacent bombs
    *
-   * @param num
+   * @param num The number of adjacent bombs to the tile
    */
   public void setAdjacentBombs(final int num) {
     adjacentBombs = num;
