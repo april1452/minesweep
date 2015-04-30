@@ -103,7 +103,27 @@ $("#start").click(function() {
     var sendData = {
         type: "startGame",
         minesweepId: $.cookie("minesweepId"),
+        minesweepRoomId: $.cookie("minesweepRoomId")
+    };
+    socket.send(JSON.stringify(sendData));
+});
+
+$("#board").bind('click', function(event){
+    var board = $("#board")[0];
+
+    var x = event.pageX - board.offsetLeft;
+    var y = event.pageY - board.offsetTop;
+
+    var row = Math.floor(y / tileHeight);
+    var column = Math.floor(x / tileWidth);
+    
+    var sendData = {
+        type: "makeMove",
+        minesweepId: $.cookie("minesweepId"),
         minesweepRoomId: $.cookie("minesweepRoomId"),
+        minesweepTeamId: $.cookie("minesweepTeamId"),
+        row: row,
+        col: column
     };
     socket.send(JSON.stringify(sendData));
 });
