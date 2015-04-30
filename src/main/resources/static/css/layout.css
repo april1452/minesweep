@@ -3,8 +3,16 @@ body {
   font-family: 'Noto Sans', sans-serif;
 }
 
-#nav {
-	
+#help {
+	float: right;
+	margin-top: 10px;
+	margin-right: 10px;
+}
+
+#about {
+	float: right;
+	margin-top: 10px;
+	margin-right: 10px;
 }
 
 

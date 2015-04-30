@@ -1,21 +1,21 @@
 <#assign body>
 <link rel="stylesheet" href="/css/main.css">
+
 <div class="row">
     <div id="games" class="span-6">  
-        <h4>Existing Rooms:</h4>
-    <!--<form id="joinGame">
-        Game mode: 
-        <select id="gameId">
-        </select>
-        <input type="submit" value="Join Game">
-    </form>-->
-    
+        <!-- refresh -->
+        <a class="button purple small" id="refresh"><span class="icon-spinner11"></span></a>
+        <h4 style="display: inline">Games:</h4>
+
+        <!-- game list -->
         <ul id="gamesList">
         </ul>
 
-        <a href="/setup" class="button line-red">Host New Game</a>
+        <!-- new game -->
+        <a href="/setup" class="button pink" id="new">Host New Game</a>
     </div>
 </div>
+
 
 <script src="/js/main.js"></script>    
 </#assign>
