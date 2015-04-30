@@ -40,8 +40,9 @@ public class AIPlayer extends GamePlayer {
    *          A string unique to that player.
    * @param difficulty
    *          An integer from 1 to 10 with 10 being the most difficult.
-   * @param board
-   *          The Board object used by the AI to determine good moves to make.
+   * @param data
+   *          The BoardData object used by the AI to determine good moves to
+   *          make.
    */
   public AIPlayer(String username, int difficulty, BoardData data) {
     super(username);
@@ -61,6 +62,12 @@ public class AIPlayer extends GamePlayer {
     // TODO Auto-generated method stub
   }
 
+  /**
+   * Specifies how the AI thread makes moves in real time. The AI waits a
+   * specified amount of time with a degree of randomness and then makes a
+   * move. By random number, the AI will either touch a space without a mine,
+   * place a flag, or make a mistake. The cycle repeats until the game is over.
+   */
   public void play() {
     while (canPlay) {
       try {
@@ -243,14 +250,26 @@ public class AIPlayer extends GamePlayer {
     canPlay = false;
   }
 
+  /**
+   * Gets the list of MovePossibilities that are certainly mines.
+   * @return the list of MovePossibilities that are certainly mines
+   */
   public List<MovePossibility> getCertainMine() {
     return certainMine;
   }
 
+  /**
+   * Gets the list of MovePossibilities that are certainly not mines.
+   * @return the list of MovePossibilities that are certainly not mines
+   */
   public List<MovePossibility> getCertainNotMine() {
     return certainNotMine;
   }
 
+  /**
+   * Gets the list of MovePossibilities that may or may not contain mines.
+   * @return the list of MovePossibilities that may or may not contain mines.
+   */
   public List<MovePossibility> getUncertain() {
     return uncertain;
   }

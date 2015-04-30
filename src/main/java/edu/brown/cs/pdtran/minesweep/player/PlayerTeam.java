@@ -30,14 +30,13 @@ public class PlayerTeam extends Team implements BoardData {
   /**
    * Creates a new Team to last through a game.
    *
-   * @param gamers
-   *          A List of all the Gamer objects from the pre-game that are to made
-   *          into Player objects within the team.
+   * @param tf
+   *          A TeamFormation object that contains the information necessary to
+   *          create a team.
    * @param lives
    *          The total number of lives for the team and its players.
-   * @param id
-   *          A unique string for the given team.
-   * @param (DEFAULT BOARD) board2 The Board object that the team holds.
+   * @param boards
+   *          A List of Boards that the team may use.
    */
   public PlayerTeam(TeamFormation tf, int lives, List<Board> boards) {
     super(tf.getName());

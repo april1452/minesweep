@@ -44,8 +44,12 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
    * The constructor.
    *
    * @param grid Allows you to specify a grid.
+   * 
+   * @param neighborTile A table that contains neighbors mapped to a certain
+   * spot on the board.
    */
-  public RectangularBoard(Tile[][] grid, Table<Integer, Integer, List<Tile>> neighborTile) {
+  public RectangularBoard(
+      Tile[][] grid, Table<Integer, Integer, List<Tile>> neighborTile) {
     this(grid);
     this.neighborTable = neighborTile;
     assert (neighborTable != null);

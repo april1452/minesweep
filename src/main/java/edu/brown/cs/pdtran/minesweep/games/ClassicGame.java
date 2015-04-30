@@ -47,8 +47,8 @@ public class ClassicGame extends Game {
    * allowed to click. Typically, only one person is allowed to click
    * particularily in classic where score is time based.
    *
-   * @param player
-   *          Player the player whose turn it is.
+   * @param teamNumber
+   *          The number corresponding to a given team.
    * @param m
    *          The move you wish to make.
    * @return True if the game is over false otherwise.

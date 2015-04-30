@@ -15,7 +15,7 @@ public class HumanPlayer extends GamePlayer {
    * Creates an HumanPlayer with a username. This version will be used primarily
    * for testing.
    *
-   * @param username
+   * @param name
    *          A string unique to that player.
    */
   public HumanPlayer(String name) {
