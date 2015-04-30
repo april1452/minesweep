@@ -10,10 +10,19 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * A route that allows for rooms to be added to the sessions registered on
+ * the main page.
+ * @author Clayton Sanford
+ */
 public class GamesRoute implements Route {
 
   private RequestHandler handler;
 
+  /**
+   * Constructs a new GamesRoute.
+   * @param handler A RequestHandler used to get server information.
+   */
   public GamesRoute(RequestHandler handler) {
     this.handler = handler;
   }

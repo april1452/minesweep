@@ -3,9 +3,9 @@ package edu.brown.cs.pdtran.minesweep.player;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
- * Represents a possible move for the AI to take. Each tile in the board has a
- * MovePossibility corresponding to it that represents the probability of there
- * being a mine in that tile.
+ * Represents a possible move for the AI to take. Each tile in the board
+ * has a MovePossibility corresponding to it that represents the
+ * probability of there being a mine in that tile.
  * @author Clayton Sanford
  */
 public class MovePossibility {
@@ -21,11 +21,10 @@ public class MovePossibility {
 
   /**
    * Creates a MovePossibility using a given Tile from the Board.
-   * @param tile
-   *          A Tile object that is included in the Board used by the players.
-   * @param mineProbability
-   *          A double representing the likelihood that there is a mine on that
-   *          space.
+   * @param tile A Tile object that is included in the Board used by the
+   *        players.
+   * @param mineProbability A double representing the likelihood that there
+   *        is a mine on that space.
    */
   public MovePossibility(Tile tile, double mineProbability) {
     this.tile = tile;
@@ -53,8 +52,8 @@ public class MovePossibility {
 
   /**
    * Gets the probability of a mine being in that tile.
-   * @return A double with 1.0 being certainty that there is a mine and 0.0 being
-   *         certainty that there is not a mine.
+   * @return A double with 1.0 being certainty that there is a mine and 0.0
+   *         being certainty that there is not a mine.
    */
   public double getMineProbability() {
     return mineProbability;
@@ -62,9 +61,8 @@ public class MovePossibility {
 
   /**
    * Sets the probability of a mine being in that tile.
-   * @param mineProbability
-   *          A double with 1.0 being certainty that there is a mine and 0.0
-   *          being certainty that there is not a mine.
+   * @param mineProbability A double with 1.0 being certainty that there is
+   *        a mine and 0.0 being certainty that there is not a mine.
    */
   public void setMineProbability(double mineProbability) {
     this.mineProbability = mineProbability;
@@ -83,7 +81,7 @@ public class MovePossibility {
     if (o instanceof MovePossibility) {
       MovePossibility mp = (MovePossibility) o;
       return (tile.equals(mp.getTile()) && mineProbability == mp
-        .getMineProbability());
+          .getMineProbability());
     } else {
       return false;
     }

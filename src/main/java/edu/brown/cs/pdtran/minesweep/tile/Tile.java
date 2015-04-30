@@ -1,5 +1,10 @@
 package edu.brown.cs.pdtran.minesweep.tile;
 
+/**
+ * This class contains all information needed for Tiles to be components of
+ * Board objects.
+ * @author Clayton Sanford
+ */
 public class Tile implements Cloneable {
   /**
    * Whether or not the tile contains a bomb.
@@ -24,19 +29,14 @@ public class Tile implements Cloneable {
 
   /**
    * Default constructor for a Tile.
-   * @param bomb
-   *          Boolean representing if tile is a bomb.
-   * @param adjacent
-   *          Count for number of adjacent bombs.
-   * @param visit
-   *          Whether or not the tile has been visited.
-   * @param x
-   *          The row value of the tile.
-   * @param y
-   *          The column value of the tile.
+   * @param bomb Boolean representing if tile is a bomb.
+   * @param adjacent Count for number of adjacent bombs.
+   * @param visit Whether or not the tile has been visited.
+   * @param x The row value of the tile.
+   * @param y The column value of the tile.
    */
   public Tile(final boolean bomb, final int adjacent, final boolean visit,
-    final int x, final int y) {
+      final int x, final int y) {
     this.isBomb = bomb;
     this.adjacentBombs = adjacent;
     this.visited = visit;
@@ -45,7 +45,7 @@ public class Tile implements Cloneable {
   }
 
   /**
-   * Adds a bomb to the Tile
+   * Adds a bomb to the Tile.
    */
   public void makeBomb() {
     isBomb = true;
@@ -59,9 +59,8 @@ public class Tile implements Cloneable {
   }
 
   /**
-   * determines the number of adjacent bombs
-   * @param num
-   *          The number of adjacent bombs to the tile
+   * Determines the number of adjacent bombs.
+   * @param num The number of adjacent bombs to the tile.
    */
   public void setAdjacentBombs(final int num) {
     adjacentBombs = num;
@@ -102,6 +101,11 @@ public class Tile implements Cloneable {
     return column;
   }
 
+  /**
+   * Checks if two Tile objects are equal.
+   * @param tile2 A second Tile object.
+   * @return True if the two Tiles are equal.
+   */
   public Boolean equals(Tile tile2) {
     return (row == tile2.getRow() && column == tile2.getColumn());
   }
@@ -113,18 +117,16 @@ public class Tile implements Cloneable {
 
   /*
    * (non-Javadoc)
-   * 
    * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
     return "Tile [isBomb=" + isBomb + ", adjacentBombs=" + adjacentBombs
-      + ", visited=" + visited + ", row=" + row + ", column=" + column + "]";
+        + ", visited=" + visited + ", row=" + row + ", column=" + column + "]";
   }
 
   /*
    * (non-Javadoc)
-   * 
    * @see java.lang.Object#hashCode()
    */
   @Override
@@ -141,7 +143,6 @@ public class Tile implements Cloneable {
 
   /*
    * (non-Javadoc)
-   * 
    * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override

@@ -10,10 +10,18 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * Creates a Room using information from entered on the setup page.
+ * @author Clayton Sanford
+ */
 public class CreateRoomRoute implements Route {
 
   private RequestHandler handler;
 
+  /**
+   * Constructs a new CreateRoomRoute.
+   * @param handler A RequestHandler used to get server information.
+   */
   public CreateRoomRoute(RequestHandler handler) {
     this.handler = handler;
   }
@@ -26,12 +34,11 @@ public class CreateRoomRoute implements Route {
     String gameModeString = params.value("gameMode");
     String boardTypeString = params.value("boardType");
     GameMode gameMode = GameMode.valueOf(gameModeString);
-    BoardType mode = BoardType.valueOf(boardTypeString);
-    BoardType boardType = BoardType.valueOf()
+    BoardType boardType = BoardType.valueOf(boardTypeString);
 
-        // HARDCODED FOR NOW
-        int[] boardDims = {10, 10};
-    GameSpecs specs = new GameSpecs(gameMode, 1, BoardType.DEFAULT, boardDims);
+    // HARDCODED FOR NOW
+    int[] boardDims = {10, 10};
+    GameSpecs specs = new GameSpecs(gameMode, 1, boardType, boardDims);
 
     PreRoom room = new PreRoom("Room name.", specs);
 

@@ -9,10 +9,18 @@ import spark.Request;
 import spark.Response;
 import spark.TemplateViewRoute;
 
+/**
+ * A route that creates the home page.
+ * @author Clayton Sanford
+ */
 public class HomeRoute implements TemplateViewRoute {
 
   RequestHandler handler;
 
+  /**
+   * Constructs a new HomeRoute.
+   * @param handler A RequestHandler used to get server information.
+   */
   public HomeRoute(RequestHandler handler) {
     this.handler = handler;
   }

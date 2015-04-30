@@ -11,6 +11,11 @@ import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 public class AIGamer extends Gamer {
   private int difficulty;
 
+  /**
+   * Constructs an AIGamer.
+   * @param name A string for each AIGamer.
+   * @param difficulty An integer representing the difficulty of an AI.
+   */
   public AIGamer(String name, int difficulty) {
     super(name);
     this.difficulty = difficulty;

@@ -20,14 +20,10 @@ public class GameSpecs {
 
   /**
    * Create game specifications.
-   * @param mode
-   *          game mode (c, fsu, lay, path, terr)
-   * @param matches
-   *          number of matches/rounds to be played
-   * @param shape
-   *          board shape
-   * @param dims
-   *          board dimensions
+   * @param mode game mode (c, fsu, lay, path, terr)
+   * @param matches number of matches/rounds to be played
+   * @param shape board shape
+   * @param dims board dimensions
    */
   public GameSpecs(GameMode mode, int matches, BoardType shape, int[] dims) {
     this.mode = mode;
@@ -39,14 +35,27 @@ public class GameSpecs {
     this.boardDims = dims;
   }
 
+  /**
+   * Gets the number of lives each team starts with.
+   * @return An integer representing the number of lives.
+   */
   public int getTeamLives() {
     return teamLives;
   }
 
+  /**
+   * Gets the number of allowed teams for the game.
+   * @return An integer representing total number of possible teams.
+   */
   public int getNumTeams() {
     return numTeams;
   }
 
+  /**
+   * Gets the number of players per team.
+   * @return An integer representing the number of players allowed on a
+   *         team.
+   */
   public int getNumTeamPlayers() {
     return numTeamPlayers;
   }

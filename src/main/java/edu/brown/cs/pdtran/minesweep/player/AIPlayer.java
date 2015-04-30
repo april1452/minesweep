@@ -11,8 +11,8 @@ import edu.brown.cs.pdtran.minesweep.options.PlayerType;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
- * This class represents the AI that controls what moves the AI makes and how it
- * releases those moves.
+ * This class represents the AI that controls what moves the AI makes and
+ * how it releases those moves.
  * @author Clayton Sanford
  */
 public class AIPlayer extends GamePlayer {
@@ -29,17 +29,17 @@ public class AIPlayer extends GamePlayer {
   private static final int MAX_DIFFICULTY = 10;
   private static final double MISTAKE_MULTIPLIER = .01;
   private static final double FLAG_PROBABILITY = .3;
+  private static final double RANDOM_SUBTRACTOR = .5;
+  private static final double CUTOFF_PROBABILITY = .5;
 
   /**
-   * Creates an AIPlayer with a username and a difficulty. This version will be
-   * used primarily for testing.
-   * @param username
-   *          A string unique to that player.
-   * @param difficulty
-   *          An integer from 1 to 10 with 10 being the most difficult.
-   * @param data
-   *          The BoardData object used by the AI to determine good moves to
-   *          make.
+   * Creates an AIPlayer with a username and a difficulty. This version
+   * will be used primarily for testing.
+   * @param username A string unique to that player.
+   * @param difficulty An integer from 1 to 10 with 10 being the most
+   *        difficult.
+   * @param data The BoardData object used by the AI to determine good
+   *        moves to make.
    */
   public AIPlayer(String username, int difficulty, BoardData data) {
     super(username);
@@ -61,15 +61,16 @@ public class AIPlayer extends GamePlayer {
 
   /**
    * Specifies how the AI thread makes moves in real time. The AI waits a
-   * specified amount of time with a degree of randomness and then makes a move.
-   * By random number, the AI will either touch a space without a mine, place a
-   * flag, or make a mistake. The cycle repeats until the game is over.
+   * specified amount of time with a degree of randomness and then makes a
+   * move. By random number, the AI will either touch a space without a
+   * mine, place a flag, or make a mistake. The cycle repeats until the
+   * game is over.
    */
   public void play() {
     while (canPlay) {
       try {
         int moveTimeRandomness =
-          (int) Math.round((Math.random() - .5) * moveTime);
+            (int) Math.round((Math.random() - RANDOM_SUBTRACTOR) * moveTime);
         Thread.sleep(moveTime + moveTimeRandomness);
 
         generateMovePossibilities();
@@ -119,10 +120,10 @@ public class AIPlayer extends GamePlayer {
           List<Tile> adjacentTiles = board.getAdjacentTiles(h, w);
           adjacentTiles.remove(currentTile);
           MineBlock mb1 =
-            blockFromTile(currentTile.getAdjacentBombs(),
-              board.getAdjacentTiles(h, w));
+              blockFromTile(currentTile.getAdjacentBombs(),
+                  board.getAdjacentTiles(h, w));
           Boolean needsCheck = true;
-          while (needsCheck == true) {
+          while (needsCheck) {
             needsCheck = false;
             MineBlock remove = null;
             for (MineBlock mb2 : blocks) {
@@ -161,7 +162,7 @@ public class AIPlayer extends GamePlayer {
           boolean contained = false;
           for (MovePossibility uncertainMp : uncertain) {
             if (uncertainMp.getXCoord() == mp.getXCoord()
-              && uncertainMp.getYCoord() == mp.getYCoord()) {
+                && uncertainMp.getYCoord() == mp.getYCoord()) {
               contained = true;
               if (uncertainMp.getMineProbability() < probability) {
                 uncertain.remove(uncertainMp);
@@ -212,7 +213,7 @@ public class AIPlayer extends GamePlayer {
           probability = m.getMineProbability();
         }
       }
-      if (!(currentMove == null) && probability <= .5) {
+      if (!(currentMove == null) && probability <= CUTOFF_PROBABILITY) {
         likliest = currentMove;
       } else {
         return randomTile();
@@ -265,7 +266,8 @@ public class AIPlayer extends GamePlayer {
 
   /**
    * Gets the list of MovePossibilities that may or may not contain mines.
-   * @return the list of MovePossibilities that may or may not contain mines.
+   * @return the list of MovePossibilities that may or may not contain
+   *         mines.
    */
   public List<MovePossibility> getUncertain() {
     return uncertain;

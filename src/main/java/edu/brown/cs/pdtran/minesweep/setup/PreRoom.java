@@ -8,6 +8,11 @@ import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.metagame.Session;
 import edu.brown.cs.pdtran.minesweep.options.SessionType;
 
+/**
+ * This class contains data for the Room information before the room is
+ * ready to be played.
+ * @author Clayton Sanford
+ */
 public class PreRoom extends Session {
   private String host;
   private ConcurrentMap<String, TeamFormation> teams;
@@ -15,10 +20,8 @@ public class PreRoom extends Session {
   /**
    * Create a room that has been processed from the GUI. This room contains
    * specs that will be used to create an actual game.
-   * @param name
-   *          The string corresponding to the name of the game.
-   * @param specs
-   *          The specifications for the room from the Setup page.
+   * @param name The string corresponding to the name of the game.
+   * @param specs The specifications for the room from the Setup page.
    */
   public PreRoom(String name, GameSpecs specs) {
     super(name, specs);
@@ -33,6 +36,13 @@ public class PreRoom extends Session {
     return teams;
   }
 
+  /**
+   * Adds a Gamer to a TeamFormation object in the Room.
+   * @param id A unique string for the Gamer being added.
+   * @param g A Gamer to be added to a TeamFormation object.
+   * @return The id corresponding to the TeamFormation object the Gamer was
+   *         added to.
+   */
   public synchronized String addGamer(String id, Gamer g) {
     for (Map.Entry<String, TeamFormation> entry : teams.entrySet()) {
       TeamFormation tf = entry.getValue();
