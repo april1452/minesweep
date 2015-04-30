@@ -19,6 +19,8 @@ public class GameAlreadyStartedException extends Exception {
   /**
    * Constructs the exception detailed in the class comments with a specified
    * message.
+   * @param message Represents the message to be returned if the exception is
+   *        raised.
    */
   public GameAlreadyStartedException(String message) {
     super(message);

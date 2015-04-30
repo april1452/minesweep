@@ -12,11 +12,23 @@ import freemarker.template.Configuration;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
 
+/**
+ * The class that represents the Metagame, which is the first thing
+ * activated by the Main class. It allows for multiple games at once to be
+ * run at the same time.
+ * @author Clayton Sanford
+ */
 public class Metagame {
 
   private static final String FREEMARKER_LOCATION =
-    "src/main/resources/spark/template/freemarker";
+      "src/main/resources/spark/template/freemarker";
 
+  /**
+   * Constructs a Metagame object.
+   * @param httpPort An integer representing the port value for HTTP.
+   * @param wsPort An integer representing the port value for WebSockets.
+   * @throws IOException Thrown if there are errors with IO.
+   */
   public Metagame(int httpPort, int wsPort) throws IOException {
     RequestHandler handler = new RequestHandler();
 
@@ -45,7 +57,7 @@ public class Metagame {
       config.setDirectoryForTemplateLoading(templates);
     } catch (IOException ioe) {
       System.out.printf("ERROR: Unable use %s for template loading.\n",
-        templates);
+          templates);
       System.exit(1);
     }
     return new FreeMarkerEngine(config);
