@@ -88,7 +88,7 @@ public class GameServer extends WebSocketServer {
           updateBoards(sessionId);
         } catch (NoSuchSessionException e) {
           System.out
-              .println("Could not find room (perhaps it was already started?).");
+          .println("Could not find room (perhaps it was already started?).");
         }
         break;
       case "makeMove":

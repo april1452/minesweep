@@ -8,6 +8,12 @@ import com.google.gson.JsonParser;
 import edu.brown.cs.pdtran.minesweep.options.SessionType;
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 
+/**
+ * Contains information necessary in a room to produce a game from it: the
+ * name of the room, the type of session, the game specifications, and the
+ * teams.
+ * @author Clayton Sanford
+ */
 public class RoomInfo {
   private String roomName;
   private SessionType sessionType;
@@ -15,6 +21,14 @@ public class RoomInfo {
   private Map<String, TeamInfo> teams;
   private static final Gson GSON = new Gson();
 
+  /**
+   * Constructs a RoomInfo object.
+   * @param roomName The name of the room to join.
+   * @param sessionType An enum representing whether it is in setup or in
+   *        game.
+   * @param gameSpecs The GameSpecs object defined before making the room.
+   * @param teams The Map linking unique id strings to TeamInfo objects.
+   */
   public RoomInfo(String roomName, SessionType sessionType,
       GameSpecs gameSpecs, Map<String, TeamInfo> teams) {
     this.roomName = roomName;
@@ -23,22 +37,46 @@ public class RoomInfo {
     this.teams = teams;
   }
 
+  /**
+   * Gets the name of the room.
+   * @return A string representing the room's name.
+   */
   public String getRoomName() {
     return roomName;
   }
 
+  /**
+   * Gets whether the session is in game or in setup.
+   * @return An enum, SessionType, regarding whether it's in game or in
+   *         setup.
+   */
   public SessionType getSessionType() {
     return sessionType;
   }
 
+  /**
+   * Gets the specifications for the game.
+   * @return The GameSpecs object contained in the RoomInfo object.
+   */
   public GameSpecs getGameSpecs() {
     return gameSpecs;
   }
 
+  /**
+   * Gets the teams that are in the room.
+   * @return A map of unique ids to TeamInfo objects of the teams in the
+   *         room.
+   */
   public Map<String, TeamInfo> getTeams() {
     return teams;
   }
 
+  /**
+   * Gets the RoomInfo object in the form of a JsonObject to be sent to the
+   * frontend.
+   * @return A JsonObject that contains all information contained the
+   *         RoomInfo object.
+   */
   public JsonObject toJson() {
     // JsonObject roomJson = new JsonObject();
     // roomJson.addProperty("roomName", getRoomName());
