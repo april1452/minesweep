@@ -19,9 +19,9 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 /**
  * The class that represents code needed for the classic game mode.
  * <p>
- * In this game mode, each team solves a copy of the same board, and the
- * winning team either is the team that lasts the longest or is the team that
- * finishes its board fist.
+ * In this game mode, each team solves a copy of the same board, and the winning
+ * team either is the team that lasts the longest or is the team that finishes
+ * its board fist.
  * @author Clayton Sanford
  */
 public class ClassicGame extends Game {
@@ -31,8 +31,8 @@ public class ClassicGame extends Game {
   private static final int MILLISECONDS = 1000;
 
   /**
-   * A constructor for a ClassicGame
-   * @param room Uses a room with game information to generate the game object
+   * A constructor for a ClassicGame.
+   * @param room Uses a room with game information to generate the game object.
    */
   public ClassicGame(PreRoom room) {
     super(room.getName(), room.getSpecs());
@@ -45,7 +45,7 @@ public class ClassicGame extends Game {
         copy.add(board.clone());
       }
       teams.put(entry.getKey(),
-        new PlayerTeam(entry.getValue(), specs.getTeamLives(), copy));
+          new PlayerTeam(entry.getValue(), specs.getTeamLives(), copy));
     }
 
   }
@@ -59,10 +59,8 @@ public class ClassicGame extends Game {
    * This is a player method for turnless play. The referee determines who is
    * allowed to click. Typically, only one person is allowed to click
    * particularily in classic where score is time based.
-   * @param teamNumber
-   *          The number corresponding to a given team.
-   * @param m
-   *          The move you wish to make.
+   * @param teamNumber The number corresponding to a given team.
+   * @param m The move you wish to make.
    * @return True if the game is over; false otherwise.
    */
   @Override
