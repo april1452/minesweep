@@ -24,7 +24,6 @@ public class Tile implements Cloneable {
 
   /**
    * Default constructor for a Tile.
-   *
    * @param bomb
    *          Boolean representing if tile is a bomb.
    * @param adjacent
@@ -61,7 +60,6 @@ public class Tile implements Cloneable {
 
   /**
    * determines the number of adjacent bombs
-   *
    * @param num
    *          The number of adjacent bombs to the tile
    */

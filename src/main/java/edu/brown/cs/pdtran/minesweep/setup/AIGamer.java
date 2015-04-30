@@ -6,7 +6,6 @@ import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 
 /**
  * Represents an AI gamer. Turned into AIPlayer in game.
- *
  * @author pdtran
  */
 public class AIGamer extends Gamer {
@@ -19,7 +18,6 @@ public class AIGamer extends Gamer {
 
   /**
    * Return AI difficulty level. The higher the level, the smarter the AI.
-   *
    * @return AI difficulty level
    */
   public int getDifficulty() {

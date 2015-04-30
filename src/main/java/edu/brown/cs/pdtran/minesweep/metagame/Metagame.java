@@ -36,7 +36,6 @@ public class Metagame {
 
   /**
    * createEngine creates the FreeMarker engine.
-   *
    * @return a freemarker engine
    */
   private static FreeMarkerEngine createEngine() {

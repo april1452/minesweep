@@ -15,9 +15,7 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
  * DefaultBoard is the classic minesweeper board.
- *
  * @author agokasla
- *
  */
 public class DefaultBoard implements Board, Cloneable {
 
@@ -35,7 +33,6 @@ public class DefaultBoard implements Board, Cloneable {
 
   /**
    * The constructor that provide the necessary seed information.
-   *
    * @param width
    *          The width of the board.
    * @param height
@@ -53,7 +50,6 @@ public class DefaultBoard implements Board, Cloneable {
   /**
    * This board constructor allows you to specify the grid. You may find it
    * useful for testing.
-   *
    * @param grid
    *          The grid that you get to specify.
    */
@@ -136,7 +132,6 @@ public class DefaultBoard implements Board, Cloneable {
 
   /**
    * Gets the tile at the specified point.
-   *
    * @param row
    *          The specified row.
    * @param col
@@ -149,7 +144,6 @@ public class DefaultBoard implements Board, Cloneable {
 
   /**
    * Sets the tile at the specified row.
-   *
    * @param tile
    *          The tile you want to swap.
    * @param row
@@ -164,7 +158,6 @@ public class DefaultBoard implements Board, Cloneable {
   /**
    * Gets the tile adjacent to the one at the speciifed row and col. NOTE: You
    * must override this method if you want to change the geometry of the board.
-   *
    * @param row
    *          The row of tile you want.
    * @param col
@@ -272,7 +265,6 @@ public class DefaultBoard implements Board, Cloneable {
 
   /**
    * Tells you if it's within the board.
-   *
    * @param x
    *          The x position.
    * @param y

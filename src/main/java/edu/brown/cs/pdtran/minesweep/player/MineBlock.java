@@ -10,9 +10,7 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
  * number of mines. As such, it contains a set of tiles and an integer of mines
  * contained. These sets can then have other sets be "subtracted" from it to
  * simplify the blocks and localize the mines.
- * 
  * @author Clayton Sanford
- *
  */
 public class MineBlock {
 
@@ -22,7 +20,6 @@ public class MineBlock {
   /**
    * Creates a MineBlock that represents a certain number of mines contained in
    * a set of tiles.
-   * 
    * @param tiles
    *          A Set containing Tile objects that have the possibility of having
    *          a mine.
@@ -36,7 +33,6 @@ public class MineBlock {
 
   /**
    * Gets the set of tiles surrounding that the mines could be in.
-   * 
    * @return A copy of the set of tiles.
    */
   public Set<Tile> getTiles() {
@@ -47,7 +43,6 @@ public class MineBlock {
 
   /**
    * Gets the number of mines within the block.
-   * 
    * @return An integer representing the number of mines in the block.
    */
   public int getNumMines() {
@@ -57,7 +52,6 @@ public class MineBlock {
   /**
    * Checks if the current MineBlock "contains" another MineBlock, which is true
    * if all elements of the second MineBlock are in the first one.
-   * 
    * @param block2
    *          A MineBlock to check if it is contained in the current one.
    * @return A Boolean that evaluates to true if block2 is contained in the
@@ -76,7 +70,6 @@ public class MineBlock {
    * "Subtracts" a block that is contained in the current block from the current
    * one by removing all common elements from the current block and subtracting
    * the number of mines by the number in block2.
-   * 
    * @param block2
    *          A MineBlock that is contained in the current block.
    */

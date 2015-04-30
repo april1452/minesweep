@@ -5,16 +5,13 @@ import edu.brown.cs.pdtran.minesweep.options.PlayerType;
 /**
  * This class represents what a human player controls when playing the game.
  * This gives the play the ability to make moves.
- *
  * @author Clayton Sanford
- *
  */
 public class HumanPlayer extends GamePlayer {
 
   /**
    * Creates an HumanPlayer with a username. This version will be used primarily
    * for testing.
-   *
    * @param name
    *          A string unique to that player.
    */
@@ -53,7 +50,6 @@ public class HumanPlayer extends GamePlayer {
 
   /**
    * Sets up the command to place a flag at a given tile.
-   *
    * @param x
    *          An integer representing the x-coordinate.
    * @param y
@@ -66,7 +62,6 @@ public class HumanPlayer extends GamePlayer {
 
   /**
    * Sets up the command to check a given tile for a mine.
-   *
    * @param x
    *          An integer representing the x-coordinate.
    * @param y

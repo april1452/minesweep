@@ -13,9 +13,7 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 
 /**
  * Represents a Team of Players that works together in a game of Minesweep.
- *
  * @author Clayton
- *
  */
 public class PlayerTeam extends Team implements BoardData {
 
@@ -29,7 +27,6 @@ public class PlayerTeam extends Team implements BoardData {
 
   /**
    * Creates a new Team to last through a game.
-   *
    * @param tf
    *          A TeamFormation object that contains the information necessary to
    *          create a team.
@@ -61,7 +58,6 @@ public class PlayerTeam extends Team implements BoardData {
   /**
    * Searches for the id for a player and removes that player from the team and
    * from play.
-   *
    * @param id
    *          A unique string for a player on the team.
    */
@@ -71,7 +67,6 @@ public class PlayerTeam extends Team implements BoardData {
 
   /**
    * Gets the team's score.
-   *
    * @return An integer representing the total score of all the players on a
    *         team.
    */
@@ -103,7 +98,6 @@ public class PlayerTeam extends Team implements BoardData {
 
   /**
    * Gets the number of lives remaining.
-   *
    * @return An int representing the number of lives left.
    */
   public int getLives() {
@@ -123,7 +117,6 @@ public class PlayerTeam extends Team implements BoardData {
 
   /**
    * Checks if the team is the winning team.
-   *
    * @return A Boolean that is true if the team is the winner and false if the
    *         team is the loser or if the game is not over.
    */
@@ -144,7 +137,6 @@ public class PlayerTeam extends Team implements BoardData {
 
   /**
    * Checks if the team is the losing team.
-   *
    * @return A Boolean that is true if the team is the loser and false if the
    *         team is the winner or if the game is not over.
    */

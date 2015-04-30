@@ -4,9 +4,7 @@ package edu.brown.cs.pdtran.minesweep.player;
  * This class's objects are used to communicate a player's wish to place a flag
  * on a certain tile to the network. These flags have no impact on gameplay, but
  * can be seen on the board.
- * 
  * @author Clayton
- *
  */
 public class FlagTile implements Move {
 
@@ -15,7 +13,6 @@ public class FlagTile implements Move {
 
   /**
    * Constructs a FlagTile object.
-   * 
    * @param xCoord
    *          An integer representing the tile's x-coordinate.
    * @param yCoord

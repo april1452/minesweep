@@ -9,9 +9,7 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
  * This class adds an interesting element by linking some Tiles on the board.
- *
  * @author agokasla
- *
  */
 public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
 
@@ -29,7 +27,6 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
 
   /**
    * The constructor.
-   *
    * @param grid
    *          Allows you to specify a grid.
    */
@@ -41,10 +38,8 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
 
   /**
    * The constructor.
-   *
    * @param grid
    *          Allows you to specify a grid.
-   * 
    * @param neighborTile
    *          A table that contains neighbors mapped to a certain spot on the
    *          board.
@@ -58,7 +53,6 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
 
   /**
    * Reconfigures the grid as you see fit.
-   *
    * @param mergeNum
    *          The number you wish to merge together.
    */

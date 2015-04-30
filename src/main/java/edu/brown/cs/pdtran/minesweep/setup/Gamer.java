@@ -7,7 +7,6 @@ import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 /**
  * Represents pregame/setup phase gamer. Turned into a Player object once game
  * begins.
- *
  * @author pdtran
  */
 public abstract class Gamer extends Player {

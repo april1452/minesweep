@@ -7,9 +7,7 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
  * This class implements triangular boards for iterations to the game.
- *
  * @author agokasla
- *
  */
 public class TriangularBoard extends DefaultBoard implements Board, Cloneable {
 
@@ -22,7 +20,6 @@ public class TriangularBoard extends DefaultBoard implements Board, Cloneable {
 
   /**
    * The Constructor.
-   *
    * @param grid
    *          the tile grid. Use only for testing.
    */

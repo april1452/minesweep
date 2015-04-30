@@ -8,9 +8,7 @@ import edu.brown.cs.pdtran.minesweep.metagame.Team;
 /**
  * Pregame/setup phase team. Sets up a team of Gamers who will be turned into a
  * team of Player objects in game.
- *
  * @author pdtran
- *
  */
 public class TeamFormation extends Team {
 
@@ -18,7 +16,6 @@ public class TeamFormation extends Team {
 
   /**
    * Create team formation.
-   *
    * @param name
    *          The name of the specified team.
    */
