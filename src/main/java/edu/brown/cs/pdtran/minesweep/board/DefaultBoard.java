@@ -272,11 +272,11 @@ public class DefaultBoard implements Board, Cloneable {
   }
 
   @Override
-  public Board clone() {
-    DefaultBoard board = new DefaultBoard(Arrays.copyOf(grid, grid.length));
+  public DefaultBoard clone() {
+    DefaultBoard board = new DefaultBoard();
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
-        board.setTile(grid[i][j].getCopy(), i, j);
+        board.setTile(grid[i][j].clone(), i, j);
       }
     }
     return board;

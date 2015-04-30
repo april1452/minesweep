@@ -1,25 +1,16 @@
-<!DOCTYPE html>
-    <html>
-        <head>
-            <meta charset="utf-8">
-            <title>${title}</title>  
-            <link rel="stylesheet" href="/css/normalize.css">
-            <link rel="stylesheet" href="/css/html5bp.css">
-        </head>
+<#assign body>
         
-        <body>
-        
-        <div id="usernameBox">
-        
-        </div>
-        
-        <button type="button" id="start">Start Game!</button>
-        
+<div id="usernameBox">
+
+</div>
+
+<button type="button" id="start">Start Game!</button>
+
         <canvas id="board"></canvas>
+
+<script src="/js/play.js"></script>    
+</#assign>
+<#include "layout.ftl">
         
-        </body>
-        
-        <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
-        <script src="../js/play.js"></script>
-        <script src="../js/js.cookie.js"></script>
-    </html>
+
+>>>>>>> b6045592d7c666d5e8be32efab82f3208ce90f7d

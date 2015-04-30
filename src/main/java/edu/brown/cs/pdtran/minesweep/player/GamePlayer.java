@@ -47,6 +47,10 @@ public abstract class GamePlayer extends Player {
   public void endPlay() {
     canPlay = false;
   }
+  
+  public void beginPlay() {
+    canPlay = true;
+  }
 
   public void makeMove() {
 

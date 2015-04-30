@@ -1,14 +1,12 @@
-updateLoop();
-
 getGames();
 
-var clicked;
-var currentForm;// = document.createElement("form");
-var currentButton;
+$("#refresh").click(function() {
+    getGames();
+});
 
-function updateLoop() {
-    window.setInterval("getGames()", 500);
-}
+var clicked;
+var currentForm;
+var currentButton;
 
 function getGames() {
     $.get("/games", function(responseJSON) {
@@ -86,12 +84,6 @@ document.getElementById("gamesList").addEventListener("click",function(e) {
     }
 });
 
-/*document.getElementById("joinForm").submit(function(event) {
-    console.log("Here we go!");
-    event.preventDefault();
-    document.cookie = "minesweepRoomId=" + currentForm.childNodes[0].id;
-    window.location.href = "/play";
-});*/
 
 $("[value='Join Game']").click(function() {
     console.log("Hello");

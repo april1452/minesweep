@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.options.PlayerType;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
@@ -60,11 +61,34 @@ public class AIPlayer extends GamePlayer {
     // TODO Auto-generated method stub
   }
 
+  public void play() {
+    while (canPlay) {
+      try {
+        int moveTimeRandomness =
+            (int) Math.round((Math.random() - .5) * moveTime);
+        Thread.sleep(moveTime + moveTimeRandomness);
+
+        generateMovePossibilities();
+        double moveChoice = Math.random();
+        if (moveChoice < mistakeProbability) {
+          makeMove(randomTile());
+        } else if (moveChoice < mistakeProbability + FLAG_PROBABILITY) {
+          makeMove(setFlag());
+        } else {
+          makeMove(checkTile());
+        }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
   private void generateMovePossibilities() {
     certainMine = new ArrayList<>();
     certainNotMine = new ArrayList<>();
     uncertain = new ArrayList<>();
     List<MineBlock> blocks = new ArrayList<>();
+    Board board = boardData.getCurrentBoard();
     int width = board.getWidth();
     int height = board.getHeight();
 
@@ -93,11 +117,6 @@ public class AIPlayer extends GamePlayer {
           MineBlock mb1 =
             blockFromTile(currentTile.getAdjacentBombs(),
               board.getAdjacentTiles(h, w));
-          /*
-           * System.out.println(mb1.getNumMines()); for (Tile adj:
-           * mb1.getTiles()) { System.out.println(adj.getRow() + " " +
-           * adj.getColumn()); } System.out.println(" ");
-           */
           Boolean needsCheck = true;
           while (needsCheck == true) {
             needsCheck = false;
@@ -105,12 +124,6 @@ public class AIPlayer extends GamePlayer {
             for (MineBlock mb2 : blocks) {
               if (mb2.contains(mb1)) {
                 mb2.subtract(mb1);
-                /*
-                 * System.out.println("Subtract FROM");
-                 * System.out.println(mb2.getNumMines()); for (Tile adj:
-                 * mb2.getTiles()) { System.out.println(adj.getRow() + " " +
-                 * adj.getColumn()); } System.out.println(" ");
-                 */
                 needsCheck = true;
                 if (mb2.getTiles().isEmpty()) {
                   remove = mb2;
@@ -118,12 +131,6 @@ public class AIPlayer extends GamePlayer {
                 }
               } else if (mb1.contains(mb2)) {
                 mb1.subtract(mb2);
-                /*
-                 * System.out.println("Subtract");
-                 * System.out.println(mb1.getNumMines()); for (Tile adj:
-                 * mb1.getTiles()) { System.out.println(adj.getRow() + " " +
-                 * adj.getColumn()); } System.out.println(" ");
-                 */
                 if (mb1.getTiles().isEmpty()) {
                   break;
                 }
@@ -139,10 +146,6 @@ public class AIPlayer extends GamePlayer {
 
     // Converts MineBlocks to MovePossibilities
     for (MineBlock mb : blocks) {
-      /*
-       * System.out.println(mb.getNumMines()); for (Tile adj: mb.getTiles()) {
-       * System.out.println(adj.getRow() + " " + adj.getColumn()); }
-       */
       double probability = (double) mb.getNumMines() / mb.getTiles().size();
       for (Tile adj : mb.getTiles()) {
         MovePossibility mp = new MovePossibility(adj, probability);
@@ -208,7 +211,7 @@ public class AIPlayer extends GamePlayer {
       if (!(currentMove == null) && probability <= .5) {
         likliest = currentMove;
       } else {
-        // Put random undiscovered move here
+        return randomTile();
       }
     }
     return new CheckTile(likliest.getXCoord(), likliest.getYCoord());
@@ -219,30 +222,8 @@ public class AIPlayer extends GamePlayer {
     if (!uncertain.isEmpty()) {
       randomCheck = uncertain.get(0);
       uncertain.remove(0);
-    } else {
-      // Put random undiscovered move here
     }
     return new CheckTile(randomCheck.getXCoord(), randomCheck.getYCoord());
-  }
-
-  public void play() {
-    while (canPlay) {
-      try {
-        Thread.sleep(moveTime);
-
-        generateMovePossibilities();
-        double moveChoice = Math.random();
-        if (moveChoice < mistakeProbability) {
-          makeMove(randomTile());
-        } else if (moveChoice < mistakeProbability + FLAG_PROBABILITY) {
-          makeMove(setFlag());
-        } else {
-          makeMove(checkTile());
-        }
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }
   }
 
   @Override

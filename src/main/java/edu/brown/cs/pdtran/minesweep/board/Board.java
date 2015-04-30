@@ -1,5 +1,9 @@
 package edu.brown.cs.pdtran.minesweep.board;
 
+import java.util.List;
+
+import edu.brown.cs.pdtran.minesweep.tile.Tile;
+
 /**
  * This is an interface for a standard board.
  *
@@ -59,6 +63,12 @@ public interface Board extends Cloneable {
    * @return the maximum width of the board.
    */
   int getWidth();
+  
+  int getBombCount();
+  
+  Tile getTile(int h, int w);
+  
+  List<Tile> getAdjacentTiles(int h, int w);
 
   String toJson();
 }
