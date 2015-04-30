@@ -13,9 +13,7 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
 /**
  * This class represents the AI that controls what moves the AI makes and how it
  * releases those moves.
- *
  * @author Clayton Sanford
- *
  */
 public class AIPlayer extends GamePlayer {
 
@@ -35,7 +33,6 @@ public class AIPlayer extends GamePlayer {
   /**
    * Creates an AIPlayer with a username and a difficulty. This version will be
    * used primarily for testing.
-   *
    * @param username
    *          A string unique to that player.
    * @param difficulty
@@ -252,7 +249,6 @@ public class AIPlayer extends GamePlayer {
 
   /**
    * Gets the list of MovePossibilities that are certainly mines.
-   * 
    * @return the list of MovePossibilities that are certainly mines
    */
   public List<MovePossibility> getCertainMine() {
@@ -261,7 +257,6 @@ public class AIPlayer extends GamePlayer {
 
   /**
    * Gets the list of MovePossibilities that are certainly not mines.
-   * 
    * @return the list of MovePossibilities that are certainly not mines
    */
   public List<MovePossibility> getCertainNotMine() {
@@ -270,7 +265,6 @@ public class AIPlayer extends GamePlayer {
 
   /**
    * Gets the list of MovePossibilities that may or may not contain mines.
-   * 
    * @return the list of MovePossibilities that may or may not contain mines.
    */
   public List<MovePossibility> getUncertain() {

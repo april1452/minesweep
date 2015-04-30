@@ -6,14 +6,12 @@ package edu.brown.cs.pdtran.minesweep.setup;
  * matches, board shape and dimensions, teams, players and player info (AI and
  * difficulty vs.human), and each team's lives. Returns all setup information as
  * a Room, which is processed to become a game.
- *
  * @author pdtran
  */
 public class Setup {
   /**
    * Set up game specifications and return a room representing those options.
    * Room will be used to create a game.
-   *
    * @param roomName
    *          The name of the room to be set up
    * @param specs

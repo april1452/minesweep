@@ -9,9 +9,7 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
  * This class adds an interesting element by linking some Tiles on the board.
- *
  * @author agokasla
- *
  */
 public class EntangledBoard extends DefaultBoard implements Board {
 
@@ -29,7 +27,6 @@ public class EntangledBoard extends DefaultBoard implements Board {
 
   /**
    * The constructor.
-   *
    * @param grid
    *          Allows you to specify a grid.
    */
@@ -41,7 +38,6 @@ public class EntangledBoard extends DefaultBoard implements Board {
 
   /**
    * Reconfigures the grid as you see fit.
-   *
    * @param mergeNum
    *          The number you wish to merge together.
    */

@@ -8,17 +8,18 @@ import edu.brown.cs.pdtran.minesweep.metagame.Metagame;
  * The entry-point to the program.
  * @author Clayton Snaford
  */
-public class Main {
-  
+public final class Main {
+
   private static final int HTTP_PORT = 4686;
   private static final int WEB_SOCKET_PORT = 7777;
 
-  private Main() {   
+  private Main() {
   };
 
   /**
    * Enters the program.
-   * @param args Commandline arguments.
+   * @param args
+   *          Commandline arguments.
    */
   public static void main(String[] args) {
     try {

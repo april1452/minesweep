@@ -5,9 +5,7 @@ import edu.brown.cs.pdtran.minesweep.metagame.Player;
 /**
  * This interface represents what a player controls within a game of Minesweep
  * to make moves.
- *
  * @author Clayton Sanford
- *
  */
 public abstract class GamePlayer extends Player {
 
@@ -22,7 +20,6 @@ public abstract class GamePlayer extends Player {
 
   /**
    * Gets the score corresponding to the player.
-   *
    * @return An integer representing the player's score.
    */
   public int getScore() {
@@ -31,7 +28,6 @@ public abstract class GamePlayer extends Player {
 
   /**
    * Increments the score by an entered value.
-   *
    * @param change
    *          An integer to be added to the score. Negative if points are to be
    *          lost.

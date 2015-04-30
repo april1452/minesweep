@@ -7,7 +7,6 @@ import edu.brown.cs.pdtran.minesweep.player.HumanPlayer;
 
 /**
  * Represents a human gamer. Will be turned into HumanPlayer object in game.
- *
  * @author pdtran
  */
 public class HumanGamer extends Gamer {

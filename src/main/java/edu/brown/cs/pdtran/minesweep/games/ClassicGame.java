@@ -46,7 +46,6 @@ public class ClassicGame extends Game {
    * This is a player method for turnless play. The referee determines who is
    * allowed to click. Typically, only one person is allowed to click
    * particularily in classic where score is time based.
-   *
    * @param teamNumber
    *          The number corresponding to a given team.
    * @param m

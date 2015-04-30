@@ -5,9 +5,7 @@ import edu.brown.cs.pdtran.minesweep.options.BoardType;
 /**
  * This class constructs board and boards should be constructed using this
  * class.
- *
  * @author agokasla
- *
  */
 public class BoardFactory {
 
@@ -16,7 +14,6 @@ public class BoardFactory {
 
   /**
    * This is the intended constructor to make Boards.
-   *
    * @param type
    *          The type of the board you wish to make.
    * @return The made board.
