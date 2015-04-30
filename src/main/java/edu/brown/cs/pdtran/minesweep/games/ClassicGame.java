@@ -16,11 +16,24 @@ import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 
+/**
+ * The class that represents code needed for the classic game mode.
+ * <p>
+ * In this game mode, each team solves a copy of the same board, and the
+ * winning team either is the team that lasts the longest or is the team that
+ * finishes its board fist.
+ * @author Clayton Sanford
+ */
 public class ClassicGame extends Game {
 
   private long startTime;
   private ConcurrentMap<String, PlayerTeam> teams;
+  private static final int MILLISECONDS = 1000;
 
+  /**
+   * A constructor for a ClassicGame
+   * @param room Uses a room with game information to generate the game object
+   */
   public ClassicGame(PreRoom room) {
     super(room.getName(), room.getSpecs());
     teams = new ConcurrentHashMap<String, PlayerTeam>();
@@ -50,7 +63,7 @@ public class ClassicGame extends Game {
    *          The number corresponding to a given team.
    * @param m
    *          The move you wish to make.
-   * @return True if the game is over false otherwise.
+   * @return True if the game is over; false otherwise.
    */
   @Override
   public boolean play(int teamNumber, Move m) {
@@ -65,12 +78,14 @@ public class ClassicGame extends Game {
   }
 
   /**
+   * Gets the number of moves remaining.
+   * @param player A GamePlayer object that represents a player in the game.
    * @return This will calculate how many moves are left.
    */
   @Override
   public int getGameScore(GamePlayer player) {
     int score = (int) (System.currentTimeMillis() - startTime);
-    score = score / 1000; // Number of seconds
+    score = score / MILLISECONDS; // Number of seconds
     return score;
   }
 
