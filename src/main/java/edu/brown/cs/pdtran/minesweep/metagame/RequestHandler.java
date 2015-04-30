@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentMap;
 import edu.brown.cs.pdtran.minesweep.games.Game;
 import edu.brown.cs.pdtran.minesweep.games.GameFactory;
 import edu.brown.cs.pdtran.minesweep.setup.Gamer;
-import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 
 /**
@@ -86,11 +85,10 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the requested session does
    *         not exist.
    */
-  public String joinIfAbsent(String sessionId, String userId, String name)
+  public String joinIfAbsent(String sessionId, String gamerId, Gamer g)
       throws NoSuchSessionException {
     PreRoom room = getRoom(sessionId);
-    Gamer g = new HumanGamer(name);
-    return room.addGamer(userId, g);
+    return room.addGamer(gamerId, g);
   }
 
   /**

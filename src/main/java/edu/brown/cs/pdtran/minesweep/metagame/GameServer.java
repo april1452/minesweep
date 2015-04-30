@@ -12,6 +12,8 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.brown.cs.pdtran.minesweep.board.Board;
@@ -67,6 +69,7 @@ public class GameServer extends WebSocketServer {
         String name = messageJson.get("name").getAsString();
         clients.put(userId, conn);
         try {
+          String teamId = messageJson.get("minesweepTeamId").getAsString();
           String teamId = handler.joinIfAbsent(sessionId, userId, name);
           JsonObject joinResponse = new JsonObject();
           joinResponse.addProperty("type", "joinResponse");
@@ -82,9 +85,12 @@ public class GameServer extends WebSocketServer {
           System.out.println("Could not find room.");
         }
         break;
-      // case "addAIPlayer":
-      // String teamId = messageJson.get("minesweepTeamId").getAsString();
-      //
+      case "addAIPlayer":
+        String teamId = messageJson.get("minesweepTeamId").getAsString();
+        String aiId = handler.getUserId();
+        AIGamer gamer = new AIGamer("John Jannottibot", );
+
+
 
       case "startGame":
         try {
@@ -92,7 +98,7 @@ public class GameServer extends WebSocketServer {
           updateBoards(sessionId);
         } catch (NoSuchSessionException e) {
           System.out
-              .println("Could not find room (perhaps it was already started?).");
+          .println("Could not find room (perhaps it was already started?).");
         }
         break;
       case "makeMove":
