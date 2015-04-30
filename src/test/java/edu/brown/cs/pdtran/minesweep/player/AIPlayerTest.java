@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.brown.cs.pdtran.minesweep.board.DefaultBoard;
+import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 public class AIPlayerTest {
@@ -84,7 +85,7 @@ public class AIPlayerTest {
    * find tiles guaranteed to have or not to have mines.
    */
   public void basicMoveGeneratorCheck() {
-    AIPlayer p = new AIPlayer("Clay", 5, simpleBoard);
+    AIPlayer p = new AIPlayer("Clay", 5, new BoardData(simpleBoard));
     MovePossibility mpA1 = new MovePossibility(a1, .5);
     MovePossibility mpB1 = new MovePossibility(b1, .5);
     MovePossibility mpC1 = new MovePossibility(c1, 1);
