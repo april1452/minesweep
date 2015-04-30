@@ -9,10 +9,19 @@ import spark.Request;
 import spark.Response;
 import spark.TemplateViewRoute;
 
+/**
+ * Sets up the "/play" page before other handlers set up more complicated
+ * aspects of it.
+ * @author Clayton Sanford
+ */
 public class PlayHandler implements TemplateViewRoute {
 
   private RequestHandler handler;
 
+  /**
+   * Constructs a new PlayHandler.
+   * @param handler A RequestHandler used to get server information.
+   */
   public PlayHandler(RequestHandler handler) {
     this.handler = handler;
   }

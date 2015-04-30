@@ -3,8 +3,8 @@ package edu.brown.cs.pdtran.minesweep.player;
 import edu.brown.cs.pdtran.minesweep.metagame.Player;
 
 /**
- * This interface represents what a player controls within a game of Minesweep
- * to make moves.
+ * This interface represents what a player controls within a game of
+ * Minesweep to make moves.
  * @author Clayton Sanford
  */
 public abstract class GamePlayer extends Player {
@@ -28,9 +28,8 @@ public abstract class GamePlayer extends Player {
 
   /**
    * Increments the score by an entered value.
-   * @param change
-   *          An integer to be added to the score. Negative if points are to be
-   *          lost.
+   * @param change An integer to be added to the score. Negative if points
+   *        are to be lost.
    */
   public void changeScore(int change) {
     score += change;
@@ -43,10 +42,16 @@ public abstract class GamePlayer extends Player {
     canPlay = false;
   }
 
+  /**
+   * Sets canPlay to true, meaning that the Player can make Moves.
+   */
   public void beginPlay() {
     canPlay = true;
   }
 
+  /**
+   * The player sends a move to the Game to have the move executed.
+   */
   public void makeMove() {
 
   }

@@ -6,8 +6,8 @@ import java.util.concurrent.ConcurrentMap;
 import edu.brown.cs.pdtran.minesweep.metagame.Team;
 
 /**
- * Pregame/setup phase team. Sets up a team of Gamers who will be turned into a
- * team of Player objects in game.
+ * Pregame/setup phase team. Sets up a team of Gamers who will be turned
+ * into a team of Player objects in game.
  * @author pdtran
  */
 public class TeamFormation extends Team {
@@ -16,8 +16,7 @@ public class TeamFormation extends Team {
 
   /**
    * Create team formation.
-   * @param name
-   *          The name of the specified team.
+   * @param name The name of the specified team.
    */
   public TeamFormation(String name) {
     super(name);
@@ -29,6 +28,11 @@ public class TeamFormation extends Team {
     return gamers;
   }
 
+  /**
+   * Adds a Gamer to a TeamFormation object.
+   * @param id The unique id corresponding to the Gamer being added.
+   * @param g A Gamer object to be added to the TeamFormation player map.
+   */
   public void addPlayer(String id, Gamer g) {
     gamers.putIfAbsent(id, g);
   }

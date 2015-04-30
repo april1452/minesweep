@@ -9,10 +9,18 @@ import spark.Request;
 import spark.Response;
 import spark.TemplateViewRoute;
 
+/**
+ * Sets up the "/setup" page.
+ * @author Clayton Sanford
+ */
 public class SetupHandler implements TemplateViewRoute {
 
   private RequestHandler handler;
 
+  /**
+   * Constructs a new SetupHandler.
+   * @param handler A RequestHandler used to get server information.
+   */
   public SetupHandler(RequestHandler handler) {
     this.handler = handler;
   }
