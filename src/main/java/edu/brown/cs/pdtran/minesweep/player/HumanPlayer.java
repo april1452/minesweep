@@ -1,6 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
-import edu.brown.cs.pdtran.minesweep.options.PlayerType;
+import edu.brown.cs.pdtran.minesweep.types.PlayerType;
 
 /**
  * This class represents what a human player controls when playing the game.

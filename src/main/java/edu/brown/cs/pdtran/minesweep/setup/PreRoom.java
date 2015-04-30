@@ -4,9 +4,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import edu.brown.cs.pdtran.minesweep.types.SessionType;
+
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.metagame.Session;
-import edu.brown.cs.pdtran.minesweep.options.SessionType;
 
 /**
  * This class contains data for the Room information before the room is

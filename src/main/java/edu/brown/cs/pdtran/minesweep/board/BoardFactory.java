@@ -1,6 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.board;
 
-import edu.brown.cs.pdtran.minesweep.options.BoardType;
+import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
 /**
  * This class constructs board and boards should be constructed using this

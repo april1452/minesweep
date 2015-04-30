@@ -1,4 +1,4 @@
-package edu.brown.cs.pdtran.minesweep.options;
+package edu.brown.cs.pdtran.minesweep.types;
 
 /**
  * An enum to distinguish each game type that can be played.

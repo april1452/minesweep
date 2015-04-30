@@ -1,4 +1,4 @@
-package edu.brown.cs.pdtran.minesweep.options;
+package edu.brown.cs.pdtran.minesweep.types;
 
 /**
  * An enum that represents whether a player is a human or an AI.

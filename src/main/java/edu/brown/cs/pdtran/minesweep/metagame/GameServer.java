@@ -22,8 +22,8 @@ import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 
 /**
- * This class extends WebSocketServer to create a server that multiple games can
- * be run through at once.
+ * This class extends WebSocketServer to create a server that multiple
+ * games can be run through at once.
  * @author Clayton
  */
 public class GameServer extends WebSocketServer {
@@ -82,13 +82,17 @@ public class GameServer extends WebSocketServer {
           System.out.println("Could not find room.");
         }
         break;
+      // case "addAIPlayer":
+      // String teamId = messageJson.get("minesweepTeamId").getAsString();
+      //
+
       case "startGame":
         try {
           handler.startGame(sessionId);
           updateBoards(sessionId);
         } catch (NoSuchSessionException e) {
           System.out
-          .println("Could not find room (perhaps it was already started?).");
+              .println("Could not find room (perhaps it was already started?).");
         }
         break;
       case "makeMove":
@@ -122,7 +126,7 @@ public class GameServer extends WebSocketServer {
   }
 
 
-  private void updateBoards(String sessionId) throws NoSuchSessionException {
+  public void updateBoards(String sessionId) throws NoSuchSessionException {
     JsonObject gameData = new JsonObject();
     gameData.addProperty("type", "gameData");
     for (Entry<String, PlayerTeam> teamEntry : handler.getGame(sessionId)

@@ -1,4 +1,4 @@
-package edu.brown.cs.pdtran.minesweep.options;
+package edu.brown.cs.pdtran.minesweep.types;
 
 /**
  * An enum that represents whether a Session is in setup or in-game.

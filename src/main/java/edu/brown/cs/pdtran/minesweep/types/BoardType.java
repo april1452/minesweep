@@ -1,4 +1,4 @@
-package edu.brown.cs.pdtran.minesweep.options;
+package edu.brown.cs.pdtran.minesweep.types;
 
 /**
  * The different board types you wish to make.

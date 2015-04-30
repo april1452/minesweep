@@ -19,7 +19,7 @@
         <br><br>
 
         <h3>Play mode</h3>
-        <input type="radio" name="gameMode" value="classic" checked>Classic
+        <input type="radio" name="gameMode" value="CLASSIC" checked>Classic
         <input type="radio" name="gameMode" value="layers">Layers
         <input type="radio" name="gameMode" value="territory">Territory
         <input type="radio" name="gameMode" value="paths">Paths

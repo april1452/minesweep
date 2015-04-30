@@ -5,9 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.brown.cs.pdtran.minesweep.types.PlayerType;
+
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
-import edu.brown.cs.pdtran.minesweep.options.PlayerType;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
@@ -50,14 +51,7 @@ public class AIPlayer extends GamePlayer {
     mistakeProbability = (MAX_DIFFICULTY - difficulty) * MISTAKE_MULTIPLIER;
   }
 
-  @Override
-  /**
-   * Sends a Move to the network to be processed and implemented on the board.
-   * @param move A Move to be sent.
-   */
-  public void makeMove(Move move) {
-    // TODO Auto-generated method stub
-  }
+  // TODO CHANGE JAVADOCS
 
   /**
    * Specifies how the AI thread makes moves in real time. The AI waits a
@@ -66,26 +60,26 @@ public class AIPlayer extends GamePlayer {
    * mine, place a flag, or make a mistake. The cycle repeats until the
    * game is over.
    */
-  public void play() {
-    while (canPlay) {
-      try {
-        int moveTimeRandomness =
-            (int) Math.round((Math.random() - RANDOM_SUBTRACTOR) * moveTime);
-        Thread.sleep(moveTime + moveTimeRandomness);
+  public Move getMove() {
+    // while (canPlay) {
+    // try {
+    // int moveTimeRandomness =
+    // (int) Math.round((Math.random() - RANDOM_SUBTRACTOR) * moveTime);
+    // Thread.sleep(moveTime + moveTimeRandomness);
 
-        generateMovePossibilities();
-        double moveChoice = Math.random();
-        if (moveChoice < mistakeProbability) {
-          makeMove(randomTile());
-        } else if (moveChoice < mistakeProbability + FLAG_PROBABILITY) {
-          makeMove(setFlag());
-        } else {
-          makeMove(checkTile());
-        }
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
+    generateMovePossibilities();
+    double moveChoice = Math.random();
+    if (moveChoice < mistakeProbability) {
+      return randomTile();
+    } else if (moveChoice < mistakeProbability + FLAG_PROBABILITY) {
+      return setFlag();
+    } else {
+      return checkTile();
     }
+    // } catch (InterruptedException e) {
+    // e.printStackTrace();
+    // }
+    // }
   }
 
   private void generateMovePossibilities() {

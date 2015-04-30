@@ -1,6 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
-import edu.brown.cs.pdtran.minesweep.options.PlayerType;
+import edu.brown.cs.pdtran.minesweep.types.PlayerType;
 
 /**
  * Contains information - the name and type - of a given player.

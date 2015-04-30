@@ -3,5 +3,5 @@
  * Player, and Session in other parts of the code.
  */
 
-package edu.brown.cs.pdtran.minesweep.options;
+package edu.brown.cs.pdtran.minesweep.types;
 

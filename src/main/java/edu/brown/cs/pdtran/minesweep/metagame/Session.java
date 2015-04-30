@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.options.SessionType;
+import edu.brown.cs.pdtran.minesweep.types.SessionType;
+
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 
 /**

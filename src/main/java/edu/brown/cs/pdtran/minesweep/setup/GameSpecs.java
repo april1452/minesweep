@@ -1,7 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
-import edu.brown.cs.pdtran.minesweep.options.BoardType;
-import edu.brown.cs.pdtran.minesweep.options.GameMode;
+import edu.brown.cs.pdtran.minesweep.types.BoardType;
+import edu.brown.cs.pdtran.minesweep.types.GameMode;
 
 /**
  * Specificiations for a game: game mode (classic, layers, territory, path,

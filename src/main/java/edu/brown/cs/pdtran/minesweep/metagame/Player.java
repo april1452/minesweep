@@ -1,6 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
-import edu.brown.cs.pdtran.minesweep.options.PlayerType;
+import edu.brown.cs.pdtran.minesweep.types.PlayerType;
 
 /**
  * An abstract class that represents a player in game. These can be human
