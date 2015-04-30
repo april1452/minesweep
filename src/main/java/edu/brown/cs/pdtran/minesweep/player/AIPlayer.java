@@ -283,4 +283,20 @@ public class AIPlayer extends GamePlayer {
     return null;
   }
 
+  /**
+   * Gets the difficulty of the AI.
+   * @return An integer representing the AI's difficulty.
+   */
+  public int getDifficulty() {
+    return difficulty;
+  }
+
+  /**
+   * Gets whether the AI can play.
+   * @return True if the AI can make moves.
+   */
+  public Boolean getCanPlay() {
+    return canPlay;
+  }
+
 }
