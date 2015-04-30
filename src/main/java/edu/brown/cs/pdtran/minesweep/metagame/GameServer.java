@@ -12,8 +12,6 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.brown.cs.pdtran.minesweep.board.Board;
@@ -22,6 +20,10 @@ import edu.brown.cs.pdtran.minesweep.player.CheckTile;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
+import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
+import edu.brown.cs.pdtran.minesweep.setup.Gamer;
+import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
+import edu.brown.cs.pdtran.minesweep.types.AiDifficulty;
 
 /**
  * This class extends WebSocketServer to create a server that multiple
@@ -66,11 +68,12 @@ public class GameServer extends WebSocketServer {
     String messageType = messageJson.get("type").getAsString();
     switch (messageType) {
       case "joinRoom":
-        String name = messageJson.get("name").getAsString();
-        clients.put(userId, conn);
         try {
+          String name = messageJson.get("name").getAsString();
+          clients.put(userId, conn);
           String teamId = messageJson.get("minesweepTeamId").getAsString();
-          String teamId = handler.joinIfAbsent(sessionId, userId, name);
+          Gamer gamer = new HumanGamer(name);
+          String teamId = handler.joinIfAbsent(sessionId, teamId, userId, name);
           JsonObject joinResponse = new JsonObject();
           joinResponse.addProperty("type", "joinResponse");
           joinResponse.addProperty("data", teamId);
@@ -86,10 +89,12 @@ public class GameServer extends WebSocketServer {
         }
         break;
       case "addAIPlayer":
-
+        String difficultyString = messageJson.get("difficulty").getAsString();
+        AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
         String teamId = messageJson.get("minesweepTeamId").getAsString();
         String aiId = handler.getUserId();
-        AIGamer gamer = new AIGamer("John Jannottibot", );
+        Gamer gamer = new AIGamer("John Jannottibot", aiDifficulty);
+        handler.joinIfAbsent(sessionId, teamId, aiId, gamer);
 
 
 
@@ -99,7 +104,7 @@ public class GameServer extends WebSocketServer {
           updateBoards(sessionId);
         } catch (NoSuchSessionException e) {
           System.out
-          .println("Could not find room (perhaps it was already started?).");
+              .println("Could not find room (perhaps it was already started?).");
         }
         break;
       case "makeMove":
