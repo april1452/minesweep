@@ -21,12 +21,6 @@ public class MoveRoute implements Route {
     //
     // QueryParamsMap qm = req.queryMap();
     //
-    // int row = Integer.parseInt(qm.value("row"));
-    // int col = Integer.parseInt(qm.value("column"));
-    //
-    // Move move = new CheckTile(col, row);
-    //
-    // handler.getGame(roomCookie).requestMove(teamNumber, move);
 
     return true;
   }

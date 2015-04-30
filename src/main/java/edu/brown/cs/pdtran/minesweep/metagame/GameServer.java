@@ -2,6 +2,7 @@ package edu.brown.cs.pdtran.minesweep.metagame;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.channels.NotYetConnectedException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,7 +16,10 @@ import org.java_websocket.server.WebSocketServer;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.brown.cs.pdtran.minesweep.board.Board;
+import edu.brown.cs.pdtran.minesweep.games.Game;
+import edu.brown.cs.pdtran.minesweep.player.CheckTile;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
+import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 
 public class GameServer extends WebSocketServer {
@@ -71,25 +75,26 @@ public class GameServer extends WebSocketServer {
       case "startGame":
         try {
           handler.startGame(sessionId);
-
-          JsonObject gameData = new JsonObject();
-          gameData.addProperty("type", "gameData");
-          for (Entry<String, PlayerTeam> teamEntry : handler.getGame(sessionId)
-            .getTeams().entrySet()) {
-            Board board = teamEntry.getValue().getCurrentBoard();
-            gameData.addProperty("data", board.toJson());
-            Map<String, GamePlayer> players = teamEntry.getValue().getPlayers();
-            System.out.println(players);
-            assert (players != null);
-
-            for (String playerId : players.keySet()) {
-              clients.get(playerId).send(gameData.toString());
-            }
-            gameData.remove("data");
-          }
+          updateBoards(sessionId);
         } catch (NoSuchSessionException e) {
           System.out
             .println("Could not find room (perhaps it was already started?).");
+        }
+      case "makeMove":
+        try {
+          String teamId = messageJson.get("minesweepTeamId").getAsString();
+          int row = messageJson.get("row").getAsInt();
+          int col = messageJson.get("col").getAsInt();
+
+          Move move = new CheckTile(col, row);
+
+          Game game = handler.getGame(sessionId);
+
+          game.makeMove(teamId, move);
+
+          updateBoards(sessionId);
+        } catch (NoSuchSessionException e) {
+          System.out.println("Could not find game.");
         }
     }
   }
@@ -99,6 +104,25 @@ public class GameServer extends WebSocketServer {
     List<String> users = handler.getUsers(sessionId);
     for (String id : users) {
       clients.get(id).send(message);
+    }
+  }
+
+  private void updateBoards(String sessionId) throws NotYetConnectedException,
+  NoSuchSessionException {
+    JsonObject gameData = new JsonObject();
+    gameData.addProperty("type", "gameData");
+    for (Entry<String, PlayerTeam> teamEntry : handler.getGame(sessionId)
+      .getTeams().entrySet()) {
+      Board board = teamEntry.getValue().getCurrentBoard();
+      gameData.addProperty("data", board.toJson());
+      Map<String, GamePlayer> players = teamEntry.getValue().getPlayers();
+
+      assert (players != null);
+
+      for (String playerId : players.keySet()) {
+        clients.get(playerId).send(gameData.toString());
+      }
+      gameData.remove("data");
     }
   }
 
