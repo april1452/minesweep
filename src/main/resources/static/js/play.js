@@ -11,7 +11,11 @@ var tileHeight;
 
 var _ctx;
 
-var socket = new WebSocket("ws://localhost:7777");
+var server_ip = "" + location.host;
+server_ip = server_ip.substring(0, server_ip.length - 5);
+
+var socket = new WebSocket("ws://" + server_ip + ":8080");
+
 
 socket.onopen = function(event) {
     var sendData = {
@@ -29,7 +33,7 @@ $("#start").click(function() {
             type: "startGame",
             minesweepId: $.cookie("minesweepId"),
             minesweepRoomId: $.cookie("minesweepRoomId")
-        };
+        };  
         socket.send(JSON.stringify(sendData));
     });
 });
@@ -57,14 +61,15 @@ socket.onmessage = function (event) {
     } else if (responseJson.type === "gameData") {
         init();
         drawBoard(responseJson.data);
+        $("#start").hide();
     }
 }
 
 function init() {
-        var canvasBoard = $("#board")[0];
-        canvasBoard.height = CANVAS_Y;
-        canvasBoard.width = CANVAS_X;
-        _ctx = canvasBoard.getContext("2d");
+    var canvasBoard = $("#board")[0];
+    canvasBoard.height = CANVAS_Y;
+    canvasBoard.width = CANVAS_X;
+    _ctx = canvasBoard.getContext("2d");
 }
 
 function drawBoard(responseJSON) {
@@ -78,37 +83,43 @@ function drawBoard(responseJSON) {
     
     var tiles = board.tiles;
     
-    _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
-    
-    $.each(tiles, function(index, tile) {
-        var tileX = tile.column * tileWidth;
-        var tileY = tile.row * tileHeight;
-        if (tile.visited) {
-            if(tile.isBomb) {
-                _ctx.fillStyle = BOMB;
-                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-            } else {
-                _ctx.fillStyle = EXPLORED;
-                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                _ctx.fillStyle = TEXT_COLOR;
-                _ctx.fillText(tile.adjacentBombs, tileX + 8, tileY + 12);                    
-            }
-        } else {
-            _ctx.fillStyle = UNEXPLORED;
-            _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-        }
+    console.log(board.type);
 
-    });
-    
-    for (var i = 0; i <= CANVAS_X; i+= tileWidth) {
-        for(var j = tileHeight; j <= CANVAS_Y; j += tileHeight) {
-            _ctx.moveTo(0, i);       
-            _ctx.lineTo(CANVAS_Y, i);
-            _ctx.moveTo(j, 0);
-            _ctx.lineTo(j, CANVAS_X);
-        }
-    }   
-    _ctx.stroke();
+    if (board.type == "DefaultBoard"){
+        _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
+
+        $.each(tiles, function(index, tile) {
+            var tileX = tile.column * tileWidth;
+            var tileY = tile.row * tileHeight;
+            if (tile.visited) {
+                if(tile.isBomb) {
+                    _ctx.fillStyle = BOMB;
+                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                } else {
+                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.fillStyle = TEXT_COLOR;
+                    _ctx.fillText(tile.adjacentBombs, tileX + 8, tileY + 12);                    
+                }
+            } else {
+                _ctx.fillStyle = UNEXPLORED;
+                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+            }
+
+        });
+
+        for (var i = 0; i <= CANVAS_X; i+= tileWidth) {
+            for(var j = tileHeight; j <= CANVAS_Y; j += tileHeight) {
+                _ctx.moveTo(0, i);       
+                _ctx.lineTo(CANVAS_Y, i);
+                _ctx.moveTo(j, 0);
+                _ctx.lineTo(j, CANVAS_X);
+            }
+        }   
+        _ctx.stroke();
+    } else {
+        console.log("I had a stroke. Undefined board");
+    }
 }
 
 

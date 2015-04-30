@@ -2,6 +2,7 @@ $("#createGame").submit(function(event) {
     event.preventDefault();
     var postParameters = {
         gameMode: $("input[name='gameMode']:checked").val()
+        boardType: $("input[name='boardShape']:checked").val();
     };
     console.log(postParameters)
 	$.post("/create", postParameters, function(responseJSON) {
@@ -31,6 +32,29 @@ $("[name='gameMode']").click(function() {
 			break;
 	}
 });
+
+$("[name='boardType']").click(function() {
+    hideInfo();
+    var mode = this.getAttribute("value");
+    switch(mode) {
+        case "Rectangle":
+            $("#Rectangle").show();
+            break;
+        case "Triangular":
+            $("Triangular").show();
+            break;
+        case "Territory":
+            $("#Territory").show();
+            break;
+        case "paths":
+            $("#paths").show();
+            break;
+        case "fsu":
+            $("#fsu").show();
+            break;
+    }
+});
+
 
 function hideInfo() {
 	$("#classic").hide();

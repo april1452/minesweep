@@ -24,17 +24,13 @@ public class CreateRoomRoute implements Route {
 
     QueryParamsMap params = req.queryMap();
     String gameModeString = params.value("gameMode");
-    GameMode gameMode;
-    switch (gameModeString) {
-      case "classic":
-        gameMode = GameMode.CLASSIC;
-        break;
-      default:
-        return null; // TODO CHANGE
-    }
+    String boardTypeString = params.value("boardType");
+    GameMode gameMode = GameMode.valueOf(gameModeString);
+    BoardType mode = BoardType.valueOf(boardTypeString);
+    BoardType boardType = BoardType.valueOf()
 
-    // HARDCODED FOR NOW
-    int[] boardDims = { 10, 10 };
+        // HARDCODED FOR NOW
+        int[] boardDims = {10, 10};
     GameSpecs specs = new GameSpecs(gameMode, 1, BoardType.DEFAULT, boardDims);
 
     PreRoom room = new PreRoom("Room name.", specs);
