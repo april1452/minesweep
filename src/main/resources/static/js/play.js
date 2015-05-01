@@ -1,7 +1,10 @@
 UNEXPLORED = "#C0C0C0";
 EXPLORED = "#FFFFFF";
+NORMAL_BORDER = "#000000";
 BOMB = "#000000";
+BOMB_BORDER = "#FF0000";
 TEXT_COLOR = "#000000";
+
 
 var CANVAS_X = 800;
 var CANVAS_Y = 800;
@@ -112,28 +115,24 @@ function drawBoard(responseJSON) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = BOMB;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeStyle = BOMB_BORDER;
+                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
                 } else {
                     _ctx.fillStyle = EXPLORED;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeStyle = NORMAL_BORDER;
+                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
                     _ctx.fillStyle = TEXT_COLOR;
                     _ctx.fillText(tile.adjacentBombs, tileX + 8, tileY + 12);                    
                 }
             } else {
                 _ctx.fillStyle = UNEXPLORED;
                 _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                _ctx.strokeStyle = NORMAL_BORDER;
+                _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
             }
 
         });
-
-        for (var i = 0; i <= CANVAS_X; i+= tileWidth) {
-            for(var j = tileHeight; j <= CANVAS_Y; j += tileHeight) {
-                _ctx.moveTo(0, i);       
-                _ctx.lineTo(CANVAS_Y, i);
-                _ctx.moveTo(j, 0);
-                _ctx.lineTo(j, CANVAS_X);
-            }
-        }   
-        _ctx.stroke();
     } else if (board.type == "TriangularBoard"){
 
         tileHeight*=2
