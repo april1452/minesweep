@@ -12,7 +12,7 @@
         </ul>
 
         <!-- new game -->
-        <a href="/setup" class="button line-pink" id="new">Host New Game</a>
+        <a href="/setup" class="button pink" id="new">Host New Game</a>
     </div>
 </div>
 

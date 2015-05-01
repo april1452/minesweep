@@ -12,8 +12,6 @@ var CANVAS_Y = 800;
 var tileWidth;
 var tileHeight;
 
-var globalBoard;
-
 var _ctx;
 
 var server_ip = "" + location.host;
@@ -145,7 +143,6 @@ function drawBoard(responseJSON) {
     var tiles = board.tiles;
     
     console.log(board.type);
-    globalBoard = board;
 
     if (board.type == "DefaultBoard"){
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
@@ -177,28 +174,34 @@ function drawBoard(responseJSON) {
         });
     } else if (board.type == "TriangularBoard"){
 
-         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
-         tileWidth = CANVAS_X / (width / 2 + height / 2);
+        tileHeight*=2
 
-        $.each(tiles, function(index, tile) {
-            var offset = tile.row * tileWidth / 2;
-            if (tile.column % 2 === 0) {
-                var x1 = tile.column / 2 * tileWidth + offset;
-                var x2 = (tile.column / 2 + 1) * tileWidth + offset;
-                var x3 = (tile.column / 2 + 0.5) * tileWidth + offset;
-                var y1 = tile.row * tileHeight;
-                var y2 = tile.row * tileHeight;
-                var y3 = (tile.row + 1) * tileHeight;
-            } else {
-                var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
-                var x2 = tile.column / 2 * tileWidth + offset;
-                var x3 = (tile.column / 2 + 1) * tileWidth + offset;
-                var y1 = tile.row * tileHeight;
-                var y2 = (tile.row + 1) * tileHeight;
-                var y3 = (tile.row + 1) * tileHeight;
-            }
-            triangleDraw(x1, x2, x3, y1, y2, y3, tile);
-        });
+        var offset = tileWidth/2 * CANVAS_Y/tileHeight;
+
+
+
+        _ctx.fillStyle = UNEXPLORED;
+        _ctx.beginPath();
+        _ctx.moveTo(0, CANVAS_Y);
+        _ctx.lineTo(offset, 0);
+        _ctx.lineTo(CANVAS_X, 0);
+        _ctx.lineTo(CANVAS_X - offset, CANVAS_Y);
+        _ctx.closePath();
+        _ctx.fill();
+        _ctx.stroke();
+        _ctx.beginPath();
+        _ctx.strokeStyle = TEXT_COLOR;
+        for(var x = 0, y = CANVAS_Y; x <= offset && y >= 0; x+=tileWidth/2, y-=tileHeight){
+            _ctx.moveTo(x, y);
+            _ctx.lineTo(tileWidth * (CANVAS_Y - y)/tileHeight, Math.min(CANVAS_Y, y + CANVAS_Y/1.75));
+            _ctx.moveTo(x, y);
+            _ctx.lineTo(x + CANVAS_X/2, y);
+        }
+        for(var x = 0; x + offset < CANVAS_X; x+=tileWidth){
+                _ctx.moveTo(x, CANVAS_Y);
+                _ctx.lineTo(x + offset, 0);
+            
+        }
    
         _ctx.stroke();
     } else {
@@ -206,46 +209,14 @@ function drawBoard(responseJSON) {
     }
 }
 
-function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
-    _ctx.beginPath();
-    _ctx.moveTo(x1, y1);
-    _ctx.lineTo(x2, y2);
-    //_ctx.moveTo(x2, y2);
-    _ctx.lineTo(x3, y3);
-    //_ctx.moveTo(x3, y3);
-    _ctx.lineTo(x1, y1);
-    _ctx.closePath();
-    _ctx.strokeStyle = NORMAL_BORDER;
-    _ctx.stroke();
-
-    if (tile.visited) {
-        if(tile.isBomb) {
-            _ctx.fillStyle = BOMB;
-            _ctx.fill();
-            //_ctx.strokeStyle = BOMB_BORDER;
-        } else {
-            _ctx.fillStyle = EXPLORED;
-            _ctx.fill();
-            //_ctx.strokeStyle = NORMAL_BORDER;
-            _ctx.fillStyle = TEXT_COLOR;
-            _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);                    
-        }
-    } else {
-        _ctx.fillStyle = UNEXPLORED;
-        _ctx.fill();
-        //_ctx.strokeStyle = NORMAL_BORDER;
-    }
-
-
-    /*if (tile.isBomb) {
+function triangleDraw(x1, x2, x3, y1, y2, y3, isMine, isVisited, bombsAround) {
+    var fillColor;
+    if (isMine) {
         fillColor = BOMB;
-        _ctx.strokeStyle = BOMB_BORDER;
-    } else if (tile.visited) {
+    } else if (isVisited) {
         fillColor = EXPLORED;
-        _ctx.strokeStyle = NORMAL_BORDER;
     } else {
         fillColor = UNEXPLORED;
-        _ctx.strokeStyle = NORMAL_BORDER;
     }
     _ctx.fillStyle = fillColor;
     _ctx.beginPath();
@@ -255,9 +226,6 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
     _ctx.lineTo(x3, y3);
     _ctx.moveTo(x3, y3);
     _ctx.lineTo(x1, y1);
-    _ctx.fill();
-    _ctx.fillStyle = TEXT_COLOR;
-    _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);  */
 }
 
 
@@ -267,80 +235,18 @@ $("#board").bind('click', function(event){
     var x = event.pageX - board.offsetLeft;
     var y = event.pageY - board.offsetTop;
 
-    if (globalBoard.type == "DefaultBoard"){
-        
-
-        var row = Math.floor(y / tileHeight);
-        var column = Math.floor(x / tileWidth);
+    var row = Math.floor(y / tileHeight);
+    var column = Math.floor(x / tileWidth);
     
-        $.getScript("../js/js.cookie.js", function(){
-            var sendData = {
-                type: "makeMove",
-                minesweepId: $.cookie("minesweepId"),
-                minesweepRoomId: $.cookie("minesweepRoomId"),
-                minesweepTeamId: $.cookie("minesweepTeamId"),
-                row: row,
-                col: column
-            };
-            socket.send(JSON.stringify(sendData));
-        });
-
-    } else if (globalBoard.type == "TriangularBoard") {
-        var row = Math.floor(y / tileHeight);
-        var offset = row * tileWidth / 2;
-        var estimate = Math.floor((x - offset) / tileWidth * 2);
-        console.log(row + " " + estimate);
-
-
-        var tiles = globalBoard.tiles;
-        var selectedTile;
-
-        $.each(tiles, function(index, tile) {
-            if (tile.row == row && tile.column == estimate) {
-                console.log(tile.row + " " + tile.column);
-                selectedTile = tile;
-            }
-            
-        });
-
-        if (selectedTile.column % 2 === 0) {
-                var x1 = selectedTile.column / 2 * tileWidth + offset;
-                var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
-                var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
-                var y1 = selectedTile.row * tileHeight;
-                var y2 = selectedTile.row * tileHeight;
-                var y3 = (selectedTile.row + 1) * tileHeight;
-            } else {
-                var x1 = selectedTile.column / 2 * tileWidth + offset;
-                var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
-                var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
-                var y1 = (selectedTile.row + 1) * tileHeight;
-                var y2 = (selectedTile.row + 1) * tileHeight;
-                var y3 = selectedTile.row * tileHeight;
-            }
-
-        var borderSlope = (y3 - y1) / (x3 - x1);
-        var clickSlope = (y - y1) / (x - x1);
-        console.log(borderSlope + " " + clickSlope);
-        if (Math.abs(borderSlope) < Math.abs(clickSlope)) {
-            var column = estimate - 1;
-            console.log("Above border");
-        } else {
-            var column = estimate;
-            console.log("Below border");
-        }
-        console.log(row + " " + column);
-
-        $.getScript("../js/js.cookie.js", function(){
-            var sendData = {
-                type: "makeMove",
-                minesweepId: $.cookie("minesweepId"),
-                minesweepRoomId: $.cookie("minesweepRoomId"),
-                minesweepTeamId: $.cookie("minesweepTeamId"),
-                row: row,
-                col: column
-            };
-            socket.send(JSON.stringify(sendData));
-        });
-    }
+    $.getScript("../js/js.cookie.js", function(){
+        var sendData = {
+            type: "makeMove",
+            minesweepId: $.cookie("minesweepId"),
+            minesweepRoomId: $.cookie("minesweepRoomId"),
+            minesweepTeamId: $.cookie("minesweepTeamId"),
+            row: row,
+            col: column
+        };
+        socket.send(JSON.stringify(sendData));
+    });
 });
