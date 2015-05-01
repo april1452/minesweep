@@ -11,96 +11,39 @@ var currentButton;
 function getGames() {
     $.get("/games", function(responseJSON) {
         var response = JSON.parse(responseJSON);
-        $("ul").empty();
+        $("#gamesList").empty();
         gameIds = new Array();
-        console.log(response);
+        console.log("ROOMS");
         $.each(response, function(roomId, roomInfo) {
             console.log(roomInfo);
+
+            // Get number of players currently in room
             var numPlayer = 0;
             $.each(roomInfo.teams, function(index, team) {
                 $.each(team.players, function(index, player) {
                     numPlayer++;
                 })
             })
-            console.log(roomInfo.sessionType);
+
+            var specs = roomInfo.gameSpecs;
             if(roomInfo.sessionType === "SETUP") { 
-                var node = document.createElement("LI");
-                var textnode = document.createTextNode(roomInfo.gameSpecs.mode + ": " + numPlayer + " players");
+                // Create button for each game on server
+                var li = document.createElement("LI");
+                var node = document.createElement("a");
+                node.setAttribute("class", "button line-purple gameButton");
+                var textnode = document.createTextNode(specs.mode + ": " + roomInfo.roomName + " (" + numPlayer + "/" + (specs.numTeamPlayers * specs.numTeams) +  " players)");
                 node.appendChild(textnode);
-                node.setAttribute("id", "gameTitle");
-                var  list = $("#gamesList");
-                console.log(list);
-                list.append(node);
-                console.log("NODE APPENDED");
+                li.appendChild(node);
+                $("#gamesList").append(li);
 
-                var box = document.createElement("DIV");
-                box.id = roomId;
-
-                var name = document.createTextNode(roomInfo.roomName);
-                box.appendChild(name);
-
-                box.appendChild(document.createElement("BR"));
-
-                var button = document.createElement("input");
-                button.setAttribute("type", "submit");
-                button.setAttribute("value", "Join Game");
-                button.setAttribute("id", roomId);
-                box.appendChild(button);
-                button.onclick = function() {
+                node.onclick = function() {
                     console.log("Hello");
-                    //event.preventDefault();
                     document.cookie = "minesweepRoomId=" + roomId;
                     console.log(document.cookie);
                     window.location.href = "/play";
                 }
-                //class gameButton = button;
-
-                if(clicked != roomInfo.roomId) {
-                  box.style.display = "none";
-                }
-                node.appendChild(box);
             }
         });
 
     });
 }
-
-$("#joinGame").submit(function(event) {
-    event.preventDefault();
-    document.cookie = "minesweepRoomId=" + $("#gameId").val();
-    window.location.href = "/play";
-});
-
-$("#gamesList").click(function(e) {
-    if(e.target && e.target.nodeName == "LI") {
-         //console.log(e.target.id + " was clicked");
-         clicked = e.toElement.childNodes[1].id;
-         //console.log(clicked);
-         //console.log(e.toElement);
-         currentButton = e.toElement.childNodes[1].childNodes[1];
-         console.log(currentButton);
-         //console.log(document.getElementById("joinForm"));
-         e.toElement.childNodes[1].style.display = "block";
-    }
-});
-
-document.getElementById("gamesList").addEventListener("click",function(e) {
-    if(e.target && e.target.nodeName == "LI") {
-         //console.log(e.target.id + " was clicked");
-         clicked = e.toElement.childNodes[1].id;
-         //console.log(clicked);
-         //console.log(e.toElement);
-         currentButton = e.toElement.childNodes[1].childNodes[1];
-         console.log(currentButton);
-         //console.log(document.getElementById("joinForm"));
-         e.toElement.childNodes[1].style.display = "block";
-    }
-});
-
-
-$("[value='Join Game']").click(function() {
-    console.log("Hello");
-    //event.preventDefault();
-    document.cookie = "minesweepRoomId=" + this.getId();
-    window.location.href = "/play";
-});
