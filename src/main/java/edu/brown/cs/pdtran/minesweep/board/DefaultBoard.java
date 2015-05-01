@@ -230,6 +230,7 @@ public class DefaultBoard implements Board, Cloneable {
         // return false;
         // }
         if (!currentTile.isBomb() && !currentTile.hasBeenVisited()) {
+          System.out.println(i + " " + j);
           return false;
         }
       }

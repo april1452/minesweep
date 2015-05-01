@@ -69,11 +69,26 @@ socket.onmessage = function (event) {
     else if (responseJson.type === "gameData") {
         init();
         drawBoard(responseJson.data);
-        console.log("Working");
         $("#board").show();
         $("#start").hide();
         $("#teams").hide();
     }
+    
+    else if (responseJson.type === "victory") {
+        console.log("test");
+        victoryOrDefeat(responseJson.teamId);
+    }
+}
+
+function victoryOrDefeat(teamId) {
+    $.getScript("../js/js.cookie.js", function(){
+        if(teamId === $.cookie("minesweepTeamId")) {
+            console.log("test");
+            win();
+        } else {
+            lose();
+        }
+  });
 }
 
 // draw pre game rooms
@@ -152,7 +167,6 @@ function addAi(teamId, difficulty) {
                 minesweepRoomId: $.cookie("minesweepRoomId"),
                 difficulty: difficulty
             };
-            console.log(sendData);
             socket.send(JSON.stringify(sendData));
         });
 }
@@ -175,7 +189,6 @@ function drawBoard(responseJSON) {
     
     var tiles = board.tiles;
     
-    console.log(board.type);
     globalBoard = board;
 
     if (board.type == "DefaultBoard"){

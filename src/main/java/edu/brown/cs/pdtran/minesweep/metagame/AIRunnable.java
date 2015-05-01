@@ -29,12 +29,10 @@ public class AIRunnable implements Runnable {
     System.out.println("Ai started.");
     while (ai.getCanPlay()) {
       try {
-        System.out.println(moveTime);
         int moveTimeRandomness =
             (int) Math.round((Math.random() - RANDOM_SUBTRACTOR) * moveTime);
         Thread.sleep(moveTime + moveTimeRandomness);
         Move move = ai.getMove();
-        System.out.println(move.getXCoord() + " " + move.getYCoord());
         handler.makeMove(sessionId, teamId, move);
       } catch (InterruptedException e) {
         e.printStackTrace();

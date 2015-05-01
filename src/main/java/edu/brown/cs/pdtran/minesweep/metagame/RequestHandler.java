@@ -116,9 +116,6 @@ public class RequestHandler {
       String gamerId,
       AIGamer g) throws NoSuchSessionException {
     PreRoom room = getRoom(sessionId);
-    for (TeamFormation team : room.getTeams().values()) {
-      team.getPlayers().remove(gamerId);
-    }
     room.addAi(teamId, gamerId, g);
     return getHumans(room);
 

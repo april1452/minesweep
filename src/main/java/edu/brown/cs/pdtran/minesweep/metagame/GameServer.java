@@ -18,6 +18,7 @@ import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.Game;
 import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 import edu.brown.cs.pdtran.minesweep.player.CheckTile;
+import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
@@ -158,10 +159,17 @@ public class GameServer extends WebSocketServer implements MoveHandler {
 
           JsonObject gameData = new JsonObject();
 
-
           if (board.isWinningBoard()) {
+            for (PlayerTeam team : game.getTeams().values()) {
+              for (GamePlayer player : team.getPlayers().values()) {
+                player.endPlay();
+              }
+            }
             gameData.addProperty("type", "victory");
             gameData.addProperty("teamId", teamId);
+            for (PlayerTeam team : game.getTeams().values()) {
+              updateTeam(team.getHumans(), gameData.toString());
+            }
           } else {
             gameData.addProperty("type", "gameData");
             gameData.addProperty("data", board.toJson());
