@@ -25,13 +25,14 @@ public class GameSpecs {
    * @param shape board shape
    * @param dims board dimensions
    */
-  public GameSpecs(GameMode mode, int matches, BoardType shape, int[] dims) {
+  public GameSpecs(GameMode mode, BoardType shape, int matches, int numTeams,
+      int numTeamPlayers, int teamLives, int[] dims) {
     this.mode = mode;
-    this.numTeams = 2;
-    this.numTeamPlayers = 3;
-    this.teamLives = 2;
-    this.numMatches = matches;
     this.boardType = shape;
+    this.numTeams = numTeams;
+    this.numTeamPlayers = numTeamPlayers;
+    this.teamLives = teamLives;
+    this.numMatches = matches;
     this.boardDims = dims;
   }
 
