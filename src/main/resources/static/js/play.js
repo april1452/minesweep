@@ -50,13 +50,37 @@ socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
     
     // Pre game setup    
-    if (responseJson.type === "update") {
+    if(responseJson.type === "init") {
+        var teamToJoin;
+        $.each(responseJson.data.teams, function (teamId, teamInfo) {
+            teamToJoin = teamId;
+        });
+        joinRoom(teamToJoin);
+    }
+    
+    else if (responseJson.type === "update") {
+        drawRoom(responseJson);
+    } 
+
+    // Begin game, i.e. draw game board
+    else if (responseJson.type === "gameData") {
+        init();
+        drawBoard(responseJson.data);
+        console.log("Working");
+        $("#board").show();
+        $("#start").hide();
+        $("#teams").hide();
+    }
+}
+
+function drawRoom(responseJson) {
+    $.getScript("/webplate/stack.js", function() {
         var innerBox = "";
         
         var roomInfo = responseJson.data;
-
+    
         var teams = roomInfo.teams;
-
+    
         $.each(teams, function(i, team) {
             innerBox += '<div class="span-3"><h4>' + team.name + "</h4>";
             $.each(team.players, function(j, player) {
@@ -74,22 +98,10 @@ socket.onmessage = function (event) {
         
          $.each(teams, function(i, team) {
             $('#buttonId' + i).click(function(){
-                console.log("human player added to team "+i);
-                    $.getScript("../js/js.cookie.js", function(){
-                        $.cookie("minesweepTeamId", i);
-                        var sendData = {
-                            type: "joinRoom",
-                            minesweepId: $.cookie("minesweepId"),
-                            minesweepTeamId: i,
-                            minesweepRoomId: $.cookie("minesweepRoomId"),
-                            name: "test name"
-                    };
-                    console.log(sendData);
-                    socket.send(JSON.stringify(sendData));
-                  });
+                joinRoom(i);
             });
         });
-
+    
         $.each(teams, function(i, team) {
             $('#easy' + i).click(function(){
                 addAi(i, "EASY");
@@ -104,26 +116,29 @@ socket.onmessage = function (event) {
                 addAi(i, "MEDIUM");
             });
         });
-    } 
+    });
+}
 
-    // Begin game, i.e. draw game board
-    else if (responseJson.type === "gameData") {
-        init();
-        drawBoard(responseJson.data);
-        console.log("Working");
-        $("#board").show();
-        $("#start").hide();
-        $("#teams").hide();
-    }
+function joinRoom(teamId) {
+    $.getScript("../js/js.cookie.js", function(){
+        $.cookie("minesweepTeamId", teamId);
+        var sendData = {
+            type: "joinRoom",
+            minesweepId: $.cookie("minesweepId"),
+            minesweepTeamId: teamId,
+            minesweepRoomId: $.cookie("minesweepRoomId"),
+            name: "test name"
+        };
+        socket.send(JSON.stringify(sendData));
+  });
 }
 
 function addAi(teamId, difficulty) {
         $.getScript("../js/js.cookie.js", function(){
-            $.cookie("minesweepTeamId", teamId);
             var sendData = {
                 type: "addAIPlayer",
                 minesweepId: $.cookie("minesweepId"),
-                minesweepTeamId: $.cookie("minesweepTeamId"),
+                minesweepTeamId: teamId,
                 minesweepRoomId: $.cookie("minesweepRoomId"),
                 difficulty: difficulty
             };

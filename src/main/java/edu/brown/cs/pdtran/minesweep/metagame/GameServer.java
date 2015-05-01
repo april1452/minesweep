@@ -69,7 +69,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
       case "init":
         try {
           JsonObject update = new JsonObject();
-          update.addProperty("type", "update");
+          update.addProperty("type", "init");
           update.add("data", handler.getRoomInfo(sessionId).toJson());
 
           conn.send(update.toString());
@@ -116,7 +116,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
           break;
         } catch (NoSuchSessionException e) {
           System.out
-              .println("Could not find room (perhaps it was already started?).");
+          .println("Could not find room (perhaps it was already started?).");
         }
       case "startGame":
         try {
@@ -126,7 +126,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
             for (AIPlayer player : entry.getValue()) {
               new Thread(
                   new AIRunnable(sessionId, entry.getKey(), player, this))
-                  .start();
+              .start();
             }
           }
 
@@ -142,7 +142,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
           }
         } catch (NoSuchSessionException e) {
           System.out
-              .println("Could not find room (perhaps it was already started?).");
+          .println("Could not find room (perhaps it was already started?).");
         }
         break;
       case "makeMove":
