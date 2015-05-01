@@ -72,6 +72,7 @@ HT.Grid = function(/*double*/ width, /*double*/ height) {
 		}
 	}
 	console.log(this.Hexes);
+	HT.Grid.Static.Hexes = this.Hexes;
 };
 
 HT.Grid.Static = {Letters:'ABCDEFGHIJKLMNOPQRSTUVWXYZ'};
@@ -95,9 +96,10 @@ HT.Grid.prototype.GetHexId = function(row, col) {
  */
 HT.Grid.prototype.GetHexAt = function(/*Point*/ p) {
 	//find the hex that contains this point
-	for (var h in this.Hexes)
+	console.log(this.Hexes);
+	for (var h in HT.Grid.Static.Hexes)
 	{
-		if (this.Hexes[h].Contains(p))
+		if (HT.Grid.Static.Hexes[h].Contains(p))
 		{
 			return this.Hexes[h];
 		}
@@ -109,9 +111,11 @@ HT.Grid.prototype.GetHexAt = function(/*Point*/ p) {
 
 HT.Grid.prototype.GetHexAtPos = function(x, y) {
 	//find the hex that contains this point
-	for (var h in this.Hexes)
+	console.log(this.Hexes);
+	for (var h in HT.Grid.Static.Hexes)
 	{
-		if (this.Hexes[h].PathCoOrdX == x && this.Hexes[h].PathCoOrdY == y)
+		var hex = Hexes[h];
+		if (hex.PathCoOrdX == x && hex[h].PathCoOrdY == y)
 		{
 			return this.Hexes[h];
 		}

@@ -189,11 +189,12 @@ function drawBoard(responseJSON) {
     var width = board.width;
     var height = board.height;
     
-    if(typeof(hexagon_grid) === 'undefined'){
+    //if(typeof(hexagon_grid) === 'undefined'){
     	hexagon_grid = new HT.Grid(width, height);
     	findHexWithWidthAndHeight();
+    	
     	console.log("A grid is born");
-    }
+    //}
     
     tileWidth = CANVAS_X / width;
     tileHeight = CANVAS_Y / height;
@@ -259,7 +260,6 @@ function drawBoard(responseJSON) {
     } else if (board.type = "HexagonalBoard"){
     	findHexWithWidthAndHeight();
     	//drawHexGrid();
-    	drawHexGrid(hexagon_grid, _ctx);
     	$.each(tiles, function(index, tile)
     	{
     		var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
@@ -274,6 +274,7 @@ function drawBoard(responseJSON) {
     			}
     		}
     	});
+    	drawHexGrid(hexagon_grid, _ctx);
     } else {
         console.log("I had a stroke. Undefined board");
     }
