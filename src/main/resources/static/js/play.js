@@ -171,6 +171,25 @@ function drawBoard(responseJSON) {
     }
 }
 
+function triangleDraw(x1, x2, x3, y1, y2, y3, isMine, isVisited, bombsAround) {
+    var fillColor;
+    if (isMine) {
+        fillColor = BOMB;
+    } else if (isVisited) {
+        fillColor = EXPLORED;
+    } else {
+        fillColor = UNEXPLORED;
+    }
+    _ctx.fillStyle = fillColor;
+    _ctx.beginPath();
+    _ctx.moveTo(x1, y1);
+    _ctx.lineTo(x2, y2);
+    _ctx.moveTo(x2, y2);
+    _ctx.lineTo(x3, y3);
+    _ctx.moveTo(x3, y3);
+    _ctx.lineTo(x1, y1);
+}
+
 
 $("#board").bind('click', function(event){
     var board = $("#board")[0];
