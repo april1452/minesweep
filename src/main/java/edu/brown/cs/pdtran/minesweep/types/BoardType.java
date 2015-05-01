@@ -5,5 +5,5 @@ package edu.brown.cs.pdtran.minesweep.types;
  * @author agokasla
  */
 public enum BoardType {
-  DEFAULT, RECTANGULAR, TRIANGULAR;
+  DEFAULT, RECTANGULAR, TRIANGULAR, HEXAGONAL;
 }

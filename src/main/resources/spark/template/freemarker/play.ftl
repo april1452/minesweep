@@ -28,6 +28,9 @@
   </ul>
 </div>
 
+<script src="/js/HexagonTools.js"></script>
+<script src="/js/hexagon_grid.js"></script>
+<script src="/js/HexCalcs.js"></script>
 <script src="/js/play.js"></script>   
 </#assign>
 <#include "layout.ftl">

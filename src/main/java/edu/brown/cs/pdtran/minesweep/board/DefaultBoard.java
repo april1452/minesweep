@@ -11,6 +11,7 @@ import java.util.Random;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
@@ -115,14 +116,6 @@ public class DefaultBoard implements Board, Cloneable {
             adjacentBombCount++;
           }
         }
-        // for (int ii = -1; ii <= 1; ii++) {
-        // for (int jj = -1; jj <= 1; jj++) {
-        // if (isWithinBoard(i + ii, j + jj) && grid[i + ii][j +
-        // jj].isBomb()) {
-        // adjacentBombCount++;
-        // }
-        // }
-        // }
         grid[i][j].setAdjacentBombs(adjacentBombCount);
       }
     }
@@ -190,10 +183,10 @@ public class DefaultBoard implements Board, Cloneable {
           while (!tilesWithNoAdjacentBombs.isEmpty()) {
             candidate = tilesWithNoAdjacentBombs.pop();
             List<Tile> newCandidates =
-                this.getAdjacentTiles(candidate.getRow(), candidate.getColumn());
+                getAdjacentTiles(candidate.getRow(), candidate.getColumn());
             for (Tile neighbor : newCandidates) {
               if (!tilesToReveal.contains(neighbor)
-                  && neighbor.getAdjacentBombs() == 0) {
+                  && neighbor.getAdjacentBombs() == 0 && !neighbor.isBomb()) {
                 tilesWithNoAdjacentBombs.add(neighbor);
               }
             }
@@ -203,15 +196,10 @@ public class DefaultBoard implements Board, Cloneable {
           Iterator<Tile> tilesIterator = tilesToReveal.iterator();
           while (tilesIterator.hasNext()) {
             candidate = tilesIterator.next();
-            for (int i = -1; i <= 1; i++) {
-              for (int j = -1; j <= 1; j++) {
-                newRow = candidate.getRow() + i;
-                newColumn = candidate.getColumn() + j;
-                if (isWithinBoard(newRow, newColumn)) {
-                  grid[candidate.getRow() + i][candidate.getColumn() + j]
-                      .setVisited();
-                }
-              }
+            List<Tile> candidateNeighbors =
+                getAdjacentTiles(candidate.getRow(), candidate.getColumn());
+            for (Tile t : candidateNeighbors) {
+              t.setVisited();
             }
           }
         }

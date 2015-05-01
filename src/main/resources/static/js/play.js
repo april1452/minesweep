@@ -24,6 +24,8 @@ var server_ip = "" + location.host;
 server_ip = server_ip.substring(0, server_ip.length - 5);
 
 var socket = new WebSocket("ws://" + server_ip + ":8080");
+var hexagon_grid;
+
 
 // set up cookies js
 socket.onopen = function(event) {
@@ -39,6 +41,7 @@ socket.onopen = function(event) {
 
 // start the game
 $("#startButton").click(function() {
+	init();
     $.getScript("../js/js.cookie.js", function(){
         var sendData = {
             type: "startGame",
@@ -67,7 +70,7 @@ socket.onmessage = function (event) {
 
     // Begin game, i.e. draw game board
     else if (responseJson.type === "gameData") {
-        init();
+  
         drawBoard(responseJson.data);
         $("#board").show();
         $("#start").hide();
@@ -176,13 +179,21 @@ function init() {
     canvasBoard.height = CANVAS_Y;
     canvasBoard.width = CANVAS_X;
     _ctx = canvasBoard.getContext("2d");
+    
 }
 
 function drawBoard(responseJSON) {
+	
     var board = JSON.parse(responseJSON);
     
     var width = board.width;
     var height = board.height;
+    
+    if(typeof(hexagon_grid) === 'undefined'){
+    	hexagon_grid = new HT.Grid(width, height);
+    	findHexWithWidthAndHeight();
+    	console.log("A grid is born");
+    }
     
     tileWidth = CANVAS_X / width;
     tileHeight = CANVAS_Y / height;
@@ -245,6 +256,24 @@ function drawBoard(responseJSON) {
         });
    
         _ctx.stroke();
+    } else if (board.type = "HexagonalBoard"){
+    	findHexWithWidthAndHeight();
+    	//drawHexGrid();
+    	drawHexGrid(hexagon_grid, _ctx);
+    	$.each(tiles, function(index, tile)
+    	{
+    		var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
+    		console.log(hexes);
+    		if(tile.visited){
+    			if(typeof(hexes) === 'undefined'){
+    				console.log("undefined hexes");
+    			} if(tile.isBomb){
+    				hexes.fillColor = BOMB;
+    			} else if (tile.visited){
+    				hexes.fillColor = EXPLORED;
+    			}
+    		}
+    	});
     } else {
         console.log("I had a stroke. Undefined board");
     }
@@ -388,6 +417,23 @@ $("#board").bind('click', function(event){
             };
             socket.send(JSON.stringify(sendData));
         });
+    } else if (globalBoard.type = "HexagonalBoard"){
+    	var p = new HT.Point(x, y);
+    	var hex = hexagon_grid.GetHexAt(p);
+    	var row = hex.PathCoOrdY;
+    	var column = hex.PathCoOrdX;
+    		
+    	$.getScript("../js/js.cookie.js", function(){
+                var sendData = {
+                    type: "makeMove",
+                    minesweepId: $.cookie("minesweepId"),
+                    minesweepRoomId: $.cookie("minesweepRoomId"),
+                    minesweepTeamId: $.cookie("minesweepTeamId"),
+                    row: row,
+                    col: column
+                };
+                socket.send(JSON.stringify(sendData));
+          });
     }
 });
 

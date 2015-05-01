@@ -27,6 +27,8 @@
     <label for="rectangle">Rectangle</label>
     <input type="radio" name="boardType" value="TRIANGULAR" id="triangle">
     <label for="triangle">Triangle</label>
+    <input type="radio" name="boardType" value="HEXAGONAL" id="hexagonal">
+    <label for="hexagonal">Hexagonal</label>
     <br>
 
     <label>Dimensions:</label>

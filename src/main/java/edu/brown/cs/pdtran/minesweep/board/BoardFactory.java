@@ -9,13 +9,11 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  */
 public class BoardFactory {
 
-  private BoardFactory() {
-  };
+  private BoardFactory() {};
 
   /**
    * This is the intended constructor to make Boards.
-   * @param type
-   *          The type of the board you wish to make.
+   * @param type The type of the board you wish to make.
    * @return The made board.
    */
   public static Board makeBoard(BoardType type) {// TODO add additional
@@ -29,6 +27,10 @@ public class BoardFactory {
 
       case TRIANGULAR:
         return new TriangularBoard();
+
+      case HEXAGONAL:
+        return new HexagonalBoard();
+
     }
     return null;
   }
