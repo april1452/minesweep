@@ -77,15 +77,17 @@ public class AIPlayer extends GamePlayer {
     // (int) Math.round((Math.random() - RANDOM_SUBTRACTOR) * moveTime);
     // Thread.sleep(moveTime + moveTimeRandomness);
 
-    generateMovePossibilities();
-    double moveChoice = Math.random();
-    if (moveChoice < mistakeProbability) {
-      return randomTile();
-    } else if (moveChoice < mistakeProbability + FLAG_PROBABILITY) {
-      return setFlag();
-    } else {
-      return checkTile();
-    }
+    return randomTile();
+
+    // generateMovePossibilities();
+    // double moveChoice = Math.random();
+    // if (moveChoice < mistakeProbability) {
+    // return randomTile();
+    // } else if (moveChoice < mistakeProbability + FLAG_PROBABILITY) {
+    // return setFlag();
+    // } else {
+    // return checkTile();
+    // }
     // } catch (InterruptedException e) {
     // e.printStackTrace();
     // }

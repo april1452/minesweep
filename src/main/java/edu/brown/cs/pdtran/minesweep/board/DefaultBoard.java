@@ -226,9 +226,9 @@ public class DefaultBoard implements Board, Cloneable {
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
         currentTile = grid[i][j];
-        if (currentTile.isBomb() && currentTile.hasBeenVisited()) {
-          return false;
-        }
+        // if (currentTile.isBomb() && currentTile.hasBeenVisited()) {
+        // return false;
+        // }
         if (!currentTile.isBomb() && !currentTile.hasBeenVisited()) {
           return false;
         }

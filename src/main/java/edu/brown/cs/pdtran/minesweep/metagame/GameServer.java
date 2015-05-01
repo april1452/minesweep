@@ -105,8 +105,6 @@ public class GameServer extends WebSocketServer implements MoveHandler {
           Map<String, List<String>> usersToUpdate =
               handler.aiJoinIfAbsent(sessionId, teamId, aiId, gamer);
 
-          System.out.println(usersToUpdate.size());
-
           JsonObject update = new JsonObject();
           update.addProperty("type", "update");
           update.add("data", handler.getRoomInfo(sessionId).toJson());
@@ -128,6 +126,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
                   new AIRunnable(sessionId, entry.getKey(), player, this))
               .start();
             }
+            System.out.println(entry.getValue().size());
           }
 
           Game game = handler.getGame(sessionId);
@@ -158,11 +157,17 @@ public class GameServer extends WebSocketServer implements MoveHandler {
           Board board = game.makeMove(teamId, move);
 
           JsonObject gameData = new JsonObject();
-          gameData.addProperty("type", "gameData");
-          gameData.addProperty("data", board.toJson());
 
-          updateTeam(game.getTeams().get(teamId).getHumans(),
-              gameData.toString());
+
+          if (board.isWinningBoard()) {
+            gameData.addProperty("type", "victory");
+            gameData.addProperty("teamId", teamId);
+          } else {
+            gameData.addProperty("type", "gameData");
+            gameData.addProperty("data", board.toJson());
+            updateTeam(game.getTeams().get(teamId).getHumans(),
+                gameData.toString());
+          }
         } catch (NoSuchSessionException e) {
           System.out.println("Could not find game.");
         }
@@ -194,7 +199,10 @@ public class GameServer extends WebSocketServer implements MoveHandler {
 
   private void updateTeam(List<String> usersToUpdate, String message) {
     for (String id : usersToUpdate) {
-      clients.get(id).send(message);
+      WebSocket conn = clients.get(id);
+      if (conn.isOpen()) {
+        conn.send(message);
+      }
     }
   }
 
