@@ -136,7 +136,11 @@ function drawBoard(responseJSON) {
         _ctx.stroke();
     } else if (board.type == "TriangularBoard"){
 
+        tileHeight*=2
+
         var offset = tileWidth/2 * CANVAS_Y/tileHeight;
+
+
 
         _ctx.fillStyle = UNEXPLORED;
         _ctx.beginPath();
@@ -151,9 +155,14 @@ function drawBoard(responseJSON) {
         _ctx.strokeStyle = TEXT_COLOR;
         for(var x = 0, y = CANVAS_Y; x <= offset && y >= 0; x+=tileWidth/2, y-=tileHeight){
             _ctx.moveTo(x, y);
-            _ctx.lineTo(tileWidth * (CANVAS_Y - y)/tileHeight, Math.min(CANVAS_Y, CANVAS_Y + Y);
+            _ctx.lineTo(tileWidth * (CANVAS_Y - y)/tileHeight, Math.min(CANVAS_Y, y + CANVAS_Y/1.75));
             _ctx.moveTo(x, y);
             _ctx.lineTo(x + CANVAS_X/2, y);
+        }
+        for(var x = 0; x + offset < CANVAS_X; x+=tileWidth){
+                _ctx.moveTo(x, CANVAS_Y);
+                _ctx.lineTo(x + offset, 0);
+            
         }
    
         _ctx.stroke();
