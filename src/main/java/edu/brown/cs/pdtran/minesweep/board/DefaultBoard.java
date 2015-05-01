@@ -11,7 +11,6 @@ import java.util.Random;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
@@ -39,7 +38,6 @@ public class DefaultBoard implements Board, Cloneable {
    * @param bombCount The number of bombs on the board.
    */
   public DefaultBoard(int width, int height, int bombCount) {
-    System.out.println(width + " " + height);
     this.width = width;
     this.height = height;
     this.bombCount = bombCount;
@@ -168,6 +166,7 @@ public class DefaultBoard implements Board, Cloneable {
 
   @Override
   public void makeMove(final int row, final int column) {
+    System.out.println(row + " " + column);
     if (isWithinBoard(row, column)) {
       Tile target = grid[row][column];
       if (!target.hasBeenVisited()) {

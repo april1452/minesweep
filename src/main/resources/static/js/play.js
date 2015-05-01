@@ -23,7 +23,7 @@ $("#lose").hide();
 var server_ip = "" + location.host;
 server_ip = server_ip.substring(0, server_ip.length - 5);
 
-var socket = new WebSocket("ws://" + server_ip + ":8080");
+var socket = new WebSocket("ws://" + server_ip + ":7777");
 var hexagon_grid;
 
 

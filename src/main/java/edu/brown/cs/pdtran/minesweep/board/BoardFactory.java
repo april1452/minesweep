@@ -23,7 +23,7 @@ public class BoardFactory {
     // ADDING 5 BOMBS TEMPORARILY
     switch (type) {
       case DEFAULT:
-        return new DefaultBoard(width, height, 5);
+        return new DefaultBoard(width, height, 40); // width, height, 5
 
       case RECTANGULAR:
         return new RectangularBoard(); // width, height, 5

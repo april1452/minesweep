@@ -115,7 +115,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
           break;
         } catch (NoSuchSessionException e) {
           System.out
-              .println("Could not find room (perhaps it was already started?).");
+          .println("Could not find room (perhaps it was already started?).");
         }
       case "startGame":
         try {
@@ -125,7 +125,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
             for (AIPlayer player : entry.getValue()) {
               new Thread(
                   new AIRunnable(sessionId, entry.getKey(), player, this))
-                  .start();
+              .start();
             }
           }
 
@@ -141,7 +141,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
           }
         } catch (NoSuchSessionException e) {
           System.out
-              .println("Could not find room (perhaps it was already started?).");
+          .println("Could not find room (perhaps it was already started?).");
         }
         break;
       case "makeMove":
@@ -152,29 +152,10 @@ public class GameServer extends WebSocketServer implements MoveHandler {
 
           Move move = new CheckTile(col, row);
 
-          Game game = handler.getGame(sessionId);
+          System.out.println(col + " " + row);
 
-          Board board = game.makeMove(teamId, move);
+          makeMove(sessionId, teamId, move);
 
-          JsonObject gameData = new JsonObject();
-
-          if (board.isWinningBoard()) {
-            for (PlayerTeam team : game.getTeams().values()) {
-              for (GamePlayer player : team.getPlayers().values()) {
-                player.endPlay();
-              }
-            }
-            gameData.addProperty("type", "victory");
-            gameData.addProperty("teamId", teamId);
-            for (PlayerTeam team : game.getTeams().values()) {
-              updateTeam(team.getHumans(), gameData.toString());
-            }
-          } else {
-            gameData.addProperty("type", "gameData");
-            gameData.addProperty("data", board.toJson());
-            updateTeam(game.getTeams().get(teamId).getHumans(),
-                gameData.toString());
-          }
         } catch (NoSuchSessionException e) {
           System.out.println("Could not find game.");
         }
@@ -191,10 +172,22 @@ public class GameServer extends WebSocketServer implements MoveHandler {
     Board board = game.makeMove(teamId, m);
 
     JsonObject gameData = new JsonObject();
-    gameData.addProperty("type", "gameData");
-    gameData.addProperty("data", board.toJson());
-
-    updateTeam(game.getTeams().get(teamId).getHumans(), gameData.toString());
+    if (board.isWinningBoard()) {
+      for (PlayerTeam team : game.getTeams().values()) {
+        for (GamePlayer player : team.getPlayers().values()) {
+          player.endPlay();
+        }
+      }
+      gameData.addProperty("type", "victory");
+      gameData.addProperty("teamId", teamId);
+      for (PlayerTeam team : game.getTeams().values()) {
+        updateTeam(team.getHumans(), gameData.toString());
+      }
+    } else {
+      gameData.addProperty("type", "gameData");
+      gameData.addProperty("data", board.toJson());
+      updateTeam(game.getTeams().get(teamId).getHumans(), gameData.toString());
+    }
   }
 
   private void updateSession(Map<String, List<String>> usersToUpdate,
