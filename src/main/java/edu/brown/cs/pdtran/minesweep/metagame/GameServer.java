@@ -12,8 +12,9 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
+import edu.brown.cs.pdtran.minesweep.types.AiDifficulty;
 
+import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.brown.cs.pdtran.minesweep.board.Board;
@@ -86,8 +87,9 @@ public class GameServer extends WebSocketServer {
         }
         break;
       case "addAIPlayer":
-
         String teamId = messageJson.get("minesweepTeamId").getAsString();
+        String difficultyString = messageJson.get("difficulty").getAsString();
+        AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
         String aiId = handler.getUserId();
         AIGamer gamer = new AIGamer("John Jannottibot", );
 
