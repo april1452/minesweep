@@ -103,7 +103,6 @@ public class GameServer extends WebSocketServer {
           String aiId = handler.getUserId();
           Gamer gamer = new AIGamer("John Jannottibot", aiDifficulty);
           handler.joinIfAbsent(sessionId, teamId, aiId, gamer);
-          // TODO FINISH
           break;
         } catch (NoSuchSessionException e) {
           System.out
