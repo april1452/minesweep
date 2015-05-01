@@ -337,14 +337,13 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
 $("#board").bind('click', function(event){
     var board = $("#board")[0];
 
-    console.log("click");
-
     var x = event.pageX - board.offsetLeft;
     var y = event.pageY - board.offsetTop;
 
     if (globalBoard.type == "DefaultBoard"){
         
-
+        console.log("click");
+    	
         var row = Math.floor(y / tileHeight);
         var column = Math.floor(x / tileWidth);
     
