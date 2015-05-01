@@ -1,9 +1,14 @@
 $("#create").click(function(event) {
     event.preventDefault();
     var postParameters = {
-		roomName: $("#gameName").val(),
-        gameMode: $("input[name='gameMode']:checked").val(),
-        boardType: $("input[name='boardType']:checked").val()
+			roomName: $("#gameName").val(),
+      gameMode: $("input[name='gameMode']:checked").val(),
+      boardType: $("input[name='boardType']:checked").val(),
+      boardWidth: $("#width").val(),
+      boardHeight: $("#height").val(),
+      numTeams: $("#teams:checked").val(),
+      numPlayers: $("#players:checked").val(),
+      numLives: $("#lives").val()
     };
     console.log(postParameters);
 	$.post("/create", postParameters, function(responseJSON) {
