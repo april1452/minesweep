@@ -29,8 +29,8 @@
         <br>
 
         <h3>Board</h3>
-        <input type="radio" name="boardShape" value="rectangle" checked>Rectangle
-        <input type="radio" name="boardShape" value="triangle">Triangle
+        <input type="radio" name="boardShape" value="DEFAULT" checked>Rectangle
+        <input type="radio" name="boardShape" value="TRIANGULAR">Triangle
         <br>
         <p class="label">Dimensions:
         <input type="number" name="width" placeholder="Width" value="20"> x

@@ -1,7 +1,10 @@
 UNEXPLORED = "#C0C0C0";
 EXPLORED = "#FFFFFF";
+NORMAL_BORDER = "#000000";
 BOMB = "#000000";
+BOMB_BORDER = "#FF0000";
 TEXT_COLOR = "#000000";
+
 
 var CANVAS_X = 800;
 var CANVAS_Y = 800;
@@ -16,16 +19,16 @@ server_ip = server_ip.substring(0, server_ip.length - 5);
 
 var socket = new WebSocket("ws://" + server_ip + ":8080");
 
-
 socket.onopen = function(event) {
-    var sendData = {
-        type: "joinRoom",
-        minesweepId: $.cookie("minesweepId"),
-        minesweepRoomId: $.cookie("minesweepRoomId"),
-        name: "test name"
-    };
-    socket.send(JSON.stringify(sendData));
-};
+    $.getScript("../js/js.cookie.js", function(){
+        var sendData = {
+            type: "init",
+            minesweepId: $.cookie("minesweepId"),
+            minesweepRoomId: $.cookie("minesweepRoomId")
+        };  
+        socket.send(JSON.stringify(sendData));
+    });
+}
 
 $("#start").click(function() {
     $.getScript("../js/js.cookie.js", function(){
@@ -41,9 +44,8 @@ $("#start").click(function() {
 
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
-    if(responseJson.type === "joinResponse") {
-        $.cookie("minesweepTeamId", responseJson.data);
-    } else if (responseJson.type === "update") {
+        
+    if (responseJson.type === "update") {
         var innerBox = "";
         
         var roomInfo = responseJson.data;
@@ -55,9 +57,27 @@ socket.onmessage = function (event) {
             $.each(team.players, function(j, player) {
                 innerBox += "<p>" + player.name + "</p>";
             });
+            innerBox += "<button type=button id=buttonId" + i + ">" + "Join Team: </button>";
         });
         
-        $("#usernameBox").html(innerBox);
+         $("#usernameBox").html(innerBox);
+        
+         $.each(teams, function(i, team) {
+            $('#buttonId' + i).click(function(){
+                    $.getScript("../js/js.cookie.js", function(){
+                        $.cookie("minesweepTeamId", i);
+                        var sendData = {
+                            type: "joinRoom",
+                            minesweepId: $.cookie("minesweepId"),
+                            minesweepTeamId: i,
+                            minesweepRoomId: $.cookie("minesweepRoomId"),
+                            name: "test name"
+                    };
+                    console.log(sendData);
+                    socket.send(JSON.stringify(sendData));
+                  });
+            });
+        });
     } else if (responseJson.type === "gameData") {
         init();
         drawBoard(responseJson.data);
@@ -95,27 +115,46 @@ function drawBoard(responseJSON) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = BOMB;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeStyle = NORMAL_BORDER;
+                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
                 } else {
                     _ctx.fillStyle = EXPLORED;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeStyle = NORMAL_BORDER;
+                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
                     _ctx.fillStyle = TEXT_COLOR;
                     _ctx.fillText(tile.adjacentBombs, tileX + 8, tileY + 12);                    
                 }
             } else {
                 _ctx.fillStyle = UNEXPLORED;
                 _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                _ctx.strokeStyle = BOMB_BORDER;
+                _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
             }
 
         });
+    } else if (board.type == "TriangularBoard"){
 
-        for (var i = 0; i <= CANVAS_X; i+= tileWidth) {
-            for(var j = tileHeight; j <= CANVAS_Y; j += tileHeight) {
-                _ctx.moveTo(0, i);       
-                _ctx.lineTo(CANVAS_Y, i);
-                _ctx.moveTo(j, 0);
-                _ctx.lineTo(j, CANVAS_X);
-            }
-        }   
+        var offset = tileWidth/2 * CANVAS_Y/tileHeight;
+
+        _ctx.fillStyle = UNEXPLORED;
+        _ctx.beginPath();
+        _ctx.moveTo(0, CANVAS_Y);
+        _ctx.lineTo(offset, 0);
+        _ctx.lineTo(CANVAS_X, 0);
+        _ctx.lineTo(CANVAS_X - offset, CANVAS_Y);
+        _ctx.closePath();
+        _ctx.fill();
+        _ctx.stroke();
+        _ctx.beginPath();
+        _ctx.strokeStyle = TEXT_COLOR;
+        for(var x = 0, y = CANVAS_Y; x <= offset && y >= 0; x+=tileWidth/2, y-=tileHeight){
+            _ctx.moveTo(x, y);
+            _ctx.lineTo(tileWidth * (CANVAS_Y - y)/tileHeight, Math.min(CANVAS_Y, CANVAS_Y + Y);
+            _ctx.moveTo(x, y);
+            _ctx.lineTo(x + CANVAS_X/2, y);
+        }
+   
         _ctx.stroke();
     } else {
         console.log("I had a stroke. Undefined board");

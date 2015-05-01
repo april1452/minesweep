@@ -13,6 +13,7 @@ import edu.brown.cs.pdtran.minesweep.games.Game;
 import edu.brown.cs.pdtran.minesweep.games.GameFactory;
 import edu.brown.cs.pdtran.minesweep.setup.Gamer;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 
 /**
  * Keeps records of games, sessions, users, and rooms by storing maps that
@@ -85,10 +86,17 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the requested session does
    *         not exist.
    */
-  public String joinIfAbsent(String sessionId, String gamerId, Gamer g)
-      throws NoSuchSessionException {
+  public String joinIfAbsent(String sessionId,
+      String teamId,
+      String gamerId,
+      Gamer g) throws NoSuchSessionException {
     PreRoom room = getRoom(sessionId);
-    return room.addGamer(gamerId, g);
+    for (TeamFormation team : room.getTeams().values()) {
+      team.getPlayers().remove(gamerId);
+      assert (!team.getPlayers().containsKey(gamerId));
+      System.out.println(team.getPlayers().size());
+    }
+    return room.addGamer(teamId, gamerId, g);
   }
 
   /**
