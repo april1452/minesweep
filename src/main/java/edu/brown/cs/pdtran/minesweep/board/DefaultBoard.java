@@ -39,6 +39,7 @@ public class DefaultBoard implements Board, Cloneable {
    * @param bombCount The number of bombs on the board.
    */
   public DefaultBoard(int width, int height, int bombCount) {
+    System.out.println(width + " " + height);
     this.width = width;
     this.height = height;
     this.bombCount = bombCount;
@@ -258,7 +259,7 @@ public class DefaultBoard implements Board, Cloneable {
 
   @Override
   public DefaultBoard clone() {
-    DefaultBoard board = new DefaultBoard();
+    DefaultBoard board = new DefaultBoard(width, height, bombCount);
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
         board.setTile(grid[i][j].clone(), i, j);

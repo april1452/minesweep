@@ -28,18 +28,30 @@ public class CreateRoomRoute implements Route {
 
   @Override
   public Object handle(Request req, Response res) {
+
     QueryParamsMap params = req.queryMap();
-    // System.out.println(Arrays.toString(params.values()));
+
+    String roomName = params.value("roomName");
+
     String gameModeString = params.value("gameMode");
-    String boardTypeString = params.value("boardType");
     GameMode gameMode = GameMode.valueOf(gameModeString);
+
+    String boardTypeString = params.value("boardType");
     BoardType boardType = BoardType.valueOf(boardTypeString);
 
-    // HARDCODED FOR NOW
-    int[] boardDims = {10, 10};
-    GameSpecs specs = new GameSpecs(gameMode, 1, boardType, boardDims);
+    int boardWidth = Integer.parseInt(params.value("boardWidth"));
+    int boardHeight = Integer.parseInt(params.value("boardHeight"));
 
-    PreRoom room = new PreRoom("Room name.", specs);
+    int numTeams = Integer.parseInt(params.value("numTeams"));
+    int numPlayers = Integer.parseInt(params.value("numPlayers"));
+    int numLives = Integer.parseInt(params.value("numLives"));
+
+    int[] boardDims = {boardWidth, boardHeight};
+    GameSpecs specs =
+        new GameSpecs(gameMode, boardType, 1, numTeams, numPlayers, numLives,
+            boardDims);
+
+    PreRoom room = new PreRoom(roomName, specs);
 
     String roomId = handler.addRoom(room);
 
