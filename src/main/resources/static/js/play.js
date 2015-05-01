@@ -135,28 +135,28 @@ function drawBoard(responseJSON) {
         }   
         _ctx.stroke();
     } else if (board.type == "TriangularBoard"){
-        var tileX = tile.column * tileWidth;
-        var tileY = tile.row * tileHeight;
-  
-        var offset = tileWidth
 
-        var c2 = canvas.getContext('2d');
-        c2.fillStyle = '#f00';
-        c2.beginPath();
-        c2.moveTo(tileWidth * height/tileHeight, 0);
-        c2.lineTo(0, height);
-        c2.lineTo(width - tileWidth * height/tileHeight, height);
-        c2.lineTo(width, 0);
-        c2.closePath();
-        c2.fill();
-        c2.beginPath();
-        for(var x = tileWidth/2, y = Height; x < width && y >= 0; x += tileWidth, y-= tileHeight){
-            c2.moveTo(x, y);
-            c2.lineTo(y, x);
-            c2.moveTo(width - x, height - y);
-            c2.moveTo(height - y, width - x);
+        var offset = tileWidth/2 * CANVAS_Y/tileHeight;
+
+        _ctx.fillStyle = UNEXPLORED;
+        _ctx.beginPath();
+        _ctx.moveTo(0, CANVAS_Y);
+        _ctx.lineTo(offset, 0);
+        _ctx.lineTo(CANVAS_X, 0);
+        _ctx.lineTo(CANVAS_X - offset, CANVAS_Y);
+        _ctx.closePath();
+        _ctx.fill();
+        _ctx.stroke();
+        _ctx.beginPath();
+        _ctx.strokeStyle = TEXT_COLOR;
+        for(var x = 0, y = CANVAS_Y; x <= offset && y >= 0; x+=tileWidth/2, y-=tileHeight){
+            _ctx.moveTo(x, y);
+            _ctx.lineTo(tileWidth * (CANVAS_Y - y)/tileHeight, Math.min(CANVAS_Y, CANVAS_Y + Y);
+            _ctx.moveTo(x, y);
+            _ctx.lineTo(x + CANVAS_X/2, y);
         }
-        c2.stroke();
+   
+        _ctx.stroke();
     } else {
         console.log("I had a stroke. Undefined board");
     }
