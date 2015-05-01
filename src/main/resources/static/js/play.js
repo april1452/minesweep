@@ -135,34 +135,28 @@ function drawBoard(responseJSON) {
         });
     } else if (board.type == "TriangularBoard"){
 
-        tileHeight*=2
+         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
+         tileWidth = CANVAS_X / (width + width / 2) * 2;
 
-        var offset = tileWidth/2 * CANVAS_Y/tileHeight;
-
-
-
-        _ctx.fillStyle = UNEXPLORED;
-        _ctx.beginPath();
-        _ctx.moveTo(0, CANVAS_Y);
-        _ctx.lineTo(offset, 0);
-        _ctx.lineTo(CANVAS_X, 0);
-        _ctx.lineTo(CANVAS_X - offset, CANVAS_Y);
-        _ctx.closePath();
-        _ctx.fill();
-        _ctx.stroke();
-        _ctx.beginPath();
-        _ctx.strokeStyle = TEXT_COLOR;
-        for(var x = 0, y = CANVAS_Y; x <= offset && y >= 0; x+=tileWidth/2, y-=tileHeight){
-            _ctx.moveTo(x, y);
-            _ctx.lineTo(tileWidth * (CANVAS_Y - y)/tileHeight, Math.min(CANVAS_Y, y + CANVAS_Y/1.75));
-            _ctx.moveTo(x, y);
-            _ctx.lineTo(x + CANVAS_X/2, y);
-        }
-        for(var x = 0; x + offset < CANVAS_X; x+=tileWidth){
-                _ctx.moveTo(x, CANVAS_Y);
-                _ctx.lineTo(x + offset, 0);
-            
-        }
+        $.each(tiles, function(index, tile) {
+            var offset = tile.row * tileWidth / 2;
+            if (tile.column % 2 === 0) {
+                var x1 = tile.column / 2 * tileWidth + offset;
+                var x2 = (tile.column / 2 + 1) * tileWidth + offset;
+                var x3 = (tile.column / 2 + 0.5) * tileWidth + offset;
+                var y1 = tile.row * tileHeight;
+                var y2 = tile.row * tileHeight;
+                var y3 = (tile.row + 1) * tileHeight;
+            } else {
+                var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
+                var x2 = tile.column / 2 * tileWidth + offset;
+                var x3 = (tile.column / 2 + 1) * tileWidth + offset;
+                var y1 = tile.row * tileHeight;
+                var y2 = (tile.row + 1) * tileHeight;
+                var y3 = (tile.row + 1) * tileHeight;
+            }
+            triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+        });
    
         _ctx.stroke();
     } else {
@@ -170,14 +164,48 @@ function drawBoard(responseJSON) {
     }
 }
 
-function triangleDraw(x1, x2, x3, y1, y2, y3, isMine, isVisited, bombsAround) {
-    var fillColor;
-    if (isMine) {
+function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
+    _ctx.beginPath();
+    _ctx.moveTo(x1, y1);
+    _ctx.lineTo(x2, y2);
+    _ctx.moveTo(x2, y2);
+    _ctx.lineTo(x3, y3);
+    _ctx.moveTo(x3, y3);
+    _ctx.lineTo(x1, y1);
+    _ctx.closePath();
+    _ctx.fillStyle = BOMB;
+    _ctx.fill();
+    _ctx.strokeStyle = NORMAL_BORDER;
+    _ctx.stroke();
+
+    if (tile.visited) {
+        if(tile.isBomb) {
+            _ctx.fillStyle = BOMB;
+            _ctx.fill();
+            //_ctx.strokeStyle = BOMB_BORDER;
+        } else {
+            _ctx.fillStyle = EXPLORED;
+            _ctx.fill();
+            //_ctx.strokeStyle = NORMAL_BORDER;
+            _ctx.fillStyle = TEXT_COLOR;
+            _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);                    
+        }
+    } else {
+        _ctx.fillStyle = UNEXPLORED;
+        _ctx.fill();
+        //_ctx.strokeStyle = NORMAL_BORDER;
+    }
+
+
+    /*if (tile.isBomb) {
         fillColor = BOMB;
-    } else if (isVisited) {
+        _ctx.strokeStyle = BOMB_BORDER;
+    } else if (tile.visited) {
         fillColor = EXPLORED;
+        _ctx.strokeStyle = NORMAL_BORDER;
     } else {
         fillColor = UNEXPLORED;
+        _ctx.strokeStyle = NORMAL_BORDER;
     }
     _ctx.fillStyle = fillColor;
     _ctx.beginPath();
@@ -187,6 +215,9 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, isMine, isVisited, bombsAround) {
     _ctx.lineTo(x3, y3);
     _ctx.moveTo(x3, y3);
     _ctx.lineTo(x1, y1);
+    _ctx.fill();
+    _ctx.fillStyle = TEXT_COLOR;
+    _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);  */
 }
 
 
