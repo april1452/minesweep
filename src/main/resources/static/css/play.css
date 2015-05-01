@@ -1,0 +1,21 @@
+#teams {
+	padding-left: 30px;
+	padding-top: 20px;
+}
+
+#start {
+	padding-left: 20px;
+	padding-top: 20px;
+}
+
+a.button {
+	margin-bottom: 10px;
+}
+
+div.span-2 {
+	text-align: center;
+}
+
+span.icon {
+	font-size: 26px;
+}

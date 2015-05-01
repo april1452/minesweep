@@ -44,7 +44,8 @@ $("#start").click(function() {
 
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
-        
+    
+    // Pre game setup    
     if (responseJson.type === "update") {
         var innerBox = "";
         
@@ -53,17 +54,23 @@ socket.onmessage = function (event) {
         var teams = roomInfo.teams;
 
         $.each(teams, function(i, team) {
-            innerBox += "<p>" + team.name + ": </p>";
+            innerBox += '<div class="span-3"><h4>' + team.name + "</h4>";
             $.each(team.players, function(j, player) {
-                innerBox += "<p>" + player.name + "</p>";
+                innerBox += '<a class="button line-purple">' + player.name + "</a><br>";
             });
-            innerBox += "<button type=button id=buttonId" + i + ">" + "Join Team: </button>";
+            // add ai button
+            innerBox += '<a href="#" class="button aqua modal-trigger" data-modal-open="ai-choose'+i+'" id="ai' + i + '">' + "Add AI</a><br>";
+            // join team button
+            innerBox += '<a href="#" class="button purple" id="buttonId' + i + '">' + "Join Team</a></div>";  
+            // choose ai difficulty modal
+            innerBox += '<div class="modalplate" data-modal-id="ai-choose'+i+'"><div class="modalplate-title-bar"><a href="#" class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="span-2"><a class="button aqua large icon close" id="easy'+i+'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+i+'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+i+'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+i+'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
         });
         
-         $("#usernameBox").html(innerBox);
+         $("#teams").html(innerBox);
         
          $.each(teams, function(i, team) {
             $('#buttonId' + i).click(function(){
+                console.log("human player added to team "+i);
                     $.getScript("../js/js.cookie.js", function(){
                         $.cookie("minesweepTeamId", i);
                         var sendData = {
@@ -78,7 +85,25 @@ socket.onmessage = function (event) {
                   });
             });
         });
-    } else if (responseJson.type === "gameData") {
+
+        $.each(teams, function(i, team) {
+            $('#easy' + i).click(function(){
+                console.log("easy ai added to team "+i);
+            });
+            $('#medium' + i).click(function(){
+                console.log("medium ai added to team "+i);
+            });
+            $('#hard' + i).click(function(){
+                console.log("hard ai added to team "+i);
+            });
+            $('#random' + i).click(function(){
+                console.log("random ai added to team "+i);
+            });
+        });
+    } 
+
+    // Begin game, i.e. draw game board
+    else if (responseJson.type === "gameData") {
         init();
         drawBoard(responseJson.data);
         $("#start").hide();
