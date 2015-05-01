@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.types.SessionType;
-
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.board.BoardFactory;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
@@ -16,13 +14,14 @@ import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
+import edu.brown.cs.pdtran.minesweep.types.SessionType;
 
 /**
  * The class that represents code needed for the classic game mode.
  * <p>
- * In this game mode, each team solves a copy of the same board, and the winning
- * team either is the team that lasts the longest or is the team that finishes
- * its board fist.
+ * In this game mode, each team solves a copy of the same board, and the
+ * winning team either is the team that lasts the longest or is the team
+ * that finishes its board fist.
  * @author Clayton Sanford
  */
 public class ClassicGame extends Game {
@@ -33,7 +32,8 @@ public class ClassicGame extends Game {
 
   /**
    * A constructor for a ClassicGame.
-   * @param room Uses a room with game information to generate the game object.
+   * @param room Uses a room with game information to generate the game
+   *        object.
    */
   public ClassicGame(PreRoom room) {
     super(room.getName(), room.getSpecs());
@@ -52,13 +52,15 @@ public class ClassicGame extends Game {
   }
 
   @Override
-  public void makeMove(String teamId, Move m) {
-    teams.get(teamId).getCurrentBoard().makeMove(m.getYCoord(), m.getXCoord());
+  public Board makeMove(String teamId, Move m) {
+    Board board = teams.get(teamId).getCurrentBoard();
+    board.makeMove(m.getYCoord(), m.getXCoord());
+    return board;
   }
 
   /**
-   * This is a player method for turnless play. The referee determines who is
-   * allowed to click. Typically, only one person is allowed to click
+   * This is a player method for turnless play. The referee determines who
+   * is allowed to click. Typically, only one person is allowed to click
    * particularily in classic where score is time based.
    * @param teamNumber The number corresponding to a given team.
    * @param m The move you wish to make.
@@ -78,7 +80,8 @@ public class ClassicGame extends Game {
 
   /**
    * Gets the number of moves remaining.
-   * @param player A GamePlayer object that represents a player in the game.
+   * @param player A GamePlayer object that represents a player in the
+   *        game.
    * @return This will calculate how many moves are left.
    */
   @Override

@@ -1,5 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
+import java.util.List;
+
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 import edu.brown.cs.pdtran.minesweep.types.AiDifficulty;
@@ -41,8 +43,9 @@ public class AIGamer extends Gamer {
   }
 
   @Override
-  public AIPlayer toGamePlayer(BoardData data) {
-    return new AIPlayer(name, difficulty, data);
+  public AIPlayer toGamePlayer(BoardData data, List<AIPlayer> aiPlayers) {
+    AIPlayer aiPlayer = new AIPlayer(name, difficulty, data);
+    aiPlayers.add(aiPlayer);
+    return aiPlayer;
   }
-
 }

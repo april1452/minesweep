@@ -1,5 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,16 +25,15 @@ public class PlayerTeam extends Team implements BoardData {
   private Boolean isLoser;
   private List<Board> boards;
   private int boardIndex;
+  private List<AIPlayer> aiPlayers;
+  private List<String> humanPlayers;
 
   /**
    * Creates a new Team to last through a game.
-   * @param tf
-   *          A TeamFormation object that contains the information necessary to
-   *          create a team.
-   * @param lives
-   *          The total number of lives for the team and its players.
-   * @param boards
-   *          A List of Boards that the team may use.
+   * @param tf A TeamFormation object that contains the information
+   *        necessary to create a team.
+   * @param lives The total number of lives for the team and its players.
+   * @param boards A List of Boards that the team may use.
    */
   public PlayerTeam(TeamFormation tf, int lives, List<Board> boards) {
     super(tf.getName());
@@ -41,8 +41,11 @@ public class PlayerTeam extends Team implements BoardData {
     this.boards = boards;
     boardIndex = 0;
     players = new ConcurrentHashMap<String, GamePlayer>();
+    aiPlayers = new ArrayList<AIPlayer>();
+    humanPlayers = tf.getHumans();
     for (Map.Entry<String, Gamer> entry : tf.getPlayers().entrySet()) {
-      players.put(entry.getKey(), entry.getValue().toGamePlayer(this));
+      players.put(entry.getKey(), entry.getValue()
+          .toGamePlayer(this, aiPlayers));
     }
 
     score = 0;
@@ -56,10 +59,9 @@ public class PlayerTeam extends Team implements BoardData {
   }
 
   /**
-   * Searches for the id for a player and removes that player from the team and
-   * from play.
-   * @param id
-   *          A unique string for a player on the team.
+   * Searches for the id for a player and removes that player from the team
+   * and from play.
+   * @param id A unique string for a player on the team.
    */
   public void removePlayer(String id) {
     players.remove(id);
@@ -67,16 +69,16 @@ public class PlayerTeam extends Team implements BoardData {
 
   /**
    * Gets the team's score.
-   * @return An integer representing the total score of all the players on a
-   *         team.
+   * @return An integer representing the total score of all the players on
+   *         a team.
    */
   public int getScore() {
     return score;
   }
 
   /**
-   * Updates the team's score by iterating through all the players and adding
-   * their individual scores.
+   * Updates the team's score by iterating through all the players and
+   * adding their individual scores.
    */
   public void updateScore() {
     int newScore = 0;
@@ -105,8 +107,8 @@ public class PlayerTeam extends Team implements BoardData {
   }
 
   /**
-   * Makes the team into the winning team and ends gameplay for all of the its
-   * Players.
+   * Makes the team into the winning team and ends gameplay for all of the
+   * its Players.
    */
   public void setIsWinner() {
     isWinner = true;
@@ -117,16 +119,16 @@ public class PlayerTeam extends Team implements BoardData {
 
   /**
    * Checks if the team is the winning team.
-   * @return A Boolean that is true if the team is the winner and false if the
-   *         team is the loser or if the game is not over.
+   * @return A Boolean that is true if the team is the winner and false if
+   *         the team is the loser or if the game is not over.
    */
   public Boolean getIsWinner() {
     return isWinner;
   }
 
   /**
-   * Makes the team into the winning team and ends gameplay for all of the its
-   * Players.
+   * Makes the team into the winning team and ends gameplay for all of the
+   * its Players.
    */
   public void setIsLoser() {
     isLoser = true;
@@ -137,8 +139,8 @@ public class PlayerTeam extends Team implements BoardData {
 
   /**
    * Checks if the team is the losing team.
-   * @return A Boolean that is true if the team is the loser and false if the
-   *         team is the winner or if the game is not over.
+   * @return A Boolean that is true if the team is the loser and false if
+   *         the team is the winner or if the game is not over.
    */
   public Boolean getIsLoser() {
     return isLoser;
@@ -152,5 +154,15 @@ public class PlayerTeam extends Team implements BoardData {
   @Override
   public Map<String, GamePlayer> getPlayers() {
     return players;
+  }
+
+  @Override
+  public List<String> getHumans() {
+    return humanPlayers;
+  }
+
+  @Override
+  public List<AIPlayer> getAis() {
+    return aiPlayers;
   }
 }

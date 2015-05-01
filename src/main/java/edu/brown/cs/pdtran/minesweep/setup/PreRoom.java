@@ -35,19 +35,15 @@ public class PreRoom extends Session {
     return teams;
   }
 
-  /**
-   * Adds a Gamer to a TeamFormation object in the Room.
-   * @param teamId The team to add the gamer to.
-   * @param gamerId The id of the gamer to be added.
-   * @param g A Gamer to be added to a TeamFormation object.
-   * @return The id corresponding to the TeamFormation object the Gamer was
-   *         added to.
-   */
-  public synchronized String addGamer(String teamId, String gamerId, Gamer g) {
-    teams.get(teamId).addPlayer(gamerId, g);
-    // TODO throw GAME FULL EXCEPTIOn
+  public String addHuman(String teamId, String gamerId, HumanGamer hg) {
+    teams.get(teamId).addHumanGamer(gamerId, hg);
     return null;
-    // throw new Exception();
+  }
+
+  public String addAi(String teamId, String gamerId, AIGamer ag) {
+    teams.get(teamId).addAIGamer(gamerId, ag);
+    // TODO check if game is full
+    return null;
   }
 
   @Override

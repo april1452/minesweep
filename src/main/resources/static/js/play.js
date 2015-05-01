@@ -58,6 +58,7 @@ socket.onmessage = function (event) {
                 innerBox += "<p>" + player.name + "</p>";
             });
             innerBox += "<button type=button id=buttonId" + i + ">" + "Join Team: </button>";
+            innerBox += "<button type=button id=aiButtonId" + i + ">" + "Add AI. </button>";
         });
         
          $("#usernameBox").html(innerBox);
@@ -72,6 +73,20 @@ socket.onmessage = function (event) {
                             minesweepTeamId: i,
                             minesweepRoomId: $.cookie("minesweepRoomId"),
                             name: "test name"
+                    };
+                    console.log(sendData);
+                    socket.send(JSON.stringify(sendData));
+                  });
+            });
+            $('#aiButtonId' + i).click(function(){
+                    $.getScript("../js/js.cookie.js", function(){
+                        $.cookie("minesweepTeamId", i);
+                        var sendData = {
+                            type: "addAIPlayer",
+                            minesweepId: $.cookie("minesweepId"),
+                            minesweepTeamId: i,
+                            minesweepRoomId: $.cookie("minesweepRoomId"),
+                            difficulty: "EASY"
                     };
                     console.log(sendData);
                     socket.send(JSON.stringify(sendData));

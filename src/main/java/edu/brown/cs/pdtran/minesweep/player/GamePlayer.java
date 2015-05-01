@@ -48,11 +48,4 @@ public abstract class GamePlayer extends Player {
   public void beginPlay() {
     canPlay = true;
   }
-
-  /**
-   * The player sends a move to the Game to have the move executed.
-   */
-  public void makeMove() {
-
-  }
 }

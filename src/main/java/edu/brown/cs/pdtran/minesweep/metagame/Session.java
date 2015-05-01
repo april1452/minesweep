@@ -1,14 +1,11 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.types.SessionType;
-
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
+import edu.brown.cs.pdtran.minesweep.types.SessionType;
 
 /**
  * An abstract class representing a session of gameplay, which can be
@@ -45,20 +42,6 @@ public abstract class Session {
    */
   public GameSpecs getSpecs() {
     return specs;
-  }
-
-  /**
-   * Gets a list of all users in the Session.
-   * @return A List of unique string ids for each user in the teams.
-   */
-  public List<String> getUsers() {
-    List<String> users = new ArrayList<String>();
-    for (Team t : getTeams().values()) {
-      for (String id : t.getPlayers().keySet()) {
-        users.add(id);
-      }
-    }
-    return users;
   }
 
   /**

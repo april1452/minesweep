@@ -1,10 +1,12 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
-import edu.brown.cs.pdtran.minesweep.types.PlayerType;
+import java.util.List;
 
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
+import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.HumanPlayer;
+import edu.brown.cs.pdtran.minesweep.types.PlayerType;
 
 /**
  * Represents a human gamer. Will be turned into HumanPlayer object in
@@ -27,7 +29,7 @@ public class HumanGamer extends Gamer {
   }
 
   @Override
-  public GamePlayer toGamePlayer(BoardData data) {
+  public GamePlayer toGamePlayer(BoardData data, List<AIPlayer> aiPlayers) {
     return new HumanPlayer(name);
   }
 }

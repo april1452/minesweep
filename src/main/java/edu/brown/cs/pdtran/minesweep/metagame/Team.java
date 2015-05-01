@@ -34,6 +34,10 @@ public abstract class Team {
    */
   public abstract Map<String, ? extends Player> getPlayers();
 
+  public abstract List<? extends Player> getAis();
+
+  public abstract List<String> getHumans();
+
   /**
    * Gets the TeamInfo object corresponding to the Team, which is created
    * using a map of all PlayerInfo objects.
