@@ -16,6 +16,8 @@ var globalBoard;
 
 var _ctx;
 
+$("#board").hide();
+
 var server_ip = "" + location.host;
 server_ip = server_ip.substring(0, server_ip.length - 5);
 
@@ -122,7 +124,10 @@ socket.onmessage = function (event) {
     else if (responseJson.type === "gameData") {
         init();
         drawBoard(responseJson.data);
+        console.log("Working");
+        $("#board").show();
         $("#start").hide();
+        $("#teams").hide();
     }
 }
 
@@ -263,6 +268,8 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
 
 $("#board").bind('click', function(event){
     var board = $("#board")[0];
+
+    console.log("click");
 
     var x = event.pageX - board.offsetLeft;
     var y = event.pageY - board.offsetTop;
