@@ -3,15 +3,20 @@ package edu.brown.cs.pdtran.minesweep.metagame;
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.games.Game;
 import edu.brown.cs.pdtran.minesweep.games.GameFactory;
-import edu.brown.cs.pdtran.minesweep.setup.Gamer;
+import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
+import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
+import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
+import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 
@@ -53,6 +58,14 @@ public class RequestHandler {
     return roomsInfo;
   }
 
+  private Session getSession(String id) throws NoSuchSessionException {
+    Session session = sessions.get(id);
+    if (session == null) {
+      throw new NoSuchSessionException();
+    }
+    return session;
+  }
+
   private PreRoom getRoom(String id) throws NoSuchSessionException {
     PreRoom room = rooms.get(id);
     if (room == null) {
@@ -86,17 +99,29 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the requested session does
    *         not exist.
    */
-  public String joinIfAbsent(String sessionId,
+  public Map<String, List<String>> humanJoinIfAbsent(String sessionId,
       String teamId,
       String gamerId,
-      Gamer g) throws NoSuchSessionException {
+      HumanGamer g) throws NoSuchSessionException {
     PreRoom room = getRoom(sessionId);
     for (TeamFormation team : room.getTeams().values()) {
       team.getPlayers().remove(gamerId);
-      assert (!team.getPlayers().containsKey(gamerId));
-      System.out.println(team.getPlayers().size());
     }
-    return room.addGamer(teamId, gamerId, g);
+    room.addHuman(teamId, gamerId, g);
+    return getHumans(room);
+  }
+
+  public Map<String, List<String>> aiJoinIfAbsent(String sessionId,
+      String teamId,
+      String gamerId,
+      AIGamer g) throws NoSuchSessionException {
+    PreRoom room = getRoom(sessionId);
+    for (TeamFormation team : room.getTeams().values()) {
+      team.getPlayers().remove(gamerId);
+    }
+    room.addAi(teamId, gamerId, g);
+    return getHumans(room);
+
   }
 
   /**
@@ -135,10 +160,12 @@ public class RequestHandler {
    * room from the Rooms map and creates a new Game with the specified
    * information in the Games map.
    * @param id The unique string corresponding to a room.
+   * @return
    * @throws NoSuchSessionException Thrown when there is no session
    *         corresponding to the given room.
    */
-  public void startGame(String id) throws NoSuchSessionException {
+  public Map<String, List<AIPlayer>> startGame(String id)
+      throws NoSuchSessionException {
     PreRoom room = rooms.remove(id);
     if (room == null || sessions.remove(id) == null) {
       throw new NoSuchSessionException();
@@ -146,6 +173,7 @@ public class RequestHandler {
     Game game = GameFactory.generateGame(room);
     games.put(id, game);
     sessions.put(id, game);
+    return getAis(game);
   }
 
   /**
@@ -176,8 +204,21 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the requested session does
    *         not exist.
    */
-  public List<String> getUsers(String sessionId) throws NoSuchSessionException {
-    PreRoom room = getRoom(sessionId);
-    return room.getUsers();
+  public Map<String, List<String>> getHumans(Session session)
+      throws NoSuchSessionException {
+    Map<String, List<String>> humans = new HashMap<String, List<String>>();
+    for (Entry<String, ? extends Team> entry : session.getTeams().entrySet()) {
+      humans.put(entry.getKey(), entry.getValue().getHumans());
+    }
+    return humans;
+  }
+
+  public Map<String, List<AIPlayer>> getAis(Game game)
+      throws NoSuchSessionException {
+    Map<String, List<AIPlayer>> ais = new HashMap<String, List<AIPlayer>>();
+    for (Entry<String, PlayerTeam> entry : game.getTeams().entrySet()) {
+      ais.put(entry.getKey(), entry.getValue().getAis());
+    }
+    return ais;
   }
 }

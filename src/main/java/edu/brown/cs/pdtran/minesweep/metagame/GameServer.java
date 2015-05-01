@@ -16,12 +16,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.Game;
+import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 import edu.brown.cs.pdtran.minesweep.player.CheckTile;
-import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
-import edu.brown.cs.pdtran.minesweep.setup.Gamer;
 import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
 import edu.brown.cs.pdtran.minesweep.types.AiDifficulty;
 
@@ -30,7 +29,7 @@ import edu.brown.cs.pdtran.minesweep.types.AiDifficulty;
  * games can be run through at once.
  * @author Clayton
  */
-public class GameServer extends WebSocketServer {
+public class GameServer extends WebSocketServer implements MoveHandler {
 
   private JsonParser parser;
   private ConcurrentMap<String, WebSocket> clients;
@@ -83,14 +82,15 @@ public class GameServer extends WebSocketServer {
           String name = messageJson.get("name").getAsString();
           clients.put(userId, conn);
           String teamId = messageJson.get("minesweepTeamId").getAsString();
-          Gamer gamer = new HumanGamer(name);
-          handler.joinIfAbsent(sessionId, teamId, userId, gamer);
+          HumanGamer gamer = new HumanGamer(name);
+          Map<String, List<String>> usersToUpdate =
+              handler.humanJoinIfAbsent(sessionId, teamId, userId, gamer);
 
           JsonObject update = new JsonObject();
           update.addProperty("type", "update");
           update.add("data", handler.getRoomInfo(sessionId).toJson());
 
-          updateUsers(sessionId, update.toString());
+          updateSession(usersToUpdate, update.toString());
         } catch (NoSuchSessionException e) {
           System.out.println("Could not find room.");
         }
@@ -101,8 +101,16 @@ public class GameServer extends WebSocketServer {
           AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
           String teamId = messageJson.get("minesweepTeamId").getAsString();
           String aiId = handler.getUserId();
-          Gamer gamer = new AIGamer("John Jannottibot", aiDifficulty);
-          handler.joinIfAbsent(sessionId, teamId, aiId, gamer);
+          AIGamer gamer = new AIGamer("John Jabbotti", aiDifficulty);
+          Map<String, List<String>> usersToUpdate =
+              handler.aiJoinIfAbsent(sessionId, teamId, aiId, gamer);
+
+          JsonObject update = new JsonObject();
+          update.addProperty("type", "update");
+          update.add("data", handler.getRoomInfo(sessionId).toJson());
+
+          updateSession(usersToUpdate, update.toString());
+
           break;
         } catch (NoSuchSessionException e) {
           System.out
@@ -110,8 +118,26 @@ public class GameServer extends WebSocketServer {
         }
       case "startGame":
         try {
-          handler.startGame(sessionId);
-          updateBoards(sessionId);
+          Map<String, List<AIPlayer>> aisToStart = handler.startGame(sessionId);
+
+          for (Entry<String, List<AIPlayer>> entry : aisToStart.entrySet()) {
+            for (AIPlayer player : entry.getValue()) {
+              new Thread(
+                  new AIRunnable(sessionId, entry.getKey(), player, this))
+              .start();
+            }
+          }
+
+          Game game = handler.getGame(sessionId);
+
+          JsonObject gameData = new JsonObject();
+          gameData.addProperty("type", "gameData");
+          for (Entry<String, PlayerTeam> entry : game.getTeams().entrySet()) {
+            PlayerTeam team = entry.getValue();
+            gameData.addProperty("data", team.getCurrentBoard().toJson());
+            updateTeam(team.getHumans(), gameData.toString());
+            gameData.remove("data");
+          }
         } catch (NoSuchSessionException e) {
           System.out
           .println("Could not find room (perhaps it was already started?).");
@@ -127,9 +153,14 @@ public class GameServer extends WebSocketServer {
 
           Game game = handler.getGame(sessionId);
 
-          game.makeMove(teamId, move);
+          Board board = game.makeMove(teamId, move);
 
-          updateBoards(sessionId);
+          JsonObject gameData = new JsonObject();
+          gameData.addProperty("type", "gameData");
+          gameData.addProperty("data", board.toJson());
+
+          updateTeam(game.getTeams().get(teamId).getHumans(),
+              gameData.toString());
         } catch (NoSuchSessionException e) {
           System.out.println("Could not find game.");
         }
@@ -139,30 +170,29 @@ public class GameServer extends WebSocketServer {
     }
   }
 
-  private void updateUsers(String sessionId, String message)
+  @Override
+  public void makeMove(String sessionId, String teamId, Move m)
       throws NoSuchSessionException {
-    List<String> users = handler.getUsers(sessionId);
-    for (String id : users) {
-      clients.get(id).send(message);
+    Game game = handler.getGame(sessionId);
+    Board board = game.makeMove(teamId, m);
+
+    JsonObject gameData = new JsonObject();
+    gameData.addProperty("type", "gameData");
+    gameData.addProperty("data", board.toJson());
+
+    updateTeam(game.getTeams().get(teamId).getHumans(), gameData.toString());
+  }
+
+  private void updateSession(Map<String, List<String>> usersToUpdate,
+      String message) throws NoSuchSessionException {
+    for (Entry<String, List<String>> entry : usersToUpdate.entrySet()) {
+      updateTeam(entry.getValue(), message);
     }
   }
 
-
-  public void updateBoards(String sessionId) throws NoSuchSessionException {
-    JsonObject gameData = new JsonObject();
-    gameData.addProperty("type", "gameData");
-    for (Entry<String, PlayerTeam> teamEntry : handler.getGame(sessionId)
-        .getTeams().entrySet()) {
-      Board board = teamEntry.getValue().getCurrentBoard();
-      gameData.addProperty("data", board.toJson());
-      Map<String, GamePlayer> players = teamEntry.getValue().getPlayers();
-
-      assert (players != null);
-
-      for (String playerId : players.keySet()) {
-        clients.get(playerId).send(gameData.toString());
-      }
-      gameData.remove("data");
+  private void updateTeam(List<String> usersToUpdate, String message) {
+    for (String id : usersToUpdate) {
+      clients.get(id).send(message);
     }
   }
 

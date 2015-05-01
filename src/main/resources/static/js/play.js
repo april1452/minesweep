@@ -12,6 +12,8 @@ var CANVAS_Y = 800;
 var tileWidth;
 var tileHeight;
 
+var globalBoard;
+
 var _ctx;
 
 var server_ip = "" + location.host;
@@ -84,6 +86,20 @@ socket.onmessage = function (event) {
                     socket.send(JSON.stringify(sendData));
                   });
             });
+            $('#aiButtonId' + i).click(function(){
+                    $.getScript("../js/js.cookie.js", function(){
+                        $.cookie("minesweepTeamId", i);
+                        var sendData = {
+                            type: "addAIPlayer",
+                            minesweepId: $.cookie("minesweepId"),
+                            minesweepTeamId: i,
+                            minesweepRoomId: $.cookie("minesweepRoomId"),
+                            difficulty: "EASY"
+                    };
+                    console.log(sendData);
+                    socket.send(JSON.stringify(sendData));
+                  });
+            });
         });
 
         $.each(teams, function(i, team) {
@@ -129,6 +145,7 @@ function drawBoard(responseJSON) {
     var tiles = board.tiles;
     
     console.log(board.type);
+    globalBoard = board;
 
     if (board.type == "DefaultBoard"){
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
@@ -161,7 +178,7 @@ function drawBoard(responseJSON) {
     } else if (board.type == "TriangularBoard"){
 
          _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
-         tileWidth = CANVAS_X / (width + width / 2) * 2;
+         tileWidth = CANVAS_X / (width / 2 + height / 2);
 
         $.each(tiles, function(index, tile) {
             var offset = tile.row * tileWidth / 2;
@@ -193,13 +210,11 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
     _ctx.beginPath();
     _ctx.moveTo(x1, y1);
     _ctx.lineTo(x2, y2);
-    _ctx.moveTo(x2, y2);
+    //_ctx.moveTo(x2, y2);
     _ctx.lineTo(x3, y3);
-    _ctx.moveTo(x3, y3);
+    //_ctx.moveTo(x3, y3);
     _ctx.lineTo(x1, y1);
     _ctx.closePath();
-    _ctx.fillStyle = BOMB;
-    _ctx.fill();
     _ctx.strokeStyle = NORMAL_BORDER;
     _ctx.stroke();
 
@@ -252,18 +267,80 @@ $("#board").bind('click', function(event){
     var x = event.pageX - board.offsetLeft;
     var y = event.pageY - board.offsetTop;
 
-    var row = Math.floor(y / tileHeight);
-    var column = Math.floor(x / tileWidth);
+    if (globalBoard.type == "DefaultBoard"){
+        
+
+        var row = Math.floor(y / tileHeight);
+        var column = Math.floor(x / tileWidth);
     
-    $.getScript("../js/js.cookie.js", function(){
-        var sendData = {
-            type: "makeMove",
-            minesweepId: $.cookie("minesweepId"),
-            minesweepRoomId: $.cookie("minesweepRoomId"),
-            minesweepTeamId: $.cookie("minesweepTeamId"),
-            row: row,
-            col: column
-        };
-        socket.send(JSON.stringify(sendData));
-    });
+        $.getScript("../js/js.cookie.js", function(){
+            var sendData = {
+                type: "makeMove",
+                minesweepId: $.cookie("minesweepId"),
+                minesweepRoomId: $.cookie("minesweepRoomId"),
+                minesweepTeamId: $.cookie("minesweepTeamId"),
+                row: row,
+                col: column
+            };
+            socket.send(JSON.stringify(sendData));
+        });
+
+    } else if (globalBoard.type == "TriangularBoard") {
+        var row = Math.floor(y / tileHeight);
+        var offset = row * tileWidth / 2;
+        var estimate = Math.floor((x - offset) / tileWidth * 2);
+        console.log(row + " " + estimate);
+
+
+        var tiles = globalBoard.tiles;
+        var selectedTile;
+
+        $.each(tiles, function(index, tile) {
+            if (tile.row == row && tile.column == estimate) {
+                console.log(tile.row + " " + tile.column);
+                selectedTile = tile;
+            }
+            
+        });
+
+        if (selectedTile.column % 2 === 0) {
+                var x1 = selectedTile.column / 2 * tileWidth + offset;
+                var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
+                var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
+                var y1 = selectedTile.row * tileHeight;
+                var y2 = selectedTile.row * tileHeight;
+                var y3 = (selectedTile.row + 1) * tileHeight;
+            } else {
+                var x1 = selectedTile.column / 2 * tileWidth + offset;
+                var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
+                var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
+                var y1 = (selectedTile.row + 1) * tileHeight;
+                var y2 = (selectedTile.row + 1) * tileHeight;
+                var y3 = selectedTile.row * tileHeight;
+            }
+
+        var borderSlope = (y3 - y1) / (x3 - x1);
+        var clickSlope = (y - y1) / (x - x1);
+        console.log(borderSlope + " " + clickSlope);
+        if (Math.abs(borderSlope) < Math.abs(clickSlope)) {
+            var column = estimate - 1;
+            console.log("Above border");
+        } else {
+            var column = estimate;
+            console.log("Below border");
+        }
+        console.log(row + " " + column);
+
+        $.getScript("../js/js.cookie.js", function(){
+            var sendData = {
+                type: "makeMove",
+                minesweepId: $.cookie("minesweepId"),
+                minesweepRoomId: $.cookie("minesweepRoomId"),
+                minesweepTeamId: $.cookie("minesweepTeamId"),
+                row: row,
+                col: column
+            };
+            socket.send(JSON.stringify(sendData));
+        });
+    }
 });

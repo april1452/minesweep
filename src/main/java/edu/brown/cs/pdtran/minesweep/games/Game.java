@@ -13,16 +13,18 @@ import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 /**
  * An Abstract class representing a Game.
  * <p>
- * This is implemented by the different types of games (Classic, FSU, etc.).
+ * This is implemented by the different types of games (Classic, FSU,
+ * etc.).
  * @author Clayton
  */
 public abstract class Game extends Session {
 
   /**
-   * The constructor that builds a Game by using the Session constructor that it
-   * extends.
+   * The constructor that builds a Game by using the Session constructor
+   * that it extends.
    * @param name The string representing the name of the game.
-   * @param specs The GameSpecs object that represents the settins for the game.
+   * @param specs The GameSpecs object that represents the settins for the
+   *        game.
    */
   public Game(String name, GameSpecs specs) {
     super(name, specs);
@@ -34,8 +36,8 @@ public abstract class Game extends Session {
   /**
    * Gets the ids for the players contained in a team.
    * @param teamId The unique string id corresponding to a team.
-   * @return A collection of strings representing the id of each player in that
-   *         team.
+   * @return A collection of strings representing the id of each player in
+   *         that team.
    */
   public abstract Collection<String> getPlayers(String teamId);
 
@@ -51,7 +53,7 @@ public abstract class Game extends Session {
    * @param teamId The unique string corresponding to a team.
    * @param m A Move object that specifes that the team is doing.
    */
-  public abstract void makeMove(String teamId, Move m);
+  public abstract Board makeMove(String teamId, Move m);
 
   /**
    * Implements the move a team uses.

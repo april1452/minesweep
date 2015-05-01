@@ -1,5 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -12,6 +14,8 @@ import edu.brown.cs.pdtran.minesweep.metagame.Team;
  */
 public class TeamFormation extends Team {
 
+  private List<String> humanGamers;
+  private List<AIGamer> aiGamers;
   private ConcurrentMap<String, Gamer> gamers;
 
   /**
@@ -20,6 +24,8 @@ public class TeamFormation extends Team {
    */
   public TeamFormation(String name) {
     super(name);
+    humanGamers = new ArrayList<>();
+    aiGamers = new ArrayList<>();
     gamers = new ConcurrentHashMap<String, Gamer>();
   }
 
@@ -28,12 +34,32 @@ public class TeamFormation extends Team {
     return gamers;
   }
 
+  public void addAIGamer(String gamerId, AIGamer ag) {
+    aiGamers.add(ag);
+    addGamer(gamerId, ag);
+  }
+
+  public void addHumanGamer(String gamerId, HumanGamer hg) {
+    humanGamers.add(gamerId);
+    addGamer(gamerId, hg);
+  }
+
+  @Override
+  public List<AIGamer> getAis() {
+    return aiGamers;
+  }
+
+  @Override
+  public List<String> getHumans() {
+    return humanGamers;
+  }
+
   /**
    * Adds a Gamer to a TeamFormation object.
    * @param id The unique id corresponding to the Gamer being added.
    * @param g A Gamer object to be added to the TeamFormation player map.
    */
-  public void addPlayer(String id, Gamer g) {
+  private void addGamer(String id, Gamer g) {
     gamers.putIfAbsent(id, g);
   }
 }
