@@ -92,16 +92,16 @@ socket.onmessage = function (event) {
 
         $.each(teams, function(i, team) {
             $('#easy' + i).click(function(){
-                addAi(i, "EASY");
+                console.log("easy ai added to team "+i);
             });
             $('#medium' + i).click(function(){
-                addAi(i, "MEDIUM");
+                console.log("medium ai added to team "+i);
             });
             $('#hard' + i).click(function(){
-                addAi(i, "HARD");
+                console.log("hard ai added to team "+i);
             });
             $('#random' + i).click(function(){
-                addAi(i, "MEDIUM");
+                console.log("random ai added to team "+i);
             });
         });
     } 
@@ -115,21 +115,6 @@ socket.onmessage = function (event) {
         $("#start").hide();
         $("#teams").hide();
     }
-}
-
-function addAi(teamId, difficulty) {
-        $.getScript("../js/js.cookie.js", function(){
-            $.cookie("minesweepTeamId", teamId);
-            var sendData = {
-                type: "addAIPlayer",
-                minesweepId: $.cookie("minesweepId"),
-                minesweepTeamId: $.cookie("minesweepTeamId"),
-                minesweepRoomId: $.cookie("minesweepRoomId"),
-                difficulty: difficulty
-            };
-            console.log(sendData);
-            socket.send(JSON.stringify(sendData));
-        });
 }
 
 function init() {
