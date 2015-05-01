@@ -8,7 +8,7 @@
 <div id="teams" class="row">
 </div>
 
-<canvas id="board" style="display:none"></canvas>  
+<canvas id="board"></canvas>  
 
 <script src="/js/play.js"></script>   
 </#assign>
