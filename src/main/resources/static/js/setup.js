@@ -1,7 +1,7 @@
 $("#create").click(function(event) {
     event.preventDefault();
     var postParameters = {
-    		roomName: $("#gameName").val(),
+		roomName: $("#gameName").val(),
         gameMode: $("input[name='gameMode']:checked").val(),
         boardType: $("input[name='boardType']:checked").val()
     };

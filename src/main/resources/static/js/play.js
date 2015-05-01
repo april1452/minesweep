@@ -86,34 +86,20 @@ socket.onmessage = function (event) {
                     socket.send(JSON.stringify(sendData));
                   });
             });
-            $('#aiButtonId' + i).click(function(){
-                    $.getScript("../js/js.cookie.js", function(){
-                        $.cookie("minesweepTeamId", i);
-                        var sendData = {
-                            type: "addAIPlayer",
-                            minesweepId: $.cookie("minesweepId"),
-                            minesweepTeamId: i,
-                            minesweepRoomId: $.cookie("minesweepRoomId"),
-                            difficulty: "EASY"
-                    };
-                    console.log(sendData);
-                    socket.send(JSON.stringify(sendData));
-                  });
-            });
         });
 
         $.each(teams, function(i, team) {
             $('#easy' + i).click(function(){
-                console.log("easy ai added to team "+i);
+                addAi(i, "EASY");
             });
             $('#medium' + i).click(function(){
-                console.log("medium ai added to team "+i);
+                addAi(i, "MEDIUM");
             });
             $('#hard' + i).click(function(){
-                console.log("hard ai added to team "+i);
+                addAi(i, "HARD");
             });
             $('#random' + i).click(function(){
-                console.log("random ai added to team "+i);
+                addAi(i, "MEDIUM");
             });
         });
     } 
@@ -124,6 +110,21 @@ socket.onmessage = function (event) {
         drawBoard(responseJson.data);
         $("#start").hide();
     }
+}
+
+function addAi(teamId, difficulty) {
+        $.getScript("../js/js.cookie.js", function(){
+            $.cookie("minesweepTeamId", teamId);
+            var sendData = {
+                type: "addAIPlayer",
+                minesweepId: $.cookie("minesweepId"),
+                minesweepTeamId: $.cookie("minesweepTeamId"),
+                minesweepRoomId: $.cookie("minesweepRoomId"),
+                difficulty: difficulty
+            };
+            console.log(sendData);
+            socket.send(JSON.stringify(sendData));
+        });
 }
 
 function init() {
