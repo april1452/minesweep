@@ -8,34 +8,13 @@
 }
 
 #new {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 li {
-	width: 250px;
-    padding: 15px;
-    background-color: navy;
-    margin: 2px;
-    color: white;
-    list-style-type: none;
-    border-radius: 10px;
-}
-
-ul {
-	padding: 0;
+    padding-top: 5px;
     list-style-type: none;
 }
 
-input {
-	width: 100px;
-    padding: 5px;
-    background-color: #419bf9;
-    margin: 2px;
-    color: black;
-    list-style-type: none;
-    border-radius: 10px;
-}
 
-input:hover {
-	background-color: #E6E6E6;
-}
+

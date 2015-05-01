@@ -14,10 +14,10 @@
     <script id="webplate-stack" src="/webplate/stack.js"></script>
 </head>
 
-<body class="center" data-icon-font="icomoon">
+<body class="center" data-icon-font="icomoon" data-formplate-colour="pink">
 
 	<div id="nav" class="span-12 back-black">
-		<h2 style="color:white; display:inline">minesweep+</h2>
+		<a href="/"><h2 style="color:white; display:inline">minesweep+</h2></a>
 		<a href="#" id="about" class="button line-purple small modal-trigger" data-modal-open="about-modal">About</a>
 		<a href="#" id="help" class="button line-pink small modal-trigger" data-modal-open="help-modal">Help</a>
 	</div>
