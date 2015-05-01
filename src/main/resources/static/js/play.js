@@ -23,6 +23,7 @@ server_ip = server_ip.substring(0, server_ip.length - 5);
 
 var socket = new WebSocket("ws://" + server_ip + ":8080");
 
+// set up cookies js
 socket.onopen = function(event) {
     $.getScript("../js/js.cookie.js", function(){
         var sendData = {
@@ -34,6 +35,7 @@ socket.onopen = function(event) {
     });
 }
 
+// start the game
 $("#startButton").click(function() {
     $.getScript("../js/js.cookie.js", function(){
         var sendData = {
@@ -44,7 +46,6 @@ $("#startButton").click(function() {
         socket.send(JSON.stringify(sendData));
     });
 });
-
 
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
@@ -73,6 +74,7 @@ socket.onmessage = function (event) {
     }
 }
 
+// draw pre game rooms
 function drawRoom(responseJson) {
     $.getScript("/webplate/stack.js", function() {
         var innerBox = "";
@@ -84,7 +86,10 @@ function drawRoom(responseJson) {
         $.each(teams, function(i, team) {
             innerBox += '<div class="span-3"><h4>' + team.name + "</h4>";
             $.each(team.players, function(j, player) {
-                innerBox += '<a class="button line-purple">' + player.name + "</a><br>";
+                if (player.type=="HUMAN")
+                    innerBox += '<a class="button line-purple">' + player.name + "</a><br>";
+                else 
+                    innerBox += '<a class="button line-aqua">' + player.name + "</a><br>";
             });
             // add ai button
             innerBox += '<a class="button aqua modal-trigger" data-modal-open="ai-choose'+i+'" id="ai' + i + '">' + "Add AI</a><br>";
@@ -102,6 +107,7 @@ function drawRoom(responseJson) {
             });
         });
     
+        // create ai from modal screen
         $.each(teams, function(i, team) {
             $('#easy' + i).click(function(){
                 addAi(i, "EASY");
@@ -119,6 +125,7 @@ function drawRoom(responseJson) {
     });
 }
 
+// allow player to join a team
 function joinRoom(teamId) {
     $.getScript("../js/js.cookie.js", function(){
         $.cookie("minesweepTeamId", teamId);
@@ -133,6 +140,7 @@ function joinRoom(teamId) {
   });
 }
 
+// add an ai to a team
 function addAi(teamId, difficulty) {
         $.getScript("../js/js.cookie.js", function(){
             var sendData = {
