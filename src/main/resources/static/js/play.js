@@ -115,7 +115,7 @@ function drawBoard(responseJSON) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = BOMB;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                    _ctx.strokeStyle = NORMAL_BORDER;
+                    _ctx.strokeStyle = BOMB_BORDER;
                     _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
                 } else {
                     _ctx.fillStyle = EXPLORED;
@@ -128,7 +128,7 @@ function drawBoard(responseJSON) {
             } else {
                 _ctx.fillStyle = UNEXPLORED;
                 _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                _ctx.strokeStyle = BOMB_BORDER;
+                _ctx.strokeStyle = NORMAL_BORDER;
                 _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
             }
 
