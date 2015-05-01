@@ -104,16 +104,16 @@ function drawRoom(responseJson) {
     
         $.each(teams, function(i, team) {
             $('#easy' + i).click(function(){
-                console.log("easy ai added to team "+i);
+                addAi(i, "EASY");
             });
             $('#medium' + i).click(function(){
-                console.log("medium ai added to team "+i);
+                addAi(i, "MEDIUM");
             });
             $('#hard' + i).click(function(){
-                console.log("hard ai added to team "+i);
+                addAi(i, "HARD");
             });
             $('#random' + i).click(function(){
-                console.log("random ai added to team "+i);
+                addAi(i, "MEDIUM");
             });
         });
     });
