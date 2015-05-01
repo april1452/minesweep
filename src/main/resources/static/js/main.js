@@ -8,6 +8,7 @@ var clicked;
 var currentForm;
 var currentButton;
 
+// load and display list of currently open game rooms
 function getGames() {
     $.get("/games", function(responseJSON) {
         var response = JSON.parse(responseJSON);
@@ -37,7 +38,6 @@ function getGames() {
                 $("#gamesList").append(li);
 
                 node.onclick = function() {
-                    console.log("Hello");
                     document.cookie = "minesweepRoomId=" + roomId;
                     console.log(document.cookie);
                     window.location.href = "/play";

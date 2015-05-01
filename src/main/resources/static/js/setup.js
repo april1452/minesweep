@@ -1,3 +1,4 @@
+// send game specs
 $("#create").click(function(event) {
     event.preventDefault();
     var postParameters = {
@@ -16,6 +17,7 @@ $("#create").click(function(event) {
 	});
 });
 
+// display game mode info
 $("[name='gameMode']").click(function() {
 	hideInfo();
 	var mode = this.getAttribute("value");
