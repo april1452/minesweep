@@ -32,7 +32,7 @@ socket.onopen = function(event) {
     });
 }
 
-$("#start").click(function() {
+$("#startButton").click(function() {
     $.getScript("../js/js.cookie.js", function(){
         var sendData = {
             type: "startGame",
