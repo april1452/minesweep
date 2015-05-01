@@ -20,8 +20,7 @@ public class TriangularBoard extends DefaultBoard implements Board, Cloneable {
 
   /**
    * The Constructor.
-   * @param grid
-   *          the tile grid. Use only for testing.
+   * @param grid the tile grid. Use only for testing.
    */
   public TriangularBoard(Tile[][] grid) {
     super(grid);
@@ -31,7 +30,8 @@ public class TriangularBoard extends DefaultBoard implements Board, Cloneable {
   public List<Tile> getAdjacentTiles(int row, int col) {
     List<Tile> tiles = new ArrayList<>(3);
 
-    boolean goDown = col % 2 == 0; // decides which side the isoceles triangle
+    boolean goDown = col % 2 == 0; // decides which side the isoceles
+    // triangle
     // is.
     int newRow = goDown ? row - 1 : row + 1;
 
@@ -47,6 +47,7 @@ public class TriangularBoard extends DefaultBoard implements Board, Cloneable {
     return tiles;
   }
 
+
   @Override
   public TriangularBoard clone() {
     Tile[][] newGrid = new Tile[getHeight()][getWidth()];
@@ -56,6 +57,23 @@ public class TriangularBoard extends DefaultBoard implements Board, Cloneable {
       }
     }
     return new TriangularBoard(newGrid);
+  }
+
+  @Override
+  protected void updateBombNumbers() {
+    // Calculate adjacent bomb values for each tile
+    int adjacentBombCount;
+    for (int i = 0; i < super.getHeight(); i++) {
+      for (int j = 0; j < super.getWidth(); j++) {
+        adjacentBombCount = 0;
+        for (Tile t : getAdjacentTiles(i, j)) {
+          if (t.isBomb()) {
+            adjacentBombCount++;
+          }
+        }
+        grid[i][j].setAdjacentBombs(adjacentBombCount);
+      }
+    }
   }
 
 }
