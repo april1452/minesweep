@@ -17,6 +17,8 @@ var globalBoard;
 var _ctx;
 
 $("#board").hide();
+$("#win").hide();
+$("#lose").hide();
 
 var server_ip = "" + location.host;
 server_ip = server_ip.substring(0, server_ip.length - 5);
@@ -375,3 +377,13 @@ $("#board").bind('click', function(event){
         });
     }
 });
+
+function win() {
+    $("#board").hide();
+    $("#win").show();
+}
+
+function lose() {
+    $("#board").hide();
+    $("#lose").show();
+}
