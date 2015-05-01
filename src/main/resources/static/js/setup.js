@@ -1,10 +1,11 @@
 $("#create").click(function(event) {
     event.preventDefault();
     var postParameters = {
-        gameMode: $("input[name='gameMode']:checked").val()
-        //boardType: $("input[name='boardShape']:checked").val();
+    		roomName: $("#gameName").val(),
+        gameMode: $("input[name='gameMode']:checked").val(),
+        boardType: $("input[name='boardType']:checked").val()
     };
-    console.log(postParameters)
+    console.log(postParameters);
 	$.post("/create", postParameters, function(responseJSON) {
 	   window.location.href = "/play";
 	});
@@ -15,23 +16,22 @@ $("[name='gameMode']").click(function() {
 	var mode = this.getAttribute("value");
 	switch(mode) {
 		case "CLASSIC":
-			$("#CLASSIC").show();
+			$("#classic").show();
 			break;
-		case "layers":
+		case "LAYERS":
 			$("#layers").show();
 			break;
-		case "territory":
+		case "TERRITORY":
 			$("#territory").show();
 			break;
-		case "paths":
+		case "PATHS":
 			$("#paths").show();
 			break;
-		case "fsu":
+		case "FSU":
 			$("#fsu").show();
 			break;
 	}
 });
-
 
 function hideInfo() {
 	$("#classic").hide();
@@ -39,5 +39,7 @@ function hideInfo() {
 	$("#territory").hide();
 	$("#paths").hide();
 	$("#fsu").hide();
-}
+};
+
+
 

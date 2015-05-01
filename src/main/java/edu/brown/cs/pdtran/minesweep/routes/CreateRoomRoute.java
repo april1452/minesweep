@@ -1,15 +1,14 @@
 package edu.brown.cs.pdtran.minesweep.routes;
 
-import edu.brown.cs.pdtran.minesweep.types.BoardType;
-import edu.brown.cs.pdtran.minesweep.types.GameMode;
-
-import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
-import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
-import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
+import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
+import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import edu.brown.cs.pdtran.minesweep.types.BoardType;
+import edu.brown.cs.pdtran.minesweep.types.GameMode;
 
 /**
  * Creates a Room using information from entered on the setup page.
@@ -29,25 +28,22 @@ public class CreateRoomRoute implements Route {
 
   @Override
   public Object handle(Request req, Response res) {
-    System.out.println("test2");
-
     QueryParamsMap params = req.queryMap();
+    // System.out.println(Arrays.toString(params.values()));
     String gameModeString = params.value("gameMode");
-    // String boardTypeString = params.value("boardType");
+    String boardTypeString = params.value("boardType");
     GameMode gameMode = GameMode.valueOf(gameModeString);
-    // BoardType boardType = BoardType.valueOf(boardTypeString);
+    BoardType boardType = BoardType.valueOf(boardTypeString);
 
     // HARDCODED FOR NOW
     int[] boardDims = {10, 10};
-    GameSpecs specs = new GameSpecs(gameMode, 1, BoardType.DEFAULT, boardDims);
+    GameSpecs specs = new GameSpecs(gameMode, 1, boardType, boardDims);
 
-    PreRoom room = new PreRoom("Room name.", specs);
+    PreRoom room = new PreRoom(params.value("roomName"), specs);
 
     String roomId = handler.addRoom(room);
 
     res.cookie("minesweepRoomId", roomId);
-
-    System.out.println("test");
 
     return true;
   }

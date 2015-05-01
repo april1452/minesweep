@@ -1,13 +1,11 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.types.SessionType;
-
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.metagame.Session;
+import edu.brown.cs.pdtran.minesweep.types.SessionType;
 
 /**
  * This class contains data for the Room information before the room is
@@ -39,19 +37,14 @@ public class PreRoom extends Session {
 
   /**
    * Adds a Gamer to a TeamFormation object in the Room.
-   * @param id A unique string for the Gamer being added.
+   * @param teamId The team to add the gamer to.
+   * @param gamerId The id of the gamer to be added.
    * @param g A Gamer to be added to a TeamFormation object.
    * @return The id corresponding to the TeamFormation object the Gamer was
    *         added to.
    */
-  public synchronized String addGamer(String id, Gamer g) {
-    for (Map.Entry<String, TeamFormation> entry : teams.entrySet()) {
-      TeamFormation tf = entry.getValue();
-      if (tf.getPlayers().size() < specs.getNumTeamPlayers()) {
-        tf.addPlayer(id, g);
-        return entry.getKey();
-      }
-    }
+  public synchronized String addGamer(String teamId, String gamerId, Gamer g) {
+    teams.get(teamId).addPlayer(gamerId, g);
     // TODO throw GAME FULL EXCEPTIOn
     return null;
     // throw new Exception();
