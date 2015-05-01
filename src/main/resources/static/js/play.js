@@ -86,20 +86,6 @@ socket.onmessage = function (event) {
                     socket.send(JSON.stringify(sendData));
                   });
             });
-            $('#aiButtonId' + i).click(function(){
-                    $.getScript("../js/js.cookie.js", function(){
-                        $.cookie("minesweepTeamId", i);
-                        var sendData = {
-                            type: "addAIPlayer",
-                            minesweepId: $.cookie("minesweepId"),
-                            minesweepTeamId: i,
-                            minesweepRoomId: $.cookie("minesweepRoomId"),
-                            difficulty: "EASY"
-                    };
-                    console.log(sendData);
-                    socket.send(JSON.stringify(sendData));
-                  });
-            });
         });
 
         $.each(teams, function(i, team) {
