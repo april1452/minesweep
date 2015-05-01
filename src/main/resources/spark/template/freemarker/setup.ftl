@@ -36,9 +36,9 @@
 
     <h5>Teams</h5>
     <label>Number of teams:</label>
-    <input type="radio" name="teams" value="1" id="teams-1" checked>
+    <input type="radio" name="teams" value="1" id="teams-1">
     <label for="teams-1">1</label>
-    <input type="radio" name="teams" value="2" id="teams-2">
+    <input type="radio" name="teams" value="2" id="teams-2" checked>
     <label for="teams-2">2</label>
     <input type="radio" name="teams" value="3" id="teams-3">
     <label for="teams-3">3</label>
@@ -46,9 +46,9 @@
     <label for="teams-4">4</label>
     <br>
     <label>Players per team:</label> 
-    <input type="radio" name="players" value="1" id="players-1" checked>
+    <input type="radio" name="players" value="1" id="players-1">
     <label for="players-1">1</label>
-    <input type="radio" name="players" value="2" id="players-2">
+    <input type="radio" name="players" value="2" id="players-2" checked>
     <label for="players-2">2</label>
     <input type="radio" name="players" value="3" id="players-3">
     <label for="players-3">3</label>
