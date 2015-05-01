@@ -63,11 +63,11 @@ socket.onmessage = function (event) {
                 innerBox += '<a class="button line-purple">' + player.name + "</a><br>";
             });
             // add ai button
-            innerBox += '<a href="#" class="button aqua modal-trigger" data-modal-open="ai-choose'+i+'" id="ai' + i + '">' + "Add AI</a><br>";
+            innerBox += '<a class="button aqua modal-trigger" data-modal-open="ai-choose'+i+'" id="ai' + i + '">' + "Add AI</a><br>";
             // join team button
-            innerBox += '<a href="#" class="button purple" id="buttonId' + i + '">' + "Join Team</a></div>";  
+            innerBox += '<a class="button purple" id="buttonId' + i + '">' + "Join Team</a></div>";  
             // choose ai difficulty modal
-            innerBox += '<div class="modalplate" data-modal-id="ai-choose'+i+'"><div class="modalplate-title-bar"><a href="#" class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="span-2"><a class="button aqua large icon close" id="easy'+i+'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+i+'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+i+'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+i+'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
+            innerBox += '<div class="modalplate" data-modal-id="ai-choose'+i+'"><div class="modalplate-title-bar"><a class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="span-2"><a class="button aqua large icon close" id="easy'+i+'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+i+'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+i+'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+i+'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
         });
         
          $("#teams").html(innerBox);
