@@ -174,7 +174,9 @@ public class DefaultBoard implements Board, Cloneable {
         target.setVisited();
         // If target has no adjacent bombs, reveal adjacent tiles
         // that have no bombs.
-        if (target.getAdjacentBombs() == 0) {
+        if (target.getAdjacent$('img').bind('contextmenu', function(e){
+          return false;
+        }); Bombs() == 0) {
           Deque<Tile> tilesWithNoAdjacentBombs = new ArrayDeque<Tile>();
           LinkedList<Tile> tilesToReveal = new LinkedList<Tile>();
           tilesWithNoAdjacentBombs.add(target);

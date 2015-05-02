@@ -12,12 +12,13 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import edu.brown.cs.pdtran.minesweep.move.CheckTile;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.Game;
 import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
-import edu.brown.cs.pdtran.minesweep.player.CheckTile;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
@@ -71,6 +72,13 @@ public class GameServer extends WebSocketServer implements MoveHandler {
         case "init":
           try {
             JsonObject update = new JsonObject();
+            clients.put(userId, conn);
+
+            Map<String, List<String>> teams = handler.getHumans(sessionId);
+
+            HumanGamer gamer = new HumanGamer(name);
+            handler.humanJoinIfAbsent(sessionId, userId, )
+
             update.addProperty("type", "init");
             update.add("data", handler.getRoomInfo(sessionId).toJson());
 
@@ -82,11 +90,10 @@ public class GameServer extends WebSocketServer implements MoveHandler {
         case "joinRoom":
           try {
             String name = messageJson.get("name").getAsString();
-            clients.put(userId, conn);
             String teamId = messageJson.get("minesweepTeamId").getAsString();
             HumanGamer gamer = new HumanGamer(name);
             Map<String, List<String>> usersToUpdate =
-                handler.humanJoinIfAbsent(sessionId, teamId, userId, gamer);
+                handler.humanSwitch(sessionId, teamId, userId, gamer);
 
             JsonObject update = new JsonObject();
             update.addProperty("type", "update");
@@ -106,7 +113,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
             String aiId = handler.getUserId();
             AIGamer gamer = new AIGamer("John Jabbotti", aiDifficulty);
             Map<String, List<String>> usersToUpdate =
-                handler.aiJoinIfAbsent(sessionId, teamId, aiId, gamer);
+                handler.aiJoin(sessionId, teamId, aiId, gamer);
 
             JsonObject update = new JsonObject();
             update.addProperty("type", "update");
@@ -178,7 +185,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
     Board board = game.makeMove(teamId, m);
 
     JsonObject gameData = new JsonObject();
-    if (board.isWinningBoard()) {
+    if (board == null) {
       for (PlayerTeam team : game.getTeams().values()) {
         for (GamePlayer player : team.getPlayers().values()) {
           player.endPlay();

@@ -1,6 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
@@ -50,6 +51,8 @@ public abstract class Session {
    *         game or setup.
    */
   public abstract SessionType getSessionType();
+
+  public abstract Map<String, List<String>> getHumans();
 
   /**
    * An abstract method that returns the ConcurrentMap relating string ids

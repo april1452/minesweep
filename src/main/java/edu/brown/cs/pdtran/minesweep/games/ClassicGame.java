@@ -44,7 +44,7 @@ public class ClassicGame extends Game {
         dims[1], 40));
     for (Map.Entry<String, TeamFormation> entry : room.getTeams().entrySet()) {
       List<Board> copy = new ArrayList<>();
-      for (Board board : boardsToPlay) {
+      for (BogetHumansard board : boardsToPlay) {
         copy.add(board.clone());
       }
       teams.put(entry.getKey(),
@@ -65,7 +65,7 @@ public class ClassicGame extends Game {
    * is allowed to click. Typically, only one person is allowed to click
    * particularily in classic where score is time based.
    * @param teamNumber The number corresponding to a given team.
-   * @param m The move you wish to make.
+   * @param mgetHumans The move you wish to make.
    * @return True if the game is over; false otherwise.
    */
   @Override

@@ -35,23 +35,20 @@ public class PreRoom extends Session {
     return teams;
   }
 
-  public String addHuman(String teamId, String gamerId, HumanGamer hg) {
+  public void addHuman(String teamId, String gamerId, HumanGamer hg) {
     TeamFormation teamToAdd = teams.get(teamId);
     if (teamToAdd.getPlayers().entrySet().size() < specs.getNumTeamPlayers()) {
       removeFromAllTeams(gamerId);
       teams.get(teamId).addHumanGamer(gamerId, hg);
     }
-    return null;
   }
 
-  public String addAi(String teamId, String gamerId, AIGamer ag) {
+  public void addAi(String teamId, String gamerId, AIGamer ag) {
     TeamFormation teamToAdd = teams.get(teamId);
     if (teamToAdd.getPlayers().entrySet().size() < specs.getNumTeamPlayers()) {
       removeFromAllTeams(gamerId);
       teams.get(teamId).addAIGamer(gamerId, ag);
     }
-    // TODO check if game is full
-    return null;
   }
 
   public void removeFromAllTeams(String gamerId) {

@@ -1,23 +1,26 @@
-package edu.brown.cs.pdtran.minesweep.player;
+package edu.brown.cs.pdtran.minesweep.move;
+
+import edu.brown.cs.pdtran.minesweep.player.Move;
 
 /**
- * This class represents a Move that "touches" a tile, checking whether or not
- * it is a mine.
+ * This class's objects are used to communicate a player's wish to place a flag
+ * on a certain tile to the network. These flags have no impact on gameplay, but
+ * can be seen on the board.
  * @author Clayton
  */
-public class CheckTile implements Move {
+public class FlagTile implements Move {
 
   private int xCoord;
   private int yCoord;
 
   /**
-   * Constructs a CheckTile object.
+   * Constructs a FlagTile object.
    * @param xCoord
    *          An integer representing the tile's x-coordinate.
    * @param yCoord
    *          An integer representing the tile's y-coordinate.
    */
-  public CheckTile(int xCoord, int yCoord) {
+  public FlagTile(int xCoord, int yCoord) {
     this.xCoord = xCoord;
     this.yCoord = yCoord;
   }

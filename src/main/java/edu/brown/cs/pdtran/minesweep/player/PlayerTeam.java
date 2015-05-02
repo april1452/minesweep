@@ -53,6 +53,8 @@ public class PlayerTeam extends Team implements BoardData {
     isLoser = false;
   }
 
+
+
   @Override
   public Board getCurrentBoard() {
     return boards.get(boardIndex);

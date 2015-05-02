@@ -70,4 +70,6 @@ public abstract class Game extends Session {
    */
   public abstract Board getBoard(String teamId);
 
+  public boolean isOver();
+
 }

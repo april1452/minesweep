@@ -88,6 +88,11 @@ public class RequestHandler {
     return game;
   }
 
+  public Map<String, List<String>> humanJoinIfAbsent(String sessionId, String teamId, String gamerId, HumanGamer g) {
+    PreRoom room = getRoom(sessionId);
+    for (TeamFormation team : room)
+  }
+
   /**
    * Adds a gamer to a room in the event that the gamer is not already in
    * the room.
@@ -99,25 +104,22 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the requested session does
    *         not exist.
    */
-  public Map<String, List<String>> humanJoinIfAbsent(String sessionId,
+  public Map<String, List<String>> humanSwitch(String sessionId,
       String teamId,
       String gamerId,
       HumanGamer g) throws NoSuchSessionException {
     PreRoom room = getRoom(sessionId);
-    for (TeamFormation team : room.getTeams().values()) {
-      team.getPlayers().remove(gamerId);
-    }
     room.addHuman(teamId, gamerId, g);
-    return getHumans(room);
+    return room.getHumans();
   }
 
-  public Map<String, List<String>> aiJoinIfAbsent(String sessionId,
+  public Map<String, List<String>> aiJoin(String sessionId,
       String teamId,
       String gamerId,
       AIGamer g) throws NoSuchSessionException {
     PreRoom room = getRoom(sessionId);
     room.addAi(teamId, gamerId, g);
-    return getHumans(room);
+    return room.getHumans();
 
   }
 
@@ -170,7 +172,7 @@ public class RequestHandler {
     Game game = GameFactory.generateGame(room);
     games.put(id, game);
     sessions.put(id, game);
-    return getAis(game);
+    return game.getAis();
   }
 
   /**
@@ -201,7 +203,7 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the requested session does
    *         not exist.
    */
-  public Map<String, List<String>> getHumans(Session session)
+  public Map<String, List<String>> getHumans(String sessionid)
       throws NoSuchSessionException {
     Map<String, List<String>> humans = new HashMap<String, List<String>>();
     for (Entry<String, ? extends Team> entry : session.getTeams().entrySet()) {

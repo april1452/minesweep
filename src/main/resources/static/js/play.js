@@ -63,15 +63,7 @@ socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
     
     // Pre game setup    
-    if(responseJson.type === "init") {
-        var teamToJoin;
-        $.each(responseJson.data.teams, function (teamId, teamInfo) {
-            teamToJoin = teamId;
-        });
-        joinRoom(teamToJoin);
-    }
-    
-    else if (responseJson.type === "update") {
+if (responseJson.type === "update") {
         drawRoom(responseJson);
     } 
 
@@ -370,11 +362,13 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
     _ctx.lineTo(x1, y1);
     _ctx.fill();
     _ctx.fillStyle = TEXT_COLOR;
-    _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);  */
+    _ctx.fillText(tile.adjacentBombs, (x1 + http://localhost:4686/playx2 + x3) / 3, (y1 + y2 + y3) / 3);  */
 }
 
 
 $("#board").bind('click', function(event){
+	console.log(event.which);
+	
     var board = $("#board")[0];
 
     var x = event.pageX - board.offsetLeft;
