@@ -221,7 +221,7 @@ function drawBoard(responseJSON) {
                     _ctx.strokeStyle = NORMAL_BORDER;
                     _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
                     _ctx.fillStyle = TEXT_COLOR;
-                    _ctx.fillText(tile.adjacentBombs, tileX + 8, tileY + 12);                    
+                    _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);                    
                 }
             } else {
                 _ctx.fillStyle = UNEXPLORED;

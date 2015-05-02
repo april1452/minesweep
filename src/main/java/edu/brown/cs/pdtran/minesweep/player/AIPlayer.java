@@ -175,12 +175,12 @@ public class AIPlayer extends GamePlayer {
                 System.out.print("[" + mb2.getNumMines());
                 for (Tile t : mb2.getTiles()) {
                   System.out
-                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("] - [" + mb1.getNumMines());
                 for (Tile t : mb1.getTiles()) {
                   System.out
-                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("]\n");
 
@@ -195,12 +195,12 @@ public class AIPlayer extends GamePlayer {
                 System.out.print("[" + mb1.getNumMines());
                 for (Tile t : mb1.getTiles()) {
                   System.out
-                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("] - [" + mb2.getNumMines());
                 for (Tile t : mb2.getTiles()) {
                   System.out
-                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("]\n");
 
@@ -234,23 +234,39 @@ public class AIPlayer extends GamePlayer {
           if (probability == 0) {
             certainNotMine.add(mp);
           } else if (probability == 1) {
+            for (int i = 0; i < uncertain.size(); i++) {
+              MovePossibility uncertainMp = uncertain.get(i);
+              if (uncertainMp.getXCoord() == mp.getXCoord()
+                  && uncertainMp.getYCoord() == mp.getYCoord()) {
+                if (uncertainMp.getMineProbability() < probability) {
+                  uncertain.remove(uncertainMp);
+                }
+              }
+            }
             certainMine.add(mp);
           } else {
             boolean contained = false;
-            // for (int i = 0; i < uncertain.size(); i++) {
-            // MovePossibility uncertainMp = uncertain.get(i);
-            // if (uncertainMp.getXCoord() == mp.getXCoord()
-            // && uncertainMp.getYCoord() == mp.getYCoord()) {
-            // contained = true;
-            // if (uncertainMp.getMineProbability() < probability) {
-            // uncertain.remove(uncertainMp);
-            // uncertain.add(mp);
-            // }
-            // }
-            // }
-            // if (!contained) {
-            uncertain.add(mp);
-            // }
+            for (int i = 0; i < uncertain.size(); i++) {
+              MovePossibility uncertainMp = uncertain.get(i);
+              if (uncertainMp.getXCoord() == mp.getXCoord()
+                  && uncertainMp.getYCoord() == mp.getYCoord()) {
+                contained = true;
+                if (uncertainMp.getMineProbability() < probability) {
+                  uncertain.remove(uncertainMp);
+                  uncertain.add(mp);
+                }
+              }
+            }
+            for (int i = 0; i < certainMine.size(); i++) {
+              MovePossibility mineMp = certainMine.get(i);
+              if (mineMp.getXCoord() == mp.getXCoord()
+                  && mineMp.getYCoord() == mp.getYCoord()) {
+                contained = true;
+              }
+            }
+            if (!contained) {
+              uncertain.add(mp);
+            }
           }
         }
       }

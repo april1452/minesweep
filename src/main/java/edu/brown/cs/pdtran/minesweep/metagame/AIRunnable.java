@@ -10,8 +10,8 @@ public class AIRunnable implements Runnable {
   private AIPlayer ai;
   private MoveHandler handler;
   private int moveTime;
-  private static final double BASE_TIME = 10;
-  private static final double TIME_MULTIPLIER = 400;
+  private static final double BASE_TIME = 4000;
+  private static final double TIME_MULTIPLIER = 300;
   private static final int MAX_DIFFICULTY = 10;
   private static final double RANDOM_SUBTRACTOR = .5;
 
@@ -21,7 +21,7 @@ public class AIRunnable implements Runnable {
     this.teamId = teamId;
     this.ai = ai;
     this.handler = handler;
-    moveTime = (int) ((BASE_TIME - ai.getDifficulty()) * TIME_MULTIPLIER);
+    moveTime = (int) (BASE_TIME - (ai.getDifficulty() * TIME_MULTIPLIER));
   }
 
   @Override
