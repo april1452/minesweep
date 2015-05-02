@@ -4,7 +4,14 @@ NORMAL_BORDER = "#000000";
 BOMB = "#000000";
 BOMB_BORDER = "#FF0000";
 TEXT_COLOR = "#000000";
-
+ONE_MINE = "#0000FF";
+TWO_MINE = "#00FF00";
+THREE_MINE = "#FF0000";
+FOUR_MINE = "#000066";
+FIVE_MINE = "#006600";
+SIX_MINE = "#660000";
+SEVEN_MINE = "#666666";
+EIGHT_MINE = "#000000";
 
 var CANVAS_X = 800;
 var CANVAS_Y = 800;
@@ -220,8 +227,13 @@ function drawBoard(responseJSON) {
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
                     _ctx.strokeStyle = NORMAL_BORDER;
                     _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
-                    _ctx.fillStyle = TEXT_COLOR;
-                    _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);                    
+                    if (tile.adjacentBombs > 0) {
+                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
+                        _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
+                        _ctx.textAlign = "center";
+                        _ctx.textBaseline = "middle";
+                        _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);
+                    }
                 }
             } else {
                 _ctx.fillStyle = UNEXPLORED;
@@ -280,6 +292,32 @@ function drawBoard(responseJSON) {
     }
 }
 
+function getTextColor(surrounding) {
+    if (surrounding === 1) {
+        return ONE_MINE;
+    } else if (surrounding === 2) {
+        return TWO_MINE;
+    } else if (surrounding === 3) {
+        return THREE_MINE;
+    } else if (surrounding === 4) {
+        return FOUR_MINE;
+    } else if (surrounding === 5) {
+        return FIVE_MINE;
+    } else if (surrounding === 6) {
+        return SIX_MINE;
+    } else if (surrounding === 7) {
+        return SEVEN_MINE;
+    } else if (surrounding === 8) {
+        return EIGHT_MINE;
+    } else {
+        return TEXT_COLOR;
+    }
+}
+
+function getFontSize(tileHeight, tileWidth) {
+    return Math.min(Math.floor(tileHeight / 2), Math.floor(tileWidth / 1.5));
+}
+
 function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
     _ctx.beginPath();
     _ctx.moveTo(x1, y1);
@@ -301,8 +339,13 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
             _ctx.fillStyle = EXPLORED;
             _ctx.fill();
             //_ctx.strokeStyle = NORMAL_BORDER;
-            _ctx.fillStyle = TEXT_COLOR;
-            _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);                    
+            if (tile.adjacentBombs > 0) {
+                _ctx.fillStyle = getTextColor(tile.adjacentBombs);
+                _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
+                _ctx.textAlign = "center";
+                _ctx.textBaseline = "middle";
+                _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);  
+            }                  
         }
     } else {
         _ctx.fillStyle = UNEXPLORED;
