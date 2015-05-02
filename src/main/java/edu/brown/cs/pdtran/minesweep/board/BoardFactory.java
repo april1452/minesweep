@@ -24,7 +24,6 @@ public class BoardFactory {
     switch (type) {
       case DEFAULT:
         return new DefaultBoard(width, height, 40); // width, height, 5
-
       case RECTANGULAR:
         return new RectangularBoard(); // width, height, 5
 

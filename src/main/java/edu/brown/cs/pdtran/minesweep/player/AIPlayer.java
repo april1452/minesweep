@@ -114,20 +114,21 @@ public class AIPlayer extends GamePlayer {
     int height = board.getHeight();
 
     // Creates a MineBlock for all undiscovered mines.
-    Set<Tile> undiscovered = new HashSet<>();
-    int bombCount = board.getBombCount();
-    System.out.println("Bomb count: " + bombCount);
-    for (int w = 0; w < width; w++) {
-      for (int h = 0; h < height; h++) {
-        Tile currentTile = board.getTile(h, w);
-        if (!currentTile.hasBeenVisited()) {
-          undiscovered.add(currentTile);
-        } else if (currentTile.isBomb()) {
-          bombCount--;
-        }
-      }
-    }
-    blocks.add(new MineBlock(undiscovered, bombCount));
+    /*
+     * Set<Tile> undiscovered = new HashSet<>(); int bombCount =
+     * board.getBombCount(); System.out.println("Bomb count: " +
+     * bombCount); for (int w = 0; w < width; w++) { for (int h = 0; h <
+     * height; h++) { Tile currentTile = board.getTile(h, w); if
+     * (!currentTile.hasBeenVisited()) { undiscovered.add(currentTile); }
+     * else if (currentTile.isBomb()) { bombCount--; } } } MineBlock
+     * bigBlock = new MineBlock(undiscovered, bombCount); // Subtracts
+     * discovered mines from the Mineblocks List<MineBlock> containedMines
+     * = new ArrayList<>(); for (Tile t : bigBlock.getTiles()) { if
+     * (t.hasBeenVisited() && t.isBomb()) { Set<Tile> soloTile = new
+     * HashSet<>(); soloTile.add(t); containedMines.add(new
+     * MineBlock(soloTile, 1)); } } for (MineBlock m : containedMines) {
+     * bigBlock.subtract(m); } blocks.add(bigBlock);
+     */
 
     // Creates a MineBlock for every discovered tile with neighboring mines
     for (int w = 0; w < width; w++) {
@@ -136,35 +137,73 @@ public class AIPlayer extends GamePlayer {
         if (currentTile.hasBeenVisited() && currentTile.getAdjacentBombs() > 0) {
           List<Tile> adjacentTiles = board.getAdjacentTiles(h, w);
           adjacentTiles.remove(currentTile);
-          MineBlock mb1 =
-              blockFromTile(currentTile.getAdjacentBombs(), adjacentTiles);
-          Boolean needsCheck = true;
-          // Subtracts discovered mines from the Mineblocks
-          List<MineBlock> containedMines = new ArrayList<>();
-          for (Tile t : mb1.getTiles()) {
-            if (t.hasBeenVisited() && t.isBomb()) {
-              Set<Tile> soloTile = new HashSet<>();
-              soloTile.add(t);
-              containedMines.add(new MineBlock(soloTile, 1));
+          int adjacentBombs = currentTile.getAdjacentBombs();
+
+          // Removes all visited tiles
+          List<Tile> unvisitedTiles = new ArrayList<>();
+          Boolean allUnvisited = false;
+          for (Tile t : adjacentTiles) {
+            if (!t.hasBeenVisited()) {
+              unvisitedTiles.add(t);
+            } else if (t.isBomb()) {
+              adjacentBombs--;
             }
           }
-          for (MineBlock m : containedMines) {
-            mb1.subtract(m);
-          }
+
+          MineBlock mb1 = blockFromTile(adjacentBombs, unvisitedTiles);
+          Boolean needsCheck = true;
+          // Subtracts discovered mines from the Mineblocks
+          // List<MineBlock> containedMines = new ArrayList<>();
+          // for (Tile t : mb1.getTiles()) {
+          // if (t.hasBeenVisited() && t.isBomb()) {
+          // Set<Tile> soloTile = new HashSet<>();
+          // soloTile.add(t);
+          // containedMines.add(new MineBlock(soloTile, 1));
+          // }
+          // }
+          // for (MineBlock m : containedMines) {
+          // mb1.subtract(m);
+          // }
           // Subtracts the MineBlock with other MineBlocks
           while (needsCheck) {
             needsCheck = false;
             MineBlock remove = null;
             for (MineBlock mb2 : blocks) {
-              if (mb2.contains(mb1)) {
+              if (mb2.contains(mb1) && !mb1.getTiles().isEmpty()) {
                 mb2.subtract(mb1);
+
+                System.out.print("[" + mb2.getNumMines());
+                for (Tile t : mb2.getTiles()) {
+                  System.out
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                }
+                System.out.print("] - [" + mb1.getNumMines());
+                for (Tile t : mb1.getTiles()) {
+                  System.out
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                }
+                System.out.print("]\n");
+
                 needsCheck = true;
                 if (mb2.getTiles().isEmpty()) {
                   remove = mb2;
                   break;
                 }
-              } else if (mb1.contains(mb2)) {
+              } else if (mb1.contains(mb2) && !mb2.getTiles().isEmpty()) {
                 mb1.subtract(mb2);
+
+                System.out.print("[" + mb1.getNumMines());
+                for (Tile t : mb1.getTiles()) {
+                  System.out
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                }
+                System.out.print("] - [" + mb2.getNumMines());
+                for (Tile t : mb2.getTiles()) {
+                  System.out
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                }
+                System.out.print("]\n");
+
                 if (mb1.getTiles().isEmpty()) {
                   break;
                 }
@@ -173,7 +212,9 @@ public class AIPlayer extends GamePlayer {
             }
             blocks.remove(remove);
           }
-          blocks.add(mb1);
+          if (!mb1.getTiles().isEmpty()) {
+            blocks.add(mb1);
+          }
         }
       }
     }
@@ -193,23 +234,39 @@ public class AIPlayer extends GamePlayer {
           if (probability == 0) {
             certainNotMine.add(mp);
           } else if (probability == 1) {
+            for (int i = 0; i < uncertain.size(); i++) {
+              MovePossibility uncertainMp = uncertain.get(i);
+              if (uncertainMp.getXCoord() == mp.getXCoord()
+                  && uncertainMp.getYCoord() == mp.getYCoord()) {
+                if (uncertainMp.getMineProbability() < probability) {
+                  uncertain.remove(uncertainMp);
+                }
+              }
+            }
             certainMine.add(mp);
           } else {
             boolean contained = false;
-            // for (int i = 0; i < uncertain.size(); i++) {
-            // MovePossibility uncertainMp = uncertain.get(i);
-            // if (uncertainMp.getXCoord() == mp.getXCoord()
-            // && uncertainMp.getYCoord() == mp.getYCoord()) {
-            // contained = true;
-            // if (uncertainMp.getMineProbability() < probability) {
-            // uncertain.remove(uncertainMp);
-            // uncertain.add(mp);
-            // }
-            // }
-            // }
-            // if (!contained) {
-            uncertain.add(mp);
-            // }
+            for (int i = 0; i < uncertain.size(); i++) {
+              MovePossibility uncertainMp = uncertain.get(i);
+              if (uncertainMp.getXCoord() == mp.getXCoord()
+                  && uncertainMp.getYCoord() == mp.getYCoord()) {
+                contained = true;
+                if (uncertainMp.getMineProbability() < probability) {
+                  uncertain.remove(uncertainMp);
+                  uncertain.add(mp);
+                }
+              }
+            }
+            for (int i = 0; i < certainMine.size(); i++) {
+              MovePossibility mineMp = certainMine.get(i);
+              if (mineMp.getXCoord() == mp.getXCoord()
+                  && mineMp.getYCoord() == mp.getYCoord()) {
+                contained = true;
+              }
+            }
+            if (!contained) {
+              uncertain.add(mp);
+            }
           }
         }
       }
@@ -309,18 +366,34 @@ public class AIPlayer extends GamePlayer {
         return randomTile();
       }
     }
-    return new CheckTile(likliest.getXCoord(), likliest.getYCoord());
+    return new CheckTile(likliest.getYCoord(), likliest.getXCoord());
   }
 
   private Move randomTile() {
-    totalUncertain++;
-    MovePossibility randomCheck = null;
-    if (!uncertain.isEmpty()) {
-      randomCheck = uncertain.get(0);
-      uncertain.remove(0);
+    // totalUncertain++;
+    // MovePossibility randomCheck = null;
+    // if (!uncertain.isEmpty()) {
+    // randomCheck = uncertain.get(0);
+    // uncertain.remove(0);
+    // }
+    // usedUncertain.add(randomCheck);
+    // return new CheckTile(randomCheck.getXCoord(),
+    // randomCheck.getYCoord());
+    Board board = boardData.getCurrentBoard();
+    int width = board.getWidth();
+    int height = board.getHeight();
+    int rWidth = 0;
+    int rHeight = 0;
+    Boolean valid = false;
+    while (!valid) {
+      rWidth = (int) Math.ceil(Math.random() * width) - 1;
+      rHeight = (int) Math.ceil(Math.random() * height) - 1;
+      Tile tile = board.getTile(rWidth, rHeight);
+      if (!tile.hasBeenVisited()) {
+        valid = true;
+      }
     }
-    usedUncertain.add(randomCheck);
-    return new CheckTile(randomCheck.getXCoord(), randomCheck.getYCoord());
+    return new CheckTile(rWidth, rHeight);
   }
 
   @Override
