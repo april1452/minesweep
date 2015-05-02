@@ -17,31 +17,34 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 
 /**
- * The class that represents code needed for the classic game mode.
+ * The class that represents code needed for the layers game mode.
  * <p>
- * In this game mode, each team solves a copy of the same board, and the
- * winning team either is the team that lasts the longest or is the team
- * that finishes its board fist.
+ * In this game mode, each team solves a stack of copies of the same
+ * boards, and the winning team either is the team that lasts the longest
+ * or is the team that finishes all boards fist.
  * @author Clayton Sanford
  */
-public class ClassicGame extends Game {
+public class LayersGame extends Game {
 
   private long startTime;
   protected ConcurrentMap<String, PlayerTeam> teams;
   private static final int MILLISECONDS = 1000;
+  private static final int LAYERS_COUNT = 2;
 
   /**
-   * A constructor for a ClassicGame.
+   * A constructor for a Layers Game.
    * @param room Uses a room with game information to generate the game
    *        object.
    */
-  public ClassicGame(PreRoom room) {
+  public LayersGame(PreRoom room) {
     super(room.getName(), room.getSpecs());
     teams = new ConcurrentHashMap<String, PlayerTeam>();
     List<Board> boardsToPlay = new ArrayList<>();
     int[] dims = specs.getBoardDims();
-    boardsToPlay.add(BoardFactory.makeBoard(specs.getBoardType(), dims[0],
-        dims[1]));
+    for (int i = 0; i < LAYERS_COUNT; i++) {
+      boardsToPlay.add(BoardFactory.makeBoard(specs.getBoardType(), dims[0],
+          dims[1]));
+    }
     for (Map.Entry<String, TeamFormation> entry : room.getTeams().entrySet()) {
       List<Board> copy = new ArrayList<>();
       for (Board board : boardsToPlay) {
@@ -59,7 +62,11 @@ public class ClassicGame extends Game {
     Board board = team.getCurrentBoard();
     board.makeMove(m.getYCoord(), m.getXCoord());
     if (board.isWinningBoard()) {
-      return null;
+      if (team.nextBoard()) {
+        return team.getCurrentBoard();
+      } else {
+        return null;
+      }
     } else {
       return board;
     }

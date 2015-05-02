@@ -26,7 +26,7 @@ public final class GameFactory {
         return new TerritoryGame(room);
 
       case LAYERS:
-        return new ClassicGame(room);
+        return new LayersGame(room);
 
       default:
         return null;
