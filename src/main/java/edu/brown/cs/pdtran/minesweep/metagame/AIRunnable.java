@@ -36,6 +36,7 @@ public class AIRunnable implements Runnable {
         Move move = ai.getMove();
         System.out.println(move.getXCoord() + " " + move.getYCoord());
         handler.makeMove(sessionId, teamId, move);
+        System.out.println("Move sent!\n");
       } catch (InterruptedException e) {
         e.printStackTrace();
       } catch (NoSuchSessionException e) {
