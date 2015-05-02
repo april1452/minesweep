@@ -151,7 +151,14 @@ function drawRoom(responseJson) {
                 addAi(i, "HARD");
             });
             $('#random' + i).click(function(){
-                addAi(i, "MEDIUM");
+                var difficultyChoice = Math.random();
+                if (difficultyChoice < 1/3) {
+                    addAi(i, "EASY");
+                } else if (difficultyChoice < 2/3) {
+                    addAi(i, "MEDIUM");
+                } else {
+                    addAi(i, "HARD");
+                }
             });
         });
     });
@@ -266,6 +273,10 @@ function drawBoard(responseJSON) {
                 var y1 = tile.row * tileHeight;
                 var y2 = tile.row * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
+                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                if (tile.isBomb && tile.visited) {
+                    _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+                }
             } else {
                 var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
                 var x2 = tile.column / 2 * tileWidth + offset;
@@ -273,8 +284,11 @@ function drawBoard(responseJSON) {
                 var y1 = tile.row * tileHeight;
                 var y2 = (tile.row + 1) * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
-            }
-            triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                if (tile.isBomb && tile.visited) {
+                    _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+                }
+            } 
         });
    
         _ctx.stroke();
@@ -341,7 +355,7 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
 
     if (tile.visited) {
         if(tile.isBomb) {
-            _ctx.fillStyle = BOMB;
+            _ctx.fillStyle = EXPLORED;
             _ctx.fill();
             //_ctx.strokeStyle = NORMAL_BORDER;
         } else {
@@ -350,7 +364,7 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
             //_ctx.strokeStyle = NORMAL_BORDER;
             if (tile.adjacentBombs > 0) {
                 _ctx.fillStyle = getTextColor(tile.adjacentBombs);
-                _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
+                _ctx.font = getFontSize(tileHeight, tileWidth) + "px Verdana";
                 _ctx.textAlign = "center";
                 _ctx.textBaseline = "middle";
                 _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);  
