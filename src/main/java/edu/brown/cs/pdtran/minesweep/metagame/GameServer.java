@@ -62,106 +62,112 @@ public class GameServer extends WebSocketServer implements MoveHandler {
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-    JsonObject messageJson = parser.parse(message).getAsJsonObject();
-    String userId = messageJson.get("minesweepId").getAsString();
-    String sessionId = messageJson.get("minesweepRoomId").getAsString();
-    String messageType = messageJson.get("type").getAsString();
-    switch (messageType) {
-      case "init":
-        try {
-          JsonObject update = new JsonObject();
-          update.addProperty("type", "init");
-          update.add("data", handler.getRoomInfo(sessionId).toJson());
+    try {
+      JsonObject messageJson = parser.parse(message).getAsJsonObject();
+      String userId = messageJson.get("minesweepId").getAsString();
+      String sessionId = messageJson.get("minesweepRoomId").getAsString();
+      String messageType = messageJson.get("type").getAsString();
+      switch (messageType) {
+        case "init":
+          try {
+            JsonObject update = new JsonObject();
+            update.addProperty("type", "init");
+            update.add("data", handler.getRoomInfo(sessionId).toJson());
 
-          conn.send(update.toString());
-        } catch (NoSuchSessionException e) {
-          System.out.println("Could not find room.");
-        }
-        break;
-      case "joinRoom":
-        try {
-          String name = messageJson.get("name").getAsString();
-          clients.put(userId, conn);
-          String teamId = messageJson.get("minesweepTeamId").getAsString();
-          HumanGamer gamer = new HumanGamer(name);
-          Map<String, List<String>> usersToUpdate =
-              handler.humanJoinIfAbsent(sessionId, teamId, userId, gamer);
-
-          JsonObject update = new JsonObject();
-          update.addProperty("type", "update");
-          update.add("data", handler.getRoomInfo(sessionId).toJson());
-
-          updateSession(usersToUpdate, update.toString());
-        } catch (NoSuchSessionException e) {
-          System.out.println("Could not find room.");
-        }
-        break;
-      case "addAIPlayer":
-        try {
-          String difficultyString = messageJson.get("difficulty").getAsString();
-          AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
-          String teamId = messageJson.get("minesweepTeamId").getAsString();
-          String aiId = handler.getUserId();
-          AIGamer gamer = new AIGamer("John Jabbotti", aiDifficulty);
-          Map<String, List<String>> usersToUpdate =
-              handler.aiJoinIfAbsent(sessionId, teamId, aiId, gamer);
-
-          JsonObject update = new JsonObject();
-          update.addProperty("type", "update");
-          update.add("data", handler.getRoomInfo(sessionId).toJson());
-
-          updateSession(usersToUpdate, update.toString());
-
+            conn.send(update.toString());
+          } catch (NoSuchSessionException e) {
+            System.out.println("Could not find room.");
+          }
           break;
-        } catch (NoSuchSessionException e) {
-          System.out
-          .println("Could not find room (perhaps it was already started?).");
-        }
-      case "startGame":
-        try {
-          Map<String, List<AIPlayer>> aisToStart = handler.startGame(sessionId);
+        case "joinRoom":
+          try {
+            String name = messageJson.get("name").getAsString();
+            clients.put(userId, conn);
+            String teamId = messageJson.get("minesweepTeamId").getAsString();
+            HumanGamer gamer = new HumanGamer(name);
+            Map<String, List<String>> usersToUpdate =
+                handler.humanJoinIfAbsent(sessionId, teamId, userId, gamer);
 
-          for (Entry<String, List<AIPlayer>> entry : aisToStart.entrySet()) {
-            for (AIPlayer player : entry.getValue()) {
-              new Thread(
-                  new AIRunnable(sessionId, entry.getKey(), player, this))
-              .start();
+            JsonObject update = new JsonObject();
+            update.addProperty("type", "update");
+            update.add("data", handler.getRoomInfo(sessionId).toJson());
+
+            updateSession(usersToUpdate, update.toString());
+          } catch (NoSuchSessionException e) {
+            System.out.println("Could not find room.");
+          }
+          break;
+        case "addAIPlayer":
+          try {
+            String difficultyString =
+                messageJson.get("difficulty").getAsString();
+            AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
+            String teamId = messageJson.get("minesweepTeamId").getAsString();
+            String aiId = handler.getUserId();
+            AIGamer gamer = new AIGamer("John Jabbotti", aiDifficulty);
+            Map<String, List<String>> usersToUpdate =
+                handler.aiJoinIfAbsent(sessionId, teamId, aiId, gamer);
+
+            JsonObject update = new JsonObject();
+            update.addProperty("type", "update");
+            update.add("data", handler.getRoomInfo(sessionId).toJson());
+
+            updateSession(usersToUpdate, update.toString());
+
+            break;
+          } catch (NoSuchSessionException e) {
+            System.out
+            .println("Could not find room (perhaps it was already started?).");
+          }
+        case "startGame":
+          try {
+            Map<String, List<AIPlayer>> aisToStart =
+                handler.startGame(sessionId);
+
+            for (Entry<String, List<AIPlayer>> entry : aisToStart.entrySet()) {
+              for (AIPlayer player : entry.getValue()) {
+                new Thread(new AIRunnable(sessionId, entry.getKey(), player,
+                    this)).start();
+              }
             }
+
+            Game game = handler.getGame(sessionId);
+
+            JsonObject gameData = new JsonObject();
+            gameData.addProperty("type", "gameData");
+            for (Entry<String, PlayerTeam> entry : game.getTeams().entrySet()) {
+              PlayerTeam team = entry.getValue();
+              gameData.addProperty("data", team.getCurrentBoard().toJson());
+              updateTeam(team.getHumans(), gameData.toString());
+              gameData.remove("data");
+            }
+          } catch (NoSuchSessionException e) {
+            System.out
+            .println("Could not find room (perhaps it was already started?).");
           }
+          break;
+        case "makeMove":
+          try {
+            String teamId = messageJson.get("minesweepTeamId").getAsString();
+            int row = messageJson.get("row").getAsInt();
+            int col = messageJson.get("col").getAsInt();
 
-          Game game = handler.getGame(sessionId);
+            Move move = new CheckTile(col, row);
 
-          JsonObject gameData = new JsonObject();
-          gameData.addProperty("type", "gameData");
-          for (Entry<String, PlayerTeam> entry : game.getTeams().entrySet()) {
-            PlayerTeam team = entry.getValue();
-            gameData.addProperty("data", team.getCurrentBoard().toJson());
-            updateTeam(team.getHumans(), gameData.toString());
-            gameData.remove("data");
+            System.out.println(col + " " + row);
+
+            makeMove(sessionId, teamId, move);
+
+          } catch (NoSuchSessionException e) {
+            System.out.println("Could not find game.");
           }
-        } catch (NoSuchSessionException e) {
-          System.out
-          .println("Could not find room (perhaps it was already started?).");
-        }
-        break;
-      case "makeMove":
-        try {
-          String teamId = messageJson.get("minesweepTeamId").getAsString();
-          int row = messageJson.get("row").getAsInt();
-          int col = messageJson.get("col").getAsInt();
-
-          Move move = new CheckTile(col, row);
-
-          System.out.println(col + " " + row);
-
-          makeMove(sessionId, teamId, move);
-
-        } catch (NoSuchSessionException e) {
-          System.out.println("Could not find game.");
-        }
-        break;
-      default:
-        System.out.println("No known types reached.");
+          break;
+        default:
+          System.out.println("No known types reached.");
+      }
+    } catch (Exception e) {
+      System.out.println("An unknown exception occurred: " + e.getMessage());
+      e.printStackTrace();
     }
   }
 

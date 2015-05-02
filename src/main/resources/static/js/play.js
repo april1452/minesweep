@@ -70,15 +70,10 @@ socket.onmessage = function (event) {
 
     // Begin game, i.e. draw game board
     else if (responseJson.type === "gameData") {
-  
         drawBoard(responseJson.data);
-        $("#board").show();
-        $("#start").hide();
-        $("#teams").hide();
     }
     
     else if (responseJson.type === "victory") {
-        console.log("test");
         victoryOrDefeat(responseJson.teamId);
     }
 }
@@ -179,6 +174,9 @@ function init() {
     canvasBoard.height = CANVAS_Y;
     canvasBoard.width = CANVAS_X;
     _ctx = canvasBoard.getContext("2d");
+    $("#board").show();
+    $("#start").hide();
+    $("#teams").hide();
     
 }
 
@@ -189,13 +187,6 @@ function drawBoard(responseJSON) {
     var width = board.width;
     var height = board.height;
     
-    //if(typeof(hexagon_grid) === 'undefined'){
-    	hexagon_grid = new HT.Grid(width, height);
-    	findHexWithWidthAndHeight();
-    	
-    	console.log("A grid is born");
-    //}
-    
     tileWidth = CANVAS_X / width;
     tileHeight = CANVAS_Y / height;
     
@@ -203,7 +194,7 @@ function drawBoard(responseJSON) {
     
     globalBoard = board;
 
-    if (board.type == "DefaultBoard"){
+    if (board.type == "DEFAULT") {
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
@@ -231,7 +222,7 @@ function drawBoard(responseJSON) {
             }
 
         });
-    } else if (board.type == "TriangularBoard"){
+    } else if (board.type == "TRIANGULAR") {
 
          _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
          tileWidth = CANVAS_X / (width / 2 + height / 2);
@@ -240,7 +231,7 @@ function drawBoard(responseJSON) {
             var offset = tile.row * tileWidth / 2;
             if (tile.column % 2 === 0) {
                 var x1 = tile.column / 2 * tileWidth + offset;
-                var x2 = (tile.column / 2 + 1) * tileWidth + offset;
+                var x2 = (tile.column / 2 + 1) * tileWidth + of2010fset;
                 var x3 = (tile.column / 2 + 0.5) * tileWidth + offset;
                 var y1 = tile.row * tileHeight;
                 var y2 = tile.row * tileHeight;
@@ -257,7 +248,12 @@ function drawBoard(responseJSON) {
         });
    
         _ctx.stroke();
-    } else if (board.type = "HexagonalBoard"){
+    } else if (board.type == "HEXAGONAL") {
+    	hexagon_grid = new HT.Grid(width, height);
+    	findHexWithWidthAndHeight();
+    	
+    	console.log("A grid is born");
+    	
     	findHexWithWidthAndHeight();
     	//drawHexGrid();
     	$.each(tiles, function(index, tile)
@@ -341,7 +337,7 @@ $("#board").bind('click', function(event){
     var x = event.pageX - board.offsetLeft;
     var y = event.pageY - board.offsetTop;
 
-    if (globalBoard.type == "DefaultBoard"){
+    if (globalBoard.type == "DEFAULT"){
         
         console.log("click");
     	
@@ -360,7 +356,7 @@ $("#board").bind('click', function(event){
             socket.send(JSON.stringify(sendData));
         });
 
-    } else if (globalBoard.type == "TriangularBoard") {
+    } else if (globalBoard.type == "TRIANGULAR") {
         var row = Math.floor(y / tileHeight);
         var offset = row * tileWidth / 2;
         var estimate = Math.floor((x - offset) / tileWidth * 2);
@@ -417,7 +413,7 @@ $("#board").bind('click', function(event){
             };
             socket.send(JSON.stringify(sendData));
         });
-    } else if (globalBoard.type = "HexagonalBoard"){
+    } else if (globalBoard.type = "HEXAGONAL"){
     	var p = new HT.Point(x, y);
     	var hex = hexagon_grid.GetHexAt(p);
     	var row = hex.PathCoOrdY;

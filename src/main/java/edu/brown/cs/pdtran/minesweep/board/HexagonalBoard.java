@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
+import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
 public class HexagonalBoard extends DefaultBoard implements Board, Cloneable {
 
@@ -46,6 +47,11 @@ public class HexagonalBoard extends DefaultBoard implements Board, Cloneable {
       }
     }
     return tiles;
+  }
+
+  @Override
+  protected BoardType getBoardType() {
+    return BoardType.HEXAGONAL;
   }
 
   @Override
