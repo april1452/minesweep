@@ -115,7 +115,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
           break;
         } catch (NoSuchSessionException e) {
           System.out
-              .println("Could not find room (perhaps it was already started?).");
+          .println("Could not find room (perhaps it was already started?).");
         }
       case "startGame":
         try {
@@ -125,7 +125,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
             for (AIPlayer player : entry.getValue()) {
               new Thread(
                   new AIRunnable(sessionId, entry.getKey(), player, this))
-                  .start();
+              .start();
             }
           }
 
@@ -141,7 +141,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
           }
         } catch (NoSuchSessionException e) {
           System.out
-              .println("Could not find room (perhaps it was already started?).");
+          .println("Could not find room (perhaps it was already started?).");
         }
         break;
       case "makeMove":
