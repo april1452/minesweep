@@ -27,6 +27,11 @@ $("#board").hide();
 $("#win").hide();
 $("#lose").hide();
 
+var mineImage = new Image();
+mineImage.src = "/images/mine.png";
+var flagImage = new Image();
+flagImage.src = "/images/flag.png";
+
 var server_ip = "" + location.host;
 server_ip = server_ip.substring(0, server_ip.length - 5);
 
@@ -218,9 +223,10 @@ function drawBoard(responseJSON) {
             var tileY = tile.row * tileHeight;
             if (tile.visited) {
                 if(tile.isBomb) {
-                    _ctx.fillStyle = BOMB;
+                    _ctx.fillStyle = EXPLORED;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                    _ctx.strokeStyle = BOMB_BORDER;
+                    _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeStyle = NORMAL_BORDER;
                     _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
                 } else {
                     _ctx.fillStyle = EXPLORED;
@@ -240,6 +246,9 @@ function drawBoard(responseJSON) {
                 _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
                 _ctx.strokeStyle = NORMAL_BORDER;
                 _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                /*if (tile.isFlag) {
+                    _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
+                }*/
             }
 
         });
@@ -334,7 +343,7 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
         if(tile.isBomb) {
             _ctx.fillStyle = BOMB;
             _ctx.fill();
-            //_ctx.strokeStyle = BOMB_BORDER;
+            //_ctx.strokeStyle = NORMAL_BORDER;
         } else {
             _ctx.fillStyle = EXPLORED;
             _ctx.fill();
