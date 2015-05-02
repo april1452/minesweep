@@ -58,6 +58,11 @@ public class PlayerTeam extends Team implements BoardData {
     return boards.get(boardIndex);
   }
 
+  public Boolean nextBoard() {
+    boardIndex++;
+    return boardIndex < boards.size();
+  }
+
   /**
    * Searches for the id for a player and removes that player from the team
    * and from play.

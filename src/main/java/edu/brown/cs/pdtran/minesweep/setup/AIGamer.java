@@ -13,14 +13,19 @@ import edu.brown.cs.pdtran.minesweep.types.PlayerType;
  */
 public class AIGamer extends Gamer {
   private AiDifficulty difficulty;
+  private static final String[] AI_NAMES = {"jj", "glyons", "jsl15", "vqtran",
+    "atreil", "dgattey", "gcarling", "ireardon", "jr51", "jts1", "mjfuller",
+    "mjrowlan", "mthiesme", "sdooman", "shartse", "smt3", "tmurcuri",
+    "vgavriel", "avshah"};
 
   /**
    * Constructs an AIGamer.
-   * @param name A string for each AIGamer.
    * @param difficulty An enum representing the difficulty of an AI.
    */
-  public AIGamer(String name, AiDifficulty difficulty) {
-    super(name);
+  public AIGamer(AiDifficulty difficulty) {
+    // int nameChoice = (int) Math.ceil(Math.random() * AI_NAMES.length) -
+    // 1;
+    super(AI_NAMES[(int) Math.ceil(Math.random() * AI_NAMES.length) - 1]);
     this.difficulty = difficulty;
   }
 
