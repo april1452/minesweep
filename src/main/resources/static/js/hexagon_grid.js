@@ -61,7 +61,8 @@ HT.Grid = function(/*double*/ width, /*double*/ height) {
 	for (var coOrd1 in HexagonsByXOrYCoOrd)
 	{
 		var hexagonsByXOrY = HexagonsByXOrYCoOrd[coOrd1];
-		var coOrd2 = Math.floor(coOrd1 / 2) + (coOrd1 % 2);
+		//var coOrd2 = Math.floor(coOrd1 / 2) + (coOrd1 % 2);
+		var coOrd2 = 0;
 		for (var i in hexagonsByXOrY)
 		{
 			var h = hexagonsByXOrY[i];//Hexagon
@@ -71,7 +72,6 @@ HT.Grid = function(/*double*/ width, /*double*/ height) {
 				h.PathCoOrdX = coOrd2++;
 		}
 	}
-	console.log(this.Hexes);
 	HT.Grid.Static.Hexes = this.Hexes;
 };
 
@@ -96,14 +96,16 @@ HT.Grid.prototype.GetHexId = function(row, col) {
  */
 HT.Grid.prototype.GetHexAt = function(/*Point*/ p) {
 	//find the hex that contains this point
-	console.log(this.Hexes);
+	console.log(HT.Grid.Static.Hexes);
 	for (var h in HT.Grid.Static.Hexes)
 	{
-		if (HT.Grid.Static.Hexes[h].Contains(p))
+		var hex = HT.Grid.Static.Hexes[h];
+		if (hex.Contains(p))
 		{
-			return this.Hexes[h];
+			return HT.Grid.Static.Hexes[h];
 		}
 	}
+
 
 	return null;
 };
@@ -111,13 +113,13 @@ HT.Grid.prototype.GetHexAt = function(/*Point*/ p) {
 
 HT.Grid.prototype.GetHexAtPos = function(x, y) {
 	//find the hex that contains this point
-	console.log(this.Hexes);
 	for (var h in HT.Grid.Static.Hexes)
 	{
-		var hex = Hexes[h];
-		if (hex.PathCoOrdX == x && hex[h].PathCoOrdY == y)
+		var hex = HT.Grid.Static.Hexes[h];
+		if (hex.PathCoOrdX == x && hex.PathCoOrdY == y)
 		{
-			return this.Hexes[h];
+			console.log("Find X: " + this);
+			return HT.Grid.Static.Hexes[h];
 		}
 	}
 

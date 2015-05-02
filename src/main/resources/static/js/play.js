@@ -196,15 +196,16 @@ function drawBoard(responseJSON) {
     var width = board.width;
     var height = board.height;
     
-    //if(typeof(hexagon_grid) === 'undefined'){
-    	hexagon_grid = new HT.Grid(width, height);
-    	findHexWithWidthAndHeight();
-    	
-    	console.log("A grid is born");
-    //}
-    
     tileWidth = CANVAS_X / width;
     tileHeight = CANVAS_Y / height;
+    
+    if(typeof(hexagon_grid) === 'undefined' || hexagon_grid == []){
+    	hexagon_grid = new HT.Grid(width, height);
+    	console.log(tileWidth);
+    	findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
+    	
+    	console.log("A grid is born");
+    }
     
     var tiles = board.tiles;
     
@@ -270,22 +271,32 @@ function drawBoard(responseJSON) {
    
         _ctx.stroke();
     } else if (board.type = "HexagonalBoard"){
-    	findHexWithWidthAndHeight();
     	//drawHexGrid();
     	$.each(tiles, function(index, tile)
     	{
     		var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
     		console.log(hexes);
     		if(tile.visited){
-    			if(typeof(hexes) === 'undefined'){
-    				console.log("undefined hexes");
-    			} if(tile.isBomb){
+    			if(tile.isBomb){
     				hexes.fillColor = BOMB;
-    			} else if (tile.visited){
+    			} else {
+    				console.log("This is suppose to be visited");
+    			    
     				hexes.fillColor = EXPLORED;
     			}
+    			console.log(hexes);
     		}
     	});
+    	for (var h in HT.Grid.Static.Hexes)
+    	{
+    		var hex = HT.Grid.Static.Hexes[h];
+    		if (hex.fillColor = EXPLORED)
+    		{
+    			console.log("Visisted: " + hex);
+    			console.log(hex);
+    			
+    		}
+    	}
     	drawHexGrid(hexagon_grid, _ctx);
     } else {
         console.log("I had a stroke. Undefined board");
