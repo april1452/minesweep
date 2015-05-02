@@ -27,7 +27,7 @@ import edu.brown.cs.pdtran.minesweep.types.SessionType;
 public class ClassicGame extends Game {
 
   private long startTime;
-  private ConcurrentMap<String, PlayerTeam> teams;
+  protected ConcurrentMap<String, PlayerTeam> teams;
   private static final int MILLISECONDS = 1000;
 
   /**

@@ -48,7 +48,7 @@ socket.onopen = function(event) {
 
 // start the game
 $("#startButton").click(function() {
-	init();
+	//init();
     $.getScript("../js/js.cookie.js", function(){
         var sendData = {
             type: "startGame",
@@ -77,7 +77,7 @@ socket.onmessage = function (event) {
 
     // Begin game, i.e. draw game board
     else if (responseJson.type === "gameData") {
-  
+    init();
         drawBoard(responseJson.data);
         $("#board").show();
         $("#start").hide();
@@ -376,6 +376,11 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
     _ctx.fillStyle = TEXT_COLOR;
     _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);  */
 }
+
+$("#board").bind("contextmenu", function(e){
+   console.log("Right click!!");
+   return false;
+}); 
 
 
 $("#board").bind('click', function(event){
