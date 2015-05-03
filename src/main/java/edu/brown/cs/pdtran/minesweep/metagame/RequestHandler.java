@@ -18,7 +18,7 @@ import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
 import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
-import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
+import edu.brown.cs.pdtran.minesweep.types.UpdateType;
 
 /**
  * Keeps records of games, sessions, users, and rooms by storing maps that
@@ -48,14 +48,15 @@ public class RequestHandler {
    * @return A list of map entries that relate unique room id strings to
    *         the corresponding room information.
    */
-  public List<Map.Entry<String, RoomInfo>> getRooms() {
-    List<Map.Entry<String, RoomInfo>> roomsInfo =
-        new ArrayList<Map.Entry<String, RoomInfo>>();
-    for (Map.Entry<String, Session> entry : sessions.entrySet()) {
-      roomsInfo.add(new AbstractMap.SimpleImmutableEntry<String, RoomInfo>(
-          entry.getKey(), entry.getValue().getRoomInfo()));
+  public List<Entry<String, SessionInfo>> getSessions() {
+    List<Entry<String, SessionInfo>> sessionsInfo =
+        new ArrayList<Entry<String, SessionInfo>>();
+    for (Entry<String, Session> entry : sessions.entrySet()) {
+      sessionsInfo
+          .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(entry
+              .getKey(), entry.getValue().getRoomInfo()));
     }
-    return roomsInfo;
+    return sessionsInfo;
   }
 
   private Session getSession(String id) throws NoSuchSessionException {
@@ -88,9 +89,31 @@ public class RequestHandler {
     return game;
   }
 
-  public Map<String, List<String>> humanJoinIfAbsent(String sessionId, String teamId, String gamerId, HumanGamer g) {
+  public Update humanJoinIfAbsent(String sessionId, String gamerId, String name)
+      throws NoSuchSessionException {
     PreRoom room = getRoom(sessionId);
-    for (TeamFormation team : room)
+
+    Map<String, List<String>> teams = getHumans(room);
+
+    int smallestTeamSize = Integer.MAX_VALUE;
+    String smallestTeamId = null;
+
+    List<String> usersToUpdate = new ArrayList<>();
+
+    for (Entry<String, List<String>> entry : teams.entrySet()) {
+      List<String> teamPlayers = entry.getValue();
+      if (entry.getValue().contains(gamerId)) {
+        usersToUpdate.add(gamerId);
+        return new Update(UpdateType.ROOM_UPDATE, room.getRoomInfo().toJson(),
+            usersToUpdate);
+      } else if (teamPlayers.size() < smallestTeamSize) {
+        smallestTeamId = entry.getKey();
+      }
+    }
+
+    room.addHuman(smallestTeamId, gamerId, new HumanGamer(name));
+
+    return getRoomUpdate(room);
   }
 
   /**
@@ -104,23 +127,29 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the requested session does
    *         not exist.
    */
-  public Map<String, List<String>> humanSwitch(String sessionId,
+  public Update humanSwitch(String sessionId,
       String teamId,
       String gamerId,
-      HumanGamer g) throws NoSuchSessionException {
+      String newTeamId) throws NoSuchSessionException {
     PreRoom room = getRoom(sessionId);
-    room.addHuman(teamId, gamerId, g);
-    return room.getHumans();
+    room.switchTeam(teamId, gamerId, newTeamId);
+    return getRoomUpdate(room);
   }
 
-  public Map<String, List<String>> aiJoin(String sessionId,
+  public Update aiJoin(String sessionId,
       String teamId,
       String gamerId,
       AIGamer g) throws NoSuchSessionException {
     PreRoom room = getRoom(sessionId);
     room.addAi(teamId, gamerId, g);
-    return room.getHumans();
+    return getRoomUpdate(room);
+  }
 
+  private Update getRoomUpdate(PreRoom room) {
+    List<String> playersToUpdate = new ArrayList<>();
+    room.getHumans().values().forEach(playersToUpdate::addAll);
+    return new Update(UpdateType.ROOM_UPDATE, room.getRoomInfo().toJson(),
+        playersToUpdate);
   }
 
   /**
@@ -149,7 +178,7 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the the room is in does not
    *         exist.
    */
-  public RoomInfo getRoomInfo(String id) throws NoSuchSessionException {
+  public SessionInfo getSessionInfo(String id) throws NoSuchSessionException {
     PreRoom room = getRoom(id);
     return room.getRoomInfo();
   }
@@ -203,7 +232,7 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the requested session does
    *         not exist.
    */
-  public Map<String, List<String>> getHumans(String sessionid)
+  public Map<String, List<String>> getHumans(Session session)
       throws NoSuchSessionException {
     Map<String, List<String>> humans = new HashMap<String, List<String>>();
     for (Entry<String, ? extends Team> entry : session.getTeams().entrySet()) {

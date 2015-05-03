@@ -15,7 +15,7 @@ import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
  * teams.
  * @author Clayton Sanford
  */
-public class RoomInfo {
+public class SessionInfo {
   private String roomName;
   private SessionType sessionType;
   private GameSpecs gameSpecs;
@@ -30,7 +30,7 @@ public class RoomInfo {
    * @param gameSpecs The GameSpecs object defined before making the room.
    * @param teams The Map linking unique id strings to TeamInfo objects.
    */
-  public RoomInfo(String roomName, SessionType sessionType,
+  public SessionInfo(String roomName, SessionType sessionType,
       GameSpecs gameSpecs, Map<String, TeamInfo> teams) {
     this.roomName = roomName;
     this.sessionType = sessionType;

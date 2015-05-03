@@ -1,6 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
-import edu.brown.cs.pdtran.minesweep.player.Move;
+import edu.brown.cs.pdtran.minesweep.move.Move;
 
 /**
  * An interface to that assesses whether a move is valid.

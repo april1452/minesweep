@@ -1,6 +1,5 @@
 package edu.brown.cs.pdtran.minesweep.move;
 
-import edu.brown.cs.pdtran.minesweep.player.Move;
 
 /**
  * This class represents a Move that "touches" a tile, checking whether or not

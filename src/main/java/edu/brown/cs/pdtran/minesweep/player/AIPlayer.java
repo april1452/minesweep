@@ -5,8 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.brown.cs.pdtran.minesweep.move.CheckTile;
+import edu.brown.cs.pdtran.minesweep.move.Move;
 
+import edu.brown.cs.pdtran.minesweep.move.CheckTile;
 import edu.brown.cs.pdtran.minesweep.move.FlagTile;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;

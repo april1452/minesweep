@@ -11,6 +11,7 @@ import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.metagame.Team;
 import edu.brown.cs.pdtran.minesweep.setup.Gamer;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
+import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
  * Represents a Team of Players that works together in a game of Minesweep.
@@ -27,6 +28,7 @@ public class PlayerTeam extends Team implements BoardData {
   private int boardIndex;
   private List<AIPlayer> aiPlayers;
   private List<String> humanPlayers;
+  private List<Tile> flaggedTiles;
 
   /**
    * Creates a new Team to last through a game.

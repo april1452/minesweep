@@ -1,5 +1,9 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -13,7 +17,7 @@ import edu.brown.cs.pdtran.minesweep.types.SessionType;
  * @author Clayton Sanford
  */
 public class PreRoom extends Session {
-  private String host;
+  private String hostId;
   private ConcurrentMap<String, TeamFormation> teams;
 
   /**
@@ -38,28 +42,39 @@ public class PreRoom extends Session {
   public void addHuman(String teamId, String gamerId, HumanGamer hg) {
     TeamFormation teamToAdd = teams.get(teamId);
     if (teamToAdd.getPlayers().entrySet().size() < specs.getNumTeamPlayers()) {
-      removeFromAllTeams(gamerId);
       teams.get(teamId).addHumanGamer(gamerId, hg);
     }
+  }
+
+  public void switchTeam(String teamId, String gamerId, String newTeamId) {
+    TeamFormation oldTeam = teams.get(teamId);
+    oldTeam.getHumans().remove(gamerId);
+    Gamer gamer = oldTeam.getPlayers().remove(gamerId);
+
+    TeamFormation newTeam = teams.get(teamId);
+    newTeam.getHumans().add(gamerId);
+    newTeam.getPlayers().put(gamerId, gamer);
   }
 
   public void addAi(String teamId, String gamerId, AIGamer ag) {
     TeamFormation teamToAdd = teams.get(teamId);
     if (teamToAdd.getPlayers().entrySet().size() < specs.getNumTeamPlayers()) {
-      removeFromAllTeams(gamerId);
       teams.get(teamId).addAIGamer(gamerId, ag);
     }
   }
 
-  public void removeFromAllTeams(String gamerId) {
-    for (TeamFormation team : getTeams().values()) {
-      team.getPlayers().remove(gamerId);
-      team.getHumans().remove(gamerId);
-    }
-  }
 
   @Override
   public SessionType getSessionType() {
     return SessionType.SETUP;
+  }
+
+  @Override
+  public Map<String, List<String>> getHumans() {
+    Map<String, List<String>> teamHumans = new HashMap<String, List<String>>();
+    for (Entry<String, TeamFormation> entry : teams.entrySet()) {
+      teamHumans.put(entry.getKey(), entry.getValue().getHumans());
+    }
+    return teamHumans;
   }
 }

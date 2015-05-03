@@ -1,6 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
-import edu.brown.cs.pdtran.minesweep.player.Move;
+import edu.brown.cs.pdtran.minesweep.move.Move;
 
 /**
  * A class that is used as a test to verify whether a certain move is
