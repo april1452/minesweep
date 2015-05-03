@@ -46,7 +46,8 @@ socket.onopen = function(event) {
         var sendData = {
             type: "init",
             minesweepId: $.cookie("minesweepId"),
-            minesweepRoomId: $.cookie("minesweepRoomId")
+            minesweepRoomId: $.cookie("minesweepRoomId"),
+            name: $.cookie("playerName")
         };  
         socket.send(JSON.stringify(sendData));
     });
@@ -176,8 +177,7 @@ function joinRoom(teamId) {
             type: "joinRoom",
             minesweepId: $.cookie("minesweepId"),
             minesweepTeamId: teamId,
-            minesweepRoomId: $.cookie("minesweepRoomId"),
-            name: $.cookie("playerName")
+            minesweepRoomId: $.cookie("minesweepRoomId")
         };
         socket.send(JSON.stringify(sendData));
   });
