@@ -16,17 +16,15 @@ public class BoardFactory {
    * @param type The type of the board you wish to make.
    * @return The made board.
    */
-  public static Board makeBoard(BoardType type, int width, int height) {// TODO
-    // add
-    // additional
-    // parameters
-    // ADDING 5 BOMBS TEMPORARILY
+  public static Board makeBoard(BoardType type,
+      int width,
+      int height,
+      int bombCount) {
     switch (type) {
       case DEFAULT:
-        return new DefaultBoard(width, height, 40); // width, height, 5
+        return new DefaultBoard(width, height, bombCount);
       case RECTANGULAR:
-        return new RectangularBoard(); // width, height, 5
-
+        return new RectangularBoard();
       case TRIANGULAR:
         return new TriangularBoard();
       case HEXAGONAL:

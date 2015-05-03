@@ -1,6 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
@@ -51,6 +52,8 @@ public abstract class Session {
    */
   public abstract SessionType getSessionType();
 
+  public abstract Map<String, List<String>> getHumans();
+
   /**
    * An abstract method that returns the ConcurrentMap relating string ids
    * to specified types of Teams.
@@ -64,11 +67,11 @@ public abstract class Session {
    * @return The RoomInfo object that depends upon the name, session type,
    *         game specs, and teams.
    */
-  public RoomInfo getRoomInfo() {
+  public SessionInfo getRoomInfo() {
     Map<String, TeamInfo> teams = new HashMap<String, TeamInfo>();
     for (Map.Entry<String, ? extends Team> entry : getTeams().entrySet()) {
       teams.put(entry.getKey(), entry.getValue().getTeamInfo());
     }
-    return new RoomInfo(name, getSessionType(), specs, teams);
+    return new SessionInfo(name, getSessionType(), specs, teams);
   }
 }

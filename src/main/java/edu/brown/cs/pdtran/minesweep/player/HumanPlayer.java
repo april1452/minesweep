@@ -1,5 +1,9 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
+import edu.brown.cs.pdtran.minesweep.move.Move;
+
+import edu.brown.cs.pdtran.minesweep.move.CheckTile;
+import edu.brown.cs.pdtran.minesweep.move.FlagTile;
 import edu.brown.cs.pdtran.minesweep.types.PlayerType;
 
 /**

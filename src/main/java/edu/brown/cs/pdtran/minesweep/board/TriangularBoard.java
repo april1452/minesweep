@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
+import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
 /**
  * This class implements triangular boards for iterations to the game.
@@ -46,6 +47,11 @@ public class TriangularBoard extends DefaultBoard implements Board, Cloneable {
       }
     }
     return tiles;
+  }
+
+  @Override
+  public BoardType getBoardType() {
+    return BoardType.HEXAGONAL;
   }
 
   @Override

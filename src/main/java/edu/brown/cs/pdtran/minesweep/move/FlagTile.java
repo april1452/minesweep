@@ -1,4 +1,5 @@
-package edu.brown.cs.pdtran.minesweep.player;
+package edu.brown.cs.pdtran.minesweep.move;
+
 
 /**
  * This class's objects are used to communicate a player's wish to place a flag

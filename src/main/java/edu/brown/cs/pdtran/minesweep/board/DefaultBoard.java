@@ -12,6 +12,7 @@ import java.util.Random;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
+import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
 /**
  * DefaultBoard is the classic minesweeper board.
@@ -91,8 +92,8 @@ public class DefaultBoard implements Board, Cloneable {
       randomX = rn.nextInt(width);
       randomY = rn.nextInt(height);
 
-      if (!grid[randomX][randomY].isBomb()) {
-        grid[randomX][randomY].makeBomb();
+      if (!grid[randomY][randomX].isBomb()) {
+        grid[randomY][randomX].makeBomb();
         numBombs--;
       }
     }
@@ -156,7 +157,7 @@ public class DefaultBoard implements Board, Cloneable {
     List<Tile> out = new ArrayList<>();
     for (int ii = -1; ii <= 1; ii++) {
       for (int jj = -1; jj <= 1; jj++) {
-        if (isWithinBoard(i + ii, j + jj)) {
+        if (isWithinBoard(j + jj, i + ii)) {
           out.add(grid[i + ii][j + jj]);
         }
       }
@@ -291,10 +292,14 @@ public class DefaultBoard implements Board, Cloneable {
       }
     }
     boardJson.add("tiles", tilesJson);
-    String boardType = this.getClass().getSimpleName();
+    String boardType = getBoardType().toString();
     // boardType = boardType.substring(boardType.indexOf('.'));
     boardJson.addProperty("type", boardType);
     return boardJson.toString();
+  }
+
+  protected BoardType getBoardType() {
+    return BoardType.DEFAULT;
   }
 
   /*

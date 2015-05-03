@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.board.BoardFactory;
+import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
-import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
@@ -26,9 +26,7 @@ import edu.brown.cs.pdtran.minesweep.types.SessionType;
  */
 public class ClassicGame extends Game {
 
-  private long startTime;
   protected ConcurrentMap<String, PlayerTeam> teams;
-  private static final int MILLISECONDS = 1000;
 
   /**
    * A constructor for a ClassicGame.
@@ -36,21 +34,7 @@ public class ClassicGame extends Game {
    *        object.
    */
   public ClassicGame(PreRoom room) {
-    super(room.getName(), room.getSpecs());
-    teams = new ConcurrentHashMap<String, PlayerTeam>();
-    List<Board> boardsToPlay = new ArrayList<>();
-    int[] dims = specs.getBoardDims();
-    boardsToPlay.add(BoardFactory.makeBoard(specs.getBoardType(), dims[0],
-        dims[1]));
-    for (Map.Entry<String, TeamFormation> entry : room.getTeams().entrySet()) {
-      List<Board> copy = new ArrayList<>();
-      for (Board board : boardsToPlay) {
-        copy.add(board.clone());
-      }
-      teams.put(entry.getKey(),
-          new PlayerTeam(entry.getValue(), specs.getTeamLives(), copy));
-    }
-
+    super(room);
   }
 
   @Override
@@ -66,26 +50,6 @@ public class ClassicGame extends Game {
     } else {
       return board;
     }
-  }
-
-  /**
-   * This is a player method for turnless play. The referee determines who
-   * is allowed to click. Typically, only one person is allowed to click
-   * particularily in classic where score is time based.
-   * @param teamNumber The number corresponding to a given team.
-   * @param m The move you wish to make.
-   * @return True if the game is over; false otherwise.
-   */
-  @Override
-  public boolean play(int teamNumber, Move m) {
-    makeMove("do something later", m);
-    long endTime = System.currentTimeMillis();
-    int score = (int) (endTime - startTime);
-    // if (gameBoard.isGameOver()) {
-    // player.changeScore(score);
-    // return true;
-    // }
-    return false;
   }
 
   /**
@@ -119,6 +83,31 @@ public class ClassicGame extends Game {
   @Override
   public Collection<String> getPlayers(String teamId) {
     return teams.get(teamId).getPlayers().keySet();
+  }
+
+  @Override
+  protected ConcurrentMap<String, PlayerTeam> makeTeams(ConcurrentMap<String, TeamFormation> preTeams) {
+    ConcurrentMap<String, PlayerTeam> teams =
+        new ConcurrentHashMap<String, PlayerTeam>();
+    List<Board> boardsToPlay = new ArrayList<>();
+    int[] dims = specs.getBoardDims();
+    boardsToPlay.add(BoardFactory.makeBoard(getSpecs().getBoardType(), dims[0],
+        dims[1], 40));
+    for (Map.Entry<String, TeamFormation> entry : preTeams.entrySet()) {
+      List<Board> copy = new ArrayList<>();
+      for (Board board : boardsToPlay) {
+        copy.add(board.clone());
+      }
+      teams.put(entry.getKey(),
+          new PlayerTeam(entry.getValue(), specs.getTeamLives(), copy));
+    }
+    return teams;
+  }
+
+  @Override
+  public Map<String, List<String>> getHumans() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

@@ -1,4 +1,4 @@
-package edu.brown.cs.pdtran.minesweep.player;
+package edu.brown.cs.pdtran.minesweep.move;
 
 /**
  * An interface whose implementations represent an action taken by a player
