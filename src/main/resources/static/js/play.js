@@ -26,7 +26,7 @@ var _ctx;
 $("#board").hide();
 $("#win").hide();
 $("#lose").hide();
-$("#start").hide();
+//$("#start").hide();
 
 var mineImage = new Image();
 mineImage.src = "/images/mine.png";
@@ -52,6 +52,10 @@ socket.onopen = function(event) {
         socket.send(JSON.stringify(sendData));
     });
 }
+
+//$("#startGame").hide();
+
+console.log('made it this far');
 
 // start the game
 $("#startButton").click(function() {
@@ -142,6 +146,21 @@ function drawRoom(responseJson) {
         var sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a class="button line-white large" id="disbandButton">Disband</a></div>'
 
         $("#teams").html(sidebar + innerBox);
+        
+        $("#startButton").click(function() {
+            //init();
+            console.log('start button clicked');
+            $.getScript("../js/js.cookie.js", function(){
+                var sendData = {
+                    type: "startGame",
+                    minesweepId: $.cookie("minesweepId"),
+                    minesweepRoomId: $.cookie("minesweepRoomId")
+                };  
+                socket.send(JSON.stringify(sendData));
+            });
+        });
+
+        
         
         $.each(teams, function(i, team) {
             $('#buttonId' + i).click(function(){
