@@ -3,22 +3,8 @@ package edu.brown.cs.pdtran.minesweep.player;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
 
 public class HumanPlayerTest {
-
-  @Test
-  /**
-   * Verifies that making a new HumanPlayer created from a HumanGamer has all
-   * the characteristics expected of the Gamer, like username.
-   */
-  public void newHumanTest() {
-    HumanGamer myGamer = new HumanGamer("id", "Clay");
-    HumanPlayer myPlayer = new HumanPlayer(myGamer);
-    assertTrue(myGamer.getUserName().equals(myPlayer.getUsername()));
-  }
 
   @Test
   /**
@@ -34,15 +20,6 @@ public class HumanPlayerTest {
     assertTrue(p.getScore() == -50);
     p.changeScore(200);
     assertTrue(p.getScore() == 150);
-  }
-
-  @Test
-  /**
-   * This test checks that the player can make a move and see that same move be
-   * registered on the board.
-   */
-  public void moveTester() {
-    fail("Not yet implemented");
   }
 
 }
