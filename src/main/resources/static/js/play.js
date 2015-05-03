@@ -146,7 +146,7 @@ function drawRoom(responseJson) {
         var sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a class="button line-white large" id="disbandButton">Disband</a></div>'
 
         $("#teams").html(sidebar + innerBox);
-
+        
         $("#startButton").click(function() {
             //init();
             console.log('start button clicked');
@@ -349,47 +349,6 @@ function drawBoard(responseJSON) {
     		}
     	}
     	drawHexGrid(hexagon_grid, _ctx);
-    } else if (board.type = "RectangularBoard"){
-        console.log(board);
-
-        _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
-
-        $.each(tiles, function(index, tile) {
-            var tileX = tile.column * tileWidth;
-            var tileY = tile.row * tileHeight;
-            if (tile.visited) {
-                if(tile.isBomb) {
-                    _ctx.fillStyle = EXPLORED;
-                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                    _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
-                    _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
-                } else {
-                    _ctx.fillStyle = EXPLORED;
-                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                    _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
-                    if (tile.adjacentBombs > 0) {
-                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
-                        _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
-                        _ctx.textAlign = "center";
-                        _ctx.textBaseline = "middle";
-                        _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);
-                    }
-                }
-            } else {
-                _ctx.fillStyle = UNEXPLORED;
-                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                _ctx.strokeStyle = NORMAL_BORDER;
-                _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
-                /*if (tile.isFlag) {
-                    _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
-                }*/
-            }
-
-        });
-
-
     } else {
         console.log("I had a stroke. Undefined board");
     }

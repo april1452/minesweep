@@ -5,13 +5,10 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
- * This class adds an interesting element by linking some Tiles on the
- * board.
+ * This class adds an interesting element by linking some Tiles on the board.
  * @author agokasla
  */
 public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
@@ -30,7 +27,8 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
 
   /**
    * The constructor.
-   * @param grid Allows you to specify a grid.
+   * @param grid
+   *          Allows you to specify a grid.
    */
   public RectangularBoard(Tile[][] grid) {
     super(grid);
@@ -40,12 +38,14 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
 
   /**
    * The constructor.
-   * @param grid Allows you to specify a grid.
-   * @param neighborTile A table that contains neighbors mapped to a
-   *        certain spot on the board.
+   * @param grid
+   *          Allows you to specify a grid.
+   * @param neighborTile
+   *          A table that contains neighbors mapped to a certain spot on the
+   *          board.
    */
   public RectangularBoard(Tile[][] grid,
-      Table<Integer, Integer, List<Tile>> neighborTile) {
+    Table<Integer, Integer, List<Tile>> neighborTile) {
     this(grid);
     this.neighborTable = neighborTile;
     assert (neighborTable != null);
@@ -53,24 +53,25 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
 
   /**
    * Reconfigures the grid as you see fit.
-   * @param mergeNum The number you wish to merge together.
+   * @param mergeNum
+   *          The number you wish to merge together.
    */
   public void reconfigureBoard(int mergeNum) {
     for (int i = 0; i < mergeNum; i++) {
       int row = (int) (Math.random() * getHeight());
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
-          super
-              .getAdjacentTiles(row, col)
-              .stream()
-              .filter(
-                  (t) -> (t.getColumn() == col || t.getRow() == row)
-                      && !t.isBomb()).collect(Collectors.toList());
+        super
+          .getAdjacentTiles(row, col)
+          .stream()
+          .filter(
+            (t) -> (t.getColumn() == col || t.getRow() == row) && !t.isBomb())
+          .collect(Collectors.toList());
       if (candidateList.isEmpty()) {
         continue;
       }
       Tile randomTile =
-          candidateList.get((int) (Math.random() * candidateList.size()));
+        candidateList.get((int) (Math.random() * candidateList.size()));
       assert (!randomTile.isBomb());
       assert (!randomTile.hasBeenVisited());
       mergeTiles(row, col, randomTile.getRow(), randomTile.getColumn());
@@ -82,7 +83,7 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
     Tile tile = getTile(row, col);
     Tile tile2merge = getTile(row2, col2);
     tile.setAdjacentBombs(tile.getAdjacentBombs()
-        + tile2merge.getAdjacentBombs());
+      + tile2merge.getAdjacentBombs());
     List<Tile> neighbors = super.getAdjacentTiles(row, col);
     neighbors.addAll(super.getAdjacentTiles(row2, col2));
     neighborTable.put(row, col, neighbors);
@@ -100,7 +101,6 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
     }
   }
 
-  @Override
   public RectangularBoard clone() {
     Tile[][] newGrid = new Tile[getHeight()][getWidth()];
     for (int i = 0; i < newGrid.length; i++) {
@@ -111,30 +111,4 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
     return new RectangularBoard(newGrid, HashBasedTable.create(neighborTable));
   }
 
-  @Override
-  public String toJson() {
-    JsonObject boardJson = new JsonObject();
-    boardJson.addProperty("width", getWidth());
-    boardJson.addProperty("height", getHeight());
-    JsonArray tilesJson = new JsonArray();
-    for (int i = 0; i < getHeight(); i++) {
-      for (int j = 0; j < getWidth(); j++) {
-        Tile tile = grid[i][j];
-        JsonObject tileJson = new JsonObject();
-        tileJson.addProperty("row", tile.getRow());
-        tileJson.addProperty("column", tile.getColumn());
-        tileJson.addProperty("isBomb", tile.isBomb());
-        tileJson.addProperty("visited", tile.hasBeenVisited());
-        if (tile.hasBeenVisited()) {
-          tileJson.addProperty("adjacentBombs", tile.getAdjacentBombs());
-        }
-        tilesJson.add(tileJson);
-      }
-    }
-    boardJson.add("tiles", tilesJson);
-    String boardType = this.getClass().getSimpleName();
-    // boardType = boardType.substring(boardType.indexOf('.'));
-    boardJson.addProperty("type", boardType);
-    return boardJson.toString();
-  }
 }

@@ -28,13 +28,11 @@
 
     <h5 class="heading">Board</h5>
     <input type="radio" name="boardType" value="DEFAULT" id="rectangle" checked>
-    <label for="rectangle">Classic</label>
+    <label for="rectangle">Rectangle</label>
     <input type="radio" name="boardType" value="TRIANGULAR" id="triangle">
     <label for="triangle">Triangle</label>
     <input type="radio" name="boardType" value="HEXAGONAL" id="hexagonal">
     <label for="hexagonal">Hexagon</label>
-    <input type="radio" name="boardType" value="RECTANGULAR" id="rectangular">
-    <label for="rectangular">Rectangular</label>
     <br>
 
     <label>Dimensions:</label>

@@ -41,7 +41,7 @@ public class ClassicGame extends Game {
     List<Board> boardsToPlay = new ArrayList<>();
     int[] dims = specs.getBoardDims();
     boardsToPlay.add(BoardFactory.makeBoard(specs.getBoardType(), dims[0],
-        dims[1], specs.getNumMines()));
+        dims[1]));
     for (Map.Entry<String, TeamFormation> entry : room.getTeams().entrySet()) {
       List<Board> copy = new ArrayList<>();
       for (Board board : boardsToPlay) {
