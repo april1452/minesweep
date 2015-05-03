@@ -29,19 +29,15 @@ function getGames() {
             var specs = roomInfo.gameSpecs;
             if(roomInfo.sessionType === "SETUP") { 
                 // Create button for each game on server
-                var li = document.createElement("LI");
-                var node = document.createElement("a");
-                node.setAttribute("class", "button line-purple gameButton");
-                var textnode = document.createTextNode(specs.mode + ": " + roomInfo.roomName + " (" + numPlayer + "/" + (specs.numTeamPlayers * specs.numTeams) +  " players)");
-                node.appendChild(textnode);
-                li.appendChild(node);
-                $("#gamesList").append(li);
-
-                node.onclick = function() {
-                    document.cookie = "minesweepRoomId=" + roomId;
-                    console.log(document.cookie);
+                var room = '<li><a class="button line-purple modal-trigger" data-modal-open="modal-name-'+roomId+'">'+specs.mode + ": " + roomInfo.roomName + " (" + numPlayer + "/" + (specs.numTeamPlayers * specs.numTeams) +  " players)</a>";
+                room += '<div class="modalplate" data-modal-id="modal-name-'+roomId+'"><div class="modalplate-content"><div class="formplate"><label for="player-name-'+roomId+'+">Enter your player name:</label><input type="text" id="player-name-'+roomId+'" name="player-name-'+roomId+'"></input><a id="join-'+roomId+'" class="button pink close">Let me play!</a><a class="close button line-pink" style="margin-left: 5px">Nvm</a></div></div></div></li>';
+                $("#gamesList").html($("#gamesList").html() + room);
+                
+                
+                $("#join-" + roomId).click(function() {
+                    document.cookie = "minesweepRoomId=" + roomId + "; playerName=" + $("#player-name-"+roomId).val();
                     window.location.href = "/play";
-                }
+                });
             }
         });
 

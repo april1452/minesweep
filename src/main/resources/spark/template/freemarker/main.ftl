@@ -16,7 +16,6 @@
     </div>
 </div>
 
-
 <script src="/js/main.js"></script>    
 </#assign>
 <#include "layout.ftl">

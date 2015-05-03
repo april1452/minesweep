@@ -2,11 +2,14 @@
 <link rel="stylesheet" href="/css/setup.css">
 
 
-<div class="formplate span-6" id="createGame">
-    <h5>Room name</h5>
-    <input type="text" id="gameName" name="gameName" placeholder="Room name will appear on main screen">
+<div class="formplate" id="createGame">
+    <label for="gameName">Room name:</label>
+    <input type="text" id="gameName" name="gameName" placeholder="Room name will appear on main screen" required><br>
+    <label for="hostName">Player name:</label>
+    <input type="text" id="hostName" name="hostName" placeholder="Your screenname" required>
     <br><br>
-    <h5>Play mode</h5>
+
+    <h5 class="heading">Play mode</h5>
     <input type="radio" name="gameMode" value="CLASSIC" id="CLASSICrad" checked>
     <label for="CLASSICrad">Classic</label>
     <input type="radio" name="gameMode" value="LAYERS" id="layersrad">
@@ -19,24 +22,25 @@
     <label for="fsurad">F.S.U.</label>
     <br>
 
-    <label for="lives">Number of lives:</label><input type="number" name="lives" id="lives" value="3">
+    <label for="difficulty">Mine density:</label><input type="number" name="difficulty" id="difficulty" value="5" min="0" max="10" required>
+    <label for="lives">Number of lives:</label><input type="number" name="lives" id="lives" value="3" min="0" required>
     <br><br>
 
-    <h5>Board</h5>
+    <h5 class="heading">Board</h5>
     <input type="radio" name="boardType" value="DEFAULT" id="rectangle" checked>
     <label for="rectangle">Rectangle</label>
     <input type="radio" name="boardType" value="TRIANGULAR" id="triangle">
     <label for="triangle">Triangle</label>
     <input type="radio" name="boardType" value="HEXAGONAL" id="hexagonal">
-    <label for="hexagonal">Hexagonal</label>
+    <label for="hexagonal">Hexagon</label>
     <br>
 
     <label>Dimensions:</label>
-    <input type="number" name="width" id="width" placeholder="Width" value="20"> x
-    <input type="number" name="height" id="height" placeholder="Height" value="20">
+    <input type="number" name="width" id="width" placeholder="Width" value="20" min="1" required> x
+    <input type="number" name="height" id="height" placeholder="Height" value="20" min="1" required>
     <br><br>
 
-    <h5>Teams</h5>
+    <h5 class="heading">Teams</h5>
     <label>Number of teams:</label>
     <input type="radio" name="teams" value="1" id="teams-1">
     <label for="teams-1">1</label>
@@ -61,7 +65,7 @@
     <a id="create" class="button pink large">Host Game</a>
 </div>
 
-<div id="info" class="span-6">
+<div id="info">
     <div id="classic">
         <h5>Classic Mode</h5>
         <p>Teams race to complete a simple Minesweeper board. Each team has the same board setup, and the a team wins if it finishes the board first or its opponents run out of lives.</p>

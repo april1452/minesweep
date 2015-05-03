@@ -1,4 +1,4 @@
-Running
+minesweep+
 ===============================================================================
 
 
@@ -26,7 +26,13 @@ Checkstyle appeals
 ===============================================================================
 
 
-
+TODO
+=====
+* disband team functionality
+* team names?
+* player name
+* notify user if too many ais or players on a team when trying to add/join
+* don't allow players to join full room
 
 
 
