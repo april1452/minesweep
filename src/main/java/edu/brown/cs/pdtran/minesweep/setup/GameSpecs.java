@@ -17,6 +17,8 @@ public class GameSpecs {
   private int numMatches;
   private BoardType boardType;
   private int[] boardDims;
+  private int difficulty;
+  private static final int MINE_RATIO = 32;
 
   /**
    * Create game specifications.
@@ -26,7 +28,7 @@ public class GameSpecs {
    * @param dims board dimensions
    */
   public GameSpecs(GameMode mode, BoardType shape, int matches, int numTeams,
-      int numTeamPlayers, int teamLives, int[] dims) {
+      int numTeamPlayers, int teamLives, int[] dims, int difficulty) {
     this.mode = mode;
     this.boardType = shape;
     this.numTeams = numTeams;
@@ -34,6 +36,7 @@ public class GameSpecs {
     this.teamLives = teamLives;
     this.numMatches = matches;
     this.boardDims = dims;
+    this.difficulty = difficulty;
   }
 
   /**
@@ -91,5 +94,9 @@ public class GameSpecs {
    */
   public int[] getBoardDims() {
     return boardDims;
+  }
+
+  public int getNumMines() {
+    return difficulty * boardDims[0] * boardDims[1] / MINE_RATIO;
   }
 }
