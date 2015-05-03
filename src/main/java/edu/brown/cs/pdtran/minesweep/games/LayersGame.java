@@ -43,7 +43,7 @@ public class LayersGame extends Game {
     int[] dims = specs.getBoardDims();
     for (int i = 0; i < LAYERS_COUNT; i++) {
       boardsToPlay.add(BoardFactory.makeBoard(specs.getBoardType(), dims[0],
-          dims[1]));
+          dims[1], specs.getNumMines()));
     }
     for (Map.Entry<String, TeamFormation> entry : room.getTeams().entrySet()) {
       List<Board> copy = new ArrayList<>();
