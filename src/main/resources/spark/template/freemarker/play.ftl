@@ -8,7 +8,10 @@
   </div>
 </div>
 
-<canvas id="board"></canvas>  
+<canvas id="board"></canvas>
+
+<div id="infoBox">
+</div>
 
 <div class="flickerplate" data-dot-navigation="false" data-auto-flick="false" data-theme="dark" id="win">
   <ul>

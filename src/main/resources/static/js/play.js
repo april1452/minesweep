@@ -86,9 +86,14 @@ socket.onmessage = function (event) {
     // Begin game, i.e. draw game board
     else if (responseJson.type === "gameData") {
     init();
+        console.log(responseJson);
         drawBoard(responseJson.data);
         $("#board").show();
         $("#teams").hide();
+        $("#infoBox").show();
+        $("#infoBox").empty();
+        $("#infoBox").html("Score: " + responseJson.score 
+            + "<br>" + "Lives: " + responseJson.lives);
     }
     
     else if (responseJson.type === "victory") {
