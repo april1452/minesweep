@@ -39,6 +39,19 @@ server_ip = server_ip.substring(0, server_ip.length - 5);
 var socket = new WebSocket("ws://" + server_ip + ":7777");
 var hexagon_grid;
 
+// start the game
+$("#startButton").click(function() {
+    //init();
+    console.log('start button clicked');
+    $.getScript("../js/js.cookie.js", function(){
+        var sendData = {
+            type: "startGame",
+            minesweepId: $.cookie("minesweepId"),
+            minesweepRoomId: $.cookie("minesweepRoomId")
+        };  
+        socket.send(JSON.stringify(sendData));
+    });
+});
 
 // set up cookies js
 socket.onopen = function(event) {
@@ -52,20 +65,6 @@ socket.onopen = function(event) {
         socket.send(JSON.stringify(sendData));
     });
 }
-
-// start the game
-$("#startButton").click(function() {
-	//init();
-    console.log('start button clicked');
-    $.getScript("../js/js.cookie.js", function(){
-        var sendData = {
-            type: "startGame",
-            minesweepId: $.cookie("minesweepId"),
-            minesweepRoomId: $.cookie("minesweepRoomId")
-        };  
-        socket.send(JSON.stringify(sendData));
-    });
-});
 
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
