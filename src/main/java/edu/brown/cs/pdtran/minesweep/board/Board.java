@@ -14,8 +14,9 @@ public interface Board extends Cloneable {
    * Makes the move at the specified row and col.
    * @param row The row you want to move at.
    * @param col The col you want to move at.
+   * @return True if there is a mine at the move's location.
    */
-  void makeMove(int row, int col);
+  Boolean makeMove(int row, int col);
 
   /**
    * Tells you if the board is a winning board.

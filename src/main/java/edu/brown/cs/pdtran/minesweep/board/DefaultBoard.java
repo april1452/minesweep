@@ -165,7 +165,8 @@ public class DefaultBoard implements Board, Cloneable {
   }
 
   @Override
-  public void makeMove(final int row, final int column) {
+  public Boolean makeMove(final int row, final int column) {
+    Boolean mineMove = false;
     System.out.println(row + " " + column);
     if (isWithinBoard(row, column)) {
       Tile target = grid[row][column];
@@ -203,8 +204,10 @@ public class DefaultBoard implements Board, Cloneable {
             }
           }
         }
+        mineMove = target.isBomb();
       }
     }
+    return mineMove;
   }
 
   @Override

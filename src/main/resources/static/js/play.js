@@ -28,6 +28,11 @@ $("#win").hide();
 $("#lose").hide();
 $("#start").hide();
 
+var mineImage = new Image();
+mineImage.src = "/images/mine.png";
+var flagImage = new Image();
+flagImage.src = "/images/flag.png";
+
 var server_ip = "" + location.host;
 server_ip = server_ip.substring(0, server_ip.length - 5);
 
@@ -150,7 +155,14 @@ function drawRoom(responseJson) {
                 addAi(i, "HARD");
             });
             $('#random' + i).click(function(){
-                addAi(i, "MEDIUM");
+                var difficultyChoice = Math.random();
+                if (difficultyChoice < 1/3) {
+                    addAi(i, "EASY");
+                } else if (difficultyChoice < 2/3) {
+                    addAi(i, "MEDIUM");
+                } else {
+                    addAi(i, "HARD");
+                }
             });
         });
     });
@@ -200,15 +212,16 @@ function drawBoard(responseJSON) {
     var width = board.width;
     var height = board.height;
     
-    //if(typeof(hexagon_grid) === 'undefined'){
-    	hexagon_grid = new HT.Grid(width, height);
-    	findHexWithWidthAndHeight();
-    	
-    	console.log("A grid is born");
-    //}
-    
     tileWidth = CANVAS_X / width;
     tileHeight = CANVAS_Y / height;
+    
+    if(typeof(hexagon_grid) === 'undefined' || hexagon_grid == []){
+    	hexagon_grid = new HT.Grid(width, height);
+    	console.log(tileWidth);
+    	findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
+    	
+    	console.log("A grid is born");
+    }
     
     var tiles = board.tiles;
     
@@ -222,9 +235,10 @@ function drawBoard(responseJSON) {
             var tileY = tile.row * tileHeight;
             if (tile.visited) {
                 if(tile.isBomb) {
-                    _ctx.fillStyle = BOMB;
+                    _ctx.fillStyle = EXPLORED;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                    _ctx.strokeStyle = BOMB_BORDER;
+                    _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeStyle = NORMAL_BORDER;
                     _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
                 } else {
                     _ctx.fillStyle = EXPLORED;
@@ -244,6 +258,9 @@ function drawBoard(responseJSON) {
                 _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
                 _ctx.strokeStyle = NORMAL_BORDER;
                 _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                /*if (tile.isFlag) {
+                    _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
+                }*/
             }
 
         });
@@ -261,6 +278,10 @@ function drawBoard(responseJSON) {
                 var y1 = tile.row * tileHeight;
                 var y2 = tile.row * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
+                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                if (tile.isBomb && tile.visited) {
+                    _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+                }
             } else {
                 var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
                 var x2 = tile.column / 2 * tileWidth + offset;
@@ -268,28 +289,41 @@ function drawBoard(responseJSON) {
                 var y1 = tile.row * tileHeight;
                 var y2 = (tile.row + 1) * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
-            }
-            triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                if (tile.isBomb && tile.visited) {
+                    _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+                }
+            } 
         });
    
         _ctx.stroke();
     } else if (board.type = "HexagonalBoard"){
-    	findHexWithWidthAndHeight();
     	//drawHexGrid();
     	$.each(tiles, function(index, tile)
     	{
     		var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
     		console.log(hexes);
     		if(tile.visited){
-    			if(typeof(hexes) === 'undefined'){
-    				console.log("undefined hexes");
-    			} if(tile.isBomb){
+    			if(tile.isBomb){
     				hexes.fillColor = BOMB;
-    			} else if (tile.visited){
+    			} else {
+    				console.log("This is suppose to be visited");
+    			    
     				hexes.fillColor = EXPLORED;
     			}
+    			console.log(hexes);
     		}
     	});
+    	for (var h in HT.Grid.Static.Hexes)
+    	{
+    		var hex = HT.Grid.Static.Hexes[h];
+    		if (hex.fillColor = EXPLORED)
+    		{
+    			console.log("Visisted: " + hex);
+    			console.log(hex);
+    			
+    		}
+    	}
     	drawHexGrid(hexagon_grid, _ctx);
     } else {
         console.log("I had a stroke. Undefined board");
@@ -336,16 +370,16 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
 
     if (tile.visited) {
         if(tile.isBomb) {
-            _ctx.fillStyle = BOMB;
+            _ctx.fillStyle = EXPLORED;
             _ctx.fill();
-            //_ctx.strokeStyle = BOMB_BORDER;
+            //_ctx.strokeStyle = NORMAL_BORDER;
         } else {
             _ctx.fillStyle = EXPLORED;
             _ctx.fill();
             //_ctx.strokeStyle = NORMAL_BORDER;
             if (tile.adjacentBombs > 0) {
                 _ctx.fillStyle = getTextColor(tile.adjacentBombs);
-                _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
+                _ctx.font = getFontSize(tileHeight, tileWidth) + "px Verdana";
                 _ctx.textAlign = "center";
                 _ctx.textBaseline = "middle";
                 _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);  
@@ -416,15 +450,21 @@ $("#board").bind('click', function(event){
         var row = Math.floor(y / tileHeight);
         var offset = row * tileWidth / 2;
         var estimate = Math.floor((x - offset) / tileWidth * 2);
-        console.log(row + " " + estimate);
+        //console.log(row + " " + estimate);
 
 
         var tiles = globalBoard.tiles;
         var selectedTile;
+        var edge = false;
+
+        if (estimate === globalBoard.width) {
+            estimate--;
+            edge = true;
+        }
 
         $.each(tiles, function(index, tile) {
             if (tile.row == row && tile.column == estimate) {
-                console.log(tile.row + " " + tile.column);
+                //console.log(tile.row + " " + tile.column);
                 selectedTile = tile;
             }
             
@@ -444,31 +484,58 @@ $("#board").bind('click', function(event){
                 var y1 = (selectedTile.row + 1) * tileHeight;
                 var y2 = (selectedTile.row + 1) * tileHeight;
                 var y3 = selectedTile.row * tileHeight;
+        }   
+
+        if (edge) {
+            var borderSlope = (y3 - y2) / (x3 - x2);
+            //console.log("y1:" + y1 + ", y2:" + y2 + ", x1:" + x1 + ", x2:" + x2 + "y:" + y + ", x:" + x);
+            var clickSlope = (y - y2) / (x - x2);
+            //console.log(borderSlope + " " + clickSlope);
+            if (Math.abs(borderSlope) < Math.abs(clickSlope)) {
+                //var column = estimate - 1;
+                //console.log("Above border");
+            } else {
+                var column = estimate;
+                //console.log("Below border");
+                //console.log(row + " " + column);
+
+                $.getScript("../js/js.cookie.js", function(){
+                    var sendData = {
+                        type: "makeMove",
+                        minesweepId: $.cookie("minesweepId"),
+                        minesweepRoomId: $.cookie("minesweepRoomId"),
+                        minesweepTeamId: $.cookie("minesweepTeamId"),
+                        row: row,
+                        col: column
+                    };
+                    socket.send(JSON.stringify(sendData));
+                });
             }
-
-        var borderSlope = (y3 - y1) / (x3 - x1);
-        var clickSlope = (y - y1) / (x - x1);
-        console.log(borderSlope + " " + clickSlope);
-        if (Math.abs(borderSlope) < Math.abs(clickSlope)) {
-            var column = estimate - 1;
-            console.log("Above border");
         } else {
-            var column = estimate;
-            console.log("Below border");
-        }
-        console.log(row + " " + column);
+            var borderSlope = (y3 - y1) / (x3 - x1);
+            var clickSlope = (y - y1) / (x - x1);
+            //console.log(borderSlope + " " + clickSlope);
+            if (Math.abs(borderSlope) < Math.abs(clickSlope)) {
+                var column = estimate - 1;
+                //console.log("Above border");
+            } else {
+                var column = estimate;
+                //console.log("Below border");
+            }
+            //console.log(row + " " + column);
 
-        $.getScript("../js/js.cookie.js", function(){
-            var sendData = {
-                type: "makeMove",
-                minesweepId: $.cookie("minesweepId"),
-                minesweepRoomId: $.cookie("minesweepRoomId"),
-                minesweepTeamId: $.cookie("minesweepTeamId"),
-                row: row,
-                col: column
-            };
-            socket.send(JSON.stringify(sendData));
-        });
+            $.getScript("../js/js.cookie.js", function(){
+                var sendData = {
+                    type: "makeMove",
+                    minesweepId: $.cookie("minesweepId"),
+                    minesweepRoomId: $.cookie("minesweepRoomId"),
+                    minesweepTeamId: $.cookie("minesweepTeamId"),
+                    row: row,
+                    col: column
+                };
+                socket.send(JSON.stringify(sendData));
+            });
+        }
     } else if (globalBoard.type = "HexagonalBoard"){
     	var p = new HT.Point(x, y);
     	var hex = hexagon_grid.GetHexAt(p);

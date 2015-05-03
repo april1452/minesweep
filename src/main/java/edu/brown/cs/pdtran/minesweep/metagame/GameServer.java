@@ -102,7 +102,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
           AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
           String teamId = messageJson.get("minesweepTeamId").getAsString();
           String aiId = handler.getUserId();
-          AIGamer gamer = new AIGamer("John Jabbotti", aiDifficulty);
+          AIGamer gamer = new AIGamer(aiDifficulty);
           Map<String, List<String>> usersToUpdate =
               handler.aiJoinIfAbsent(sessionId, teamId, aiId, gamer);
 

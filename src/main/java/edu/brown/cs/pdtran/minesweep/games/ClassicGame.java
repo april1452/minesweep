@@ -57,7 +57,10 @@ public class ClassicGame extends Game {
   public Board makeMove(String teamId, Move m) {
     PlayerTeam team = teams.get(teamId);
     Board board = team.getCurrentBoard();
-    board.makeMove(m.getYCoord(), m.getXCoord());
+    Boolean loseLife = board.makeMove(m.getYCoord(), m.getXCoord());
+    if (loseLife) {
+      team.loseLife();
+    }
     if (board.isWinningBoard()) {
       return null;
     } else {

@@ -99,6 +99,24 @@ public class BoardTest {
   }
 
   @Test
+  public void dumbHexagonalBoard() {
+    HexagonalBoard board =
+        new HexagonalBoard(Arrays.copyOf(dumbBoard, dumbBoard.length));
+    for (int i = 0; i < board.getHeight(); i++) {
+      for (int j = 0; j < board.getWidth(); j++) {
+        assertFalse(board.getTile(i, j).isBomb());
+        assertFalse(board.getTile(i, j).hasBeenVisited());
+      }
+    }
+    board.makeMove(board.getHeight() / 2, board.getWidth() / 2);
+    for (int i = 0; i < board.getHeight(); i++) {
+      for (int j = 0; j < board.getWidth(); j++) {
+        assertTrue(board.getTile(i, j).hasBeenVisited());
+      }
+    }
+  }
+
+  @Test
   public void lossTest() {
     DefaultBoard board = new DefaultBoard();
     checkLoss(board);
