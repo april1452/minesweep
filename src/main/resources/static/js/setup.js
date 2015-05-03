@@ -1,17 +1,19 @@
 // send game specs
 $("#create").click(function(event) {
-    event.preventDefault();
-    var postParameters = {
-      roomName: $("#gameName").val(),
-      gameMode: $("input[name='gameMode']:checked").val(),
-      boardType: $("input[name='boardType']:checked").val(),
-      boardWidth: $("#width").val(),
-      boardHeight: $("#height").val(),
-      numTeams: $("input[name='teams']:checked").val(),
-      numPlayers: $("input[name='players']:checked").val(),
-      numLives: $("#lives").val()
-    };
-    console.log(postParameters);
+  event.preventDefault();
+  var postParameters = {
+    roomName: $("#gameName").val(),
+    hostName: $("#hostName").val(),
+    gameMode: $("input[name='gameMode']:checked").val(),
+    difficulty: $("#difficulty").val(),
+    boardType: $("input[name='boardType']:checked").val(),
+    boardWidth: $("#width").val(),
+    boardHeight: $("#height").val(),
+    numTeams: $("input[name='teams']:checked").val(),
+    numPlayers: $("input[name='players']:checked").val(),
+    numLives: $("#lives").val()
+  };
+  console.log(postParameters);
 	$.post("/create", postParameters, function(responseJSON) {
 	   window.location.href = "/play";
 	});

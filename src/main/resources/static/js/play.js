@@ -26,6 +26,7 @@ var _ctx;
 $("#board").hide();
 $("#win").hide();
 $("#lose").hide();
+$("#start").hide();
 
 var mineImage = new Image();
 mineImage.src = "/images/mine.png";
@@ -45,7 +46,8 @@ socket.onopen = function(event) {
         var sendData = {
             type: "INITIALIZE",
             minesweepId: $.cookie("minesweepId"),
-            minesweepRoomId: $.cookie("minesweepRoomId")
+            minesweepRoomId: $.cookie("minesweepRoomId"),
+            name: $.cookie("playerName")
         };  
         socket.send(JSON.stringify(sendData));
     });
@@ -54,6 +56,7 @@ socket.onopen = function(event) {
 // start the game
 $("#startButton").click(function() {
 	//init();
+    console.log('start button clicked');
     $.getScript("../js/js.cookie.js", function(){
         var sendData = {
             type: "startGame",
@@ -75,7 +78,14 @@ socket.onmessage = function (event) {
     // Begin game, i.e. draw game board
     else if (responseJson.type === "gameData") {
         init();
+        console.log(responseJson);
         drawBoard(responseJson.data);
+        $("#board").show();
+        $("#teams").hide();
+        $("#infoBox").show();
+        $("#infoBox").empty();
+        $("#infoBox").html("Score: " + responseJson.score 
+            + "<br>" + "Lives: " + responseJson.lives);
     }
     
     else if (responseJson.type === "victory") {
@@ -104,7 +114,7 @@ function drawRoom(responseJson) {
         var teams = roomInfo.teams;
     
         $.each(teams, function(i, team) {
-            innerBox += '<div class="span-3"><h4>' + team.name + "</h4>";
+            innerBox += '<div class="span-2" style="padding-top:30px"><h4>' + team.name + "</h4>";
             $.each(team.players, function(j, player) {
                 if (player.type=="HUMAN")
                     innerBox += '<a class="button line-purple">' + player.name + "</a><br>";
@@ -112,16 +122,19 @@ function drawRoom(responseJson) {
                     innerBox += '<a class="button line-aqua">' + player.name + "</a><br>";
             });
             // add ai button
-            innerBox += '<a class="button aqua modal-trigger" data-modal-open="ai-choose'+i+'" id="ai' + i + '">' + "Add AI</a><br>";
+            innerBox += '<a class="button aqua modal-trigger" data-modal-open="ai-choose-'+i+'" id="ai' + i + '">' + "Add AI</a><br>";
             // join team button
             innerBox += '<a class="button purple" id="buttonId' + i + '">' + "Join Team</a></div>";  
             // choose ai difficulty modal
-            innerBox += '<div class="modalplate" data-modal-id="ai-choose'+i+'"><div class="modalplate-title-bar"><a class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="span-2"><a class="button aqua large icon close" id="easy'+i+'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+i+'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+i+'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+i+'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
+            innerBox += '<div class="modalplate" data-modal-id="ai-choose-'+i+'"><div class="modalplate-title-bar"><a class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="ai span-2"><a class="button aqua large icon close" id="easy'+i+'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+i+'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+i+'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+i+'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
         });
         
-         $("#teams").html(innerBox);
+        // have to readd the sidebar; css issues
+        var sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a class="button line-white large" id="disbandButton">Disband</a></div>'
+
+        $("#teams").html(sidebar + innerBox);
         
-         $.each(teams, function(i, team) {
+        $.each(teams, function(i, team) {
             $('#buttonId' + i).click(function(){
                 joinRoom(i);
             });
@@ -160,7 +173,8 @@ function joinRoom(teamId) {
             type: "joinRoom",
             minesweepId: $.cookie("minesweepId"),
             minesweepTeamId: teamId,
-            minesweepRoomId: $.cookie("minesweepRoomId"),
+            minesweepRoomId: $.cookie("minesweepRoomId")
+
         };
         socket.send(JSON.stringify(sendData));
   });

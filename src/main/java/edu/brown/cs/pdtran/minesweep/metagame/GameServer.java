@@ -188,6 +188,8 @@ public class GameServer extends WebSocketServer implements MoveHandler {
     } else {
       gameData.addProperty("type", "gameData");
       gameData.addProperty("data", board.toJson());
+      gameData.addProperty("lives", game.getTeams().get(teamId).getLives());
+      gameData.addProperty("score", game.getTeams().get(teamId).getScore());
       updateTeam(game.getTeams().get(teamId).getHumans(), gameData.toString());
     }
   }

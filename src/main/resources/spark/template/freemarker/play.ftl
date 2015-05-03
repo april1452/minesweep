@@ -1,16 +1,19 @@
 <#assign body>
 <link rel="stylesheet" href="/css/play.css">
-
-<div id="start">
-	<a class="button pink large" id="startButton">Start Game!</a>
-</div>
       
 <div id="teams" class="row">
+  <div id="start" class="span-2">
+    <a class="button line-white large" id="startButton">Start Game!</a>
+    <a class="button line-white large" id="disbandButton">Disband</a>
+  </div>
 </div>
 
-<canvas id="board"></canvas>  
+<canvas id="board"></canvas>
 
-<div class="flickerplate" id="win">
+<div id="infoBox">
+</div>
+
+<div class="flickerplate" data-dot-navigation="false" data-auto-flick="false" data-theme="dark" id="win">
   <ul>
     <li>
       <div class="flick-title">WINNER, WINNER</div>
@@ -19,11 +22,11 @@
   </ul>
 </div>
 
-<div class="flickerplate" id="lose">
+<div class="flickerplate" data-dot-navigation="false" data-auto-flick="false" data-theme="dark" id="lose">
   <ul>
     <li>
-      <div class="flick-title">CHICKEN DINNER'S ON YOU BUDDY</div>
-      <a href="/"><div class="flick-sub-text">Try again?</div></a>
+      <div class="flick-title">TOUGH LUCK</div>
+      <a href="/"><div class="flick-sub-text">You lost. Try again?</div></a>
     </li>
   </ul>
 </div>
