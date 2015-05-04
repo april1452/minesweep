@@ -62,6 +62,12 @@ public interface Board extends Cloneable {
    */
   int getBombCount();
 
+  /**
+   * Tests whether coordinates are contained within a board.
+   * @param x The x-coordinate.
+   * @param y The y-coordinate.
+   * @return True if the coordinates are within the board.
+   */
   boolean isWithinBoard(final int x, final int y);
 
   /**
