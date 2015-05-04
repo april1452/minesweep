@@ -73,7 +73,6 @@ socket.onmessage = function (event) {
     // Begin game, i.e. draw game board
     else if (updateType === "BOARD_UPDATE") {
         init();
-        console.log(responseJson);
         drawBoard(responseJson.data);
         $("#board").show();
         $("#teams").hide();
@@ -219,9 +218,11 @@ function init() {
     
 }
 
-function drawBoard(responseJSON) {
+function drawBoard(data) {
     
-    var board = JSON.parse(responseJSON);
+    var board = data.board;
+    
+    console.log(board);
     
     var width = board.width;
     var height = board.height;
@@ -491,12 +492,13 @@ $("#board").bind('click', function(event){
 
         $.getScript("../js/js.cookie.js", function() {
             var sendData = {
-                requestType: "makeMove",
+                requestType: "MAKE_MOVE",
                 minesweepId: $.cookie("minesweepId"),
                 minesweepRoomId: $.cookie("minesweepRoomId"),
                 minesweepTeamId: $.cookie("minesweepTeamId"),
                 row: row,
-                col: column
+                col: column,
+                moveType: "CHECK"
             };
             socket.send(JSON.stringify(sendData));
         });
@@ -556,12 +558,13 @@ $("#board").bind('click', function(event){
 
                 $.getScript("../js/js.cookie.js", function(){
                     var sendData = {
-                        requestType: "makeMove",
+                        requestType: "MAKE_MOVE",
                         minesweepId: $.cookie("minesweepId"),
                         minesweepRoomId: $.cookie("minesweepRoomId"),
                         minesweepTeamId: $.cookie("minesweepTeamId"),
                         row: row,
-                        col: column
+                        col: column,
+                        moveType: "CHECK"
                     };
                     socket.send(JSON.stringify(sendData));
                 });
@@ -585,7 +588,8 @@ $("#board").bind('click', function(event){
                     minesweepRoomId: $.cookie("minesweepRoomId"),
                     minesweepTeamId: $.cookie("minesweepTeamId"),
                     row: row,
-                    col: column
+                    col: column,
+                    moveType: "CHECK"
                 };
                 socket.send(JSON.stringify(sendData));
             });
@@ -598,12 +602,13 @@ $("#board").bind('click', function(event){
 
      $.getScript("../js/js.cookie.js", function(){
         var sendData = {
-            requestType: "makeMove",
+            requestType: "MAKE_MOVE",
             minesweepId: $.cookie("minesweepId"),
             minesweepRoomId: $.cookie("minesweepRoomId"),
             minesweepTeamId: $.cookie("minesweepTeamId"),
             row: row,
-            col: column
+            col: column,
+            moveType: "CHECK"
         };
         socket.send(JSON.stringify(sendData));
     });

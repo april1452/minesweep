@@ -154,6 +154,7 @@ public class GameServer extends WebSocketServer implements MoveHandler {
 
   private void sendUpdate(Update update) {
     String message = update.getMessage();
+    System.out.println(message);
     for (String id : update.getUsersToUpdate()) {
       WebSocket conn = clients.get(id);
       if (conn.isOpen()) {

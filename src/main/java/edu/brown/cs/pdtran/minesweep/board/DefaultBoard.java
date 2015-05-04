@@ -14,6 +14,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
+import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 
 /**
  * DefaultBoard is the classic minesweeper board.
@@ -167,9 +168,8 @@ public class DefaultBoard implements Board, Cloneable {
   }
 
   @Override
-  public Boolean makeMove(final int row, final int column) {
-    Boolean mineMove = false;
-    System.out.println(row + " " + column);
+  public MoveResponse makeMove(final int row, final int column) {
+    MoveResponse moveResponse;
     if (isWithinBoard(row, column)) {
       Tile target = grid[row][column];
       if (!target.hasBeenVisited()) {
@@ -206,10 +206,18 @@ public class DefaultBoard implements Board, Cloneable {
             }
           }
         }
-        mineMove = target.isBomb();
+        if (target.isBomb()) {
+          moveResponse = MoveResponse.MINE;
+        } else {
+          moveResponse = MoveResponse.NOT_MINE;
+        }
+      } else {
+        moveResponse = MoveResponse.INVALID;
       }
+    } else {
+      moveResponse = MoveResponse.INVALID;
     }
-    return mineMove;
+    return moveResponse;
   }
 
   @Override
@@ -257,6 +265,7 @@ public class DefaultBoard implements Board, Cloneable {
    * @param y The y position.
    * @return True if it's within th board, otherwise false.
    */
+  @Override
   public boolean isWithinBoard(final int x, final int y) {
     return x >= 0 && x < width && y >= 0 && y < height;
   }

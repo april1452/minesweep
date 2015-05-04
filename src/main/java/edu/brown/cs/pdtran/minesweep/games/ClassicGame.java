@@ -3,17 +3,23 @@ package edu.brown.cs.pdtran.minesweep.games;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.board.BoardFactory;
+import edu.brown.cs.pdtran.minesweep.metagame.Update;
 import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
+import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
+import edu.brown.cs.pdtran.minesweep.types.UpdateType;
 
 /**
  * The class that represents code needed for the classic game mode.
@@ -25,7 +31,8 @@ import edu.brown.cs.pdtran.minesweep.types.SessionType;
  */
 public class ClassicGame extends Game {
 
-  protected ConcurrentMap<String, PlayerTeam> teams;
+  private ConcurrentMap<String, Integer> lives;
+
 
   /**
    * A constructor for a ClassicGame.
@@ -34,21 +41,67 @@ public class ClassicGame extends Game {
    */
   public ClassicGame(PreRoom room) {
     super(room);
+    lives = new ConcurrentHashMap<String, Integer>();
+    int teamLives = getSpecs().getTeamLives();
+    for (String teamId : getTeams().keySet()) {
+      lives.put(teamId, teamLives);
+    }
+
   }
 
   @Override
-  public Board makeMove(String teamId, Move m) {
+  public List<Update> makeMove(String teamId, Move m) {
+    List<Update> updates = new ArrayList<>();
     PlayerTeam team = teams.get(teamId);
-    Board board = team.getCurrentBoard();
-    Boolean loseLife = board.makeMove(m.getYCoord(), m.getXCoord());
-    if (loseLife) {
-      team.loseLife();
+    MoveResponse response = team.makeMove(m);
+    if (response == MoveResponse.MINE) {
+      int newLives = lives.get(teamId) - 1;
+      lives.put(teamId, newLives);
+      if (newLives <= 0) {
+        team.setIsLoser();
+        updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(teamId),
+            team.getHumans()));
+
+        int numPlaying = teams.size();
+        for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
+          if (entry.getValue().getIsLoser()) {
+            numPlaying--;
+          }
+        }
+        if (numPlaying == 1) {
+          for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
+            PlayerTeam otherTeam = entry.getValue();
+            if (!otherTeam.getIsLoser()) {
+              otherTeam.setIsWinner();
+              updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(
+                  teamId), otherTeam.getHumans()));
+            }
+          }
+        }
+      }
+    } else if (response == MoveResponse.NOT_MINE) {
+      Board board = team.getCurrentBoard();
+
+      if (board.isWinningBoard()) {
+        team.setIsWinner();
+        updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(teamId),
+            team.getHumans()));
+        for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
+          if (entry.getKey() != teamId) {
+            entry.getValue().setIsLoser();
+            updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(entry
+                .getKey()), entry.getValue().getHumans()));
+          }
+        }
+      }
     }
-    if (board.isWinningBoard()) {
-      return null;
-    } else {
-      return board;
+
+    if (response != MoveResponse.INVALID) {
+      updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(), team
+          .getHumans()));
     }
+
+    return updates;
   }
 
   /**
@@ -95,6 +148,11 @@ public class ClassicGame extends Game {
           new PlayerTeam(entry.getValue(), specs.getTeamLives(), copy));
     }
     return teams;
+  }
+
+  @Override
+  public JsonElement getGameData() {
+    return new JsonPrimitive("TEMPORARY");
   }
 
 }

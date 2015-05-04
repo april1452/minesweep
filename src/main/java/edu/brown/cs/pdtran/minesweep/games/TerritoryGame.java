@@ -16,7 +16,7 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
  * compete to claim the most territorial squares on the same board.
  * @author Clayton Sanford
  */
-public class TerritoryGame extends ClassicGame {
+public class TerritoryGame extends Game {
 
   /**
    * Constructs a TerritoryGame.

@@ -55,8 +55,8 @@ public class RequestHandler {
         new ArrayList<Entry<String, SessionInfo>>();
     for (Entry<String, Session> entry : sessions.entrySet()) {
       sessionsInfo
-          .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(entry
-              .getKey(), entry.getValue().getRoomInfo()));
+      .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(entry
+          .getKey(), entry.getValue().getRoomInfo()));
     }
     return sessionsInfo;
   }
@@ -221,8 +221,8 @@ public class RequestHandler {
     List<Update> updates = new ArrayList<>();
     for (PlayerTeam team : game.getTeams().values()) {
       List<String> playersToUpdate = team.getHumans();
-      updates.add(new Update(UpdateType.BOARD_UPDATE, team.getCurrentBoard()
-          .toJson(), playersToUpdate));
+      updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(),
+          playersToUpdate));
     }
     return updates;
   }
@@ -298,7 +298,7 @@ public class RequestHandler {
         PlayerTeam team = entry.getValue();
         for (AIPlayer ai : team.getAis()) {
           new Thread(new AIRunnable(sessionId, entry.getKey(), ai, handler))
-              .start();
+          .start();
         }
       }
 
@@ -337,8 +337,7 @@ public class RequestHandler {
   public List<Update> makeMove(String sessionId, String teamId, Move move) {
     try {
       Game game = getGame(sessionId);
-      game.makeMove(sessionId, teamId, move);
-      return null;
+      return game.makeMove(teamId, move);
     } catch (NoSuchSessionException e) {
       // not returning an error message in this case (maybe change?)
       return new ArrayList<Update>();

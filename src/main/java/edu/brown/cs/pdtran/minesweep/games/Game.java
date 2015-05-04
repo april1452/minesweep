@@ -68,7 +68,7 @@ public abstract class Game extends Session {
    * @param playerId The unique string corresponding to a player.
    * @param m A Move object that specifies that the team is doing.
    */
-  public abstract List<Update> makeMove(String teamId, String playerId, Move m);
+  public abstract List<Update> makeMove(String teamId, Move m);
 
   /**
    * Gets the board corresponding to a given team.

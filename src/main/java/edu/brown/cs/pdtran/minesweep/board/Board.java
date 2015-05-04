@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gson.JsonElement;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
+import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 
 /**
  * This is an interface for a standard board.
@@ -17,7 +18,7 @@ public interface Board extends Cloneable {
    * @param col The col you want to move at.
    * @return True if there is a mine at the move's location.
    */
-  Boolean makeMove(int row, int col);
+  MoveResponse makeMove(int row, int col);
 
   /**
    * Tells you if the board is a winning board.
@@ -60,6 +61,8 @@ public interface Board extends Cloneable {
    * @return the total number of bombs on the board.
    */
   int getBombCount();
+
+  boolean isWithinBoard(final int x, final int y);
 
   /**
    * Gets the object corresponding to a specified tile.
