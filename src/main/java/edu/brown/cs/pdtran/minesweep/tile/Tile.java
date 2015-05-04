@@ -122,7 +122,8 @@ public class Tile implements Cloneable {
   @Override
   public String toString() {
     return "Tile [isBomb=" + isBomb + ", adjacentBombs=" + adjacentBombs
-        + ", visited=" + visited + ", row=" + row + ", column=" + column + "]";
+        + ", visited=" + visited + ", row=" + row + ", column=" + column
+        + "]";
   }
 
   /*
@@ -132,12 +133,14 @@ public class Tile implements Cloneable {
   @Override
   public int hashCode() {
     final int prime = 31;
+    final int bigPrime1 = 1231;
+    final int bigPrime2 = 1237;
     int result = 1;
     result = prime * result + adjacentBombs;
     result = prime * result + column;
-    result = prime * result + (isBomb ? 1231 : 1237);
+    result = prime * result + (isBomb ? bigPrime1 : bigPrime2);
     result = prime * result + row;
-    result = prime * result + (visited ? 1231 : 1237);
+    result = prime * result + (visited ? bigPrime1 : bigPrime2);
     return result;
   }
 

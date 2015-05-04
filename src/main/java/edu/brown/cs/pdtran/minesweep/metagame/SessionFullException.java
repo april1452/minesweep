@@ -19,7 +19,7 @@ public class SessionFullException extends Exception {
   /**
    * The exception to be thrown when the game session is full and players
    * cannot join with an attached message.
-   * @param The message to be sent.
+   * @param message The message to be sent.
    */
   public SessionFullException(String message) {
     super(message);
