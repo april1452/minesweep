@@ -78,6 +78,10 @@ public class PlayerTeam extends Team implements BoardData {
     return boards.get(boardIndex);
   }
 
+  /**
+   * Gets the nextBoard in the list of Boards.
+   * @return True if there is another board to be used.
+   */
   public Boolean nextBoard() {
     boardIndex++;
     return boardIndex < boards.size();
@@ -191,6 +195,10 @@ public class PlayerTeam extends Team implements BoardData {
     return aiPlayers;
   }
 
+  /**
+   * Gets the board information in terms of a JSON element.
+   * @return A JSONElement representing the board's information.
+   */
   public JsonElement getBoardInfo() {
     JsonObject teamData = new JsonObject();
     teamData.add("board", getCurrentBoard().toJson());
@@ -208,6 +216,11 @@ public class PlayerTeam extends Team implements BoardData {
     return teamData;
   }
 
+  /**
+   * Makes a move as requested by a Player.
+   * @param m The Move to be passed through the system.
+   * @return A MoveResponse enum based on the type of response returned.
+   */
   public MoveResponse makeMove(Move m) {
     Board currentBoard = getCurrentBoard();
     int x = m.getXCoord();
@@ -229,7 +242,15 @@ public class PlayerTeam extends Team implements BoardData {
     }
   }
 
+<<<<<<< HEAD
   public boolean[][] getFlaggedTiles() {
+=======
+  /**
+   * Gets a list of all flagged tiles on that given team.
+   * @return A List of Tile objects that have flags on them.
+   */
+  public List<Tile> getFlaggedTiles() {
+>>>>>>> ae98d62cf39d771d9edd72cc96e44a5328754dee
     return flaggedTiles;
   }
 }

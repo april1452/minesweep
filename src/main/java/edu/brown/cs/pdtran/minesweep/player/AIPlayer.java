@@ -55,7 +55,8 @@ public class AIPlayer extends GamePlayer {
    * @param data The BoardData object used by the AI to determine good
    *        moves to make.
    */
-  public AIPlayer(String username, AiDifficulty difficultyEnum, BoardData data) {
+  public AIPlayer(
+      String username, AiDifficulty difficultyEnum, BoardData data) {
     super(username);
     if (difficultyEnum == AiDifficulty.EASY) {
       difficulty = EASY;
@@ -67,7 +68,8 @@ public class AIPlayer extends GamePlayer {
     this.boardData = data;
     // generateMovePossibilities();
     moveTime = (int) (BASE_TIME - difficulty * TIME_MULTIPLIER);
-    mistakeProbability = (MAX_DIFFICULTY - difficulty) * MISTAKE_MULTIPLIER;
+    mistakeProbability =
+        (MAX_DIFFICULTY - difficulty) * MISTAKE_MULTIPLIER;
 
     usedUncertain = new ArrayList<>();
     usedNotMine = new ArrayList<>();
@@ -117,28 +119,12 @@ public class AIPlayer extends GamePlayer {
     int width = board.getWidth();
     int height = board.getHeight();
 
-    // Creates a MineBlock for all undiscovered mines.
-    /*
-     * Set<Tile> undiscovered = new HashSet<>(); int bombCount =
-     * board.getBombCount(); System.out.println("Bomb count: " +
-     * bombCount); for (int w = 0; w < width; w++) { for (int h = 0; h <
-     * height; h++) { Tile currentTile = board.getTile(h, w); if
-     * (!currentTile.hasBeenVisited()) { undiscovered.add(currentTile); }
-     * else if (currentTile.isBomb()) { bombCount--; } } } MineBlock
-     * bigBlock = new MineBlock(undiscovered, bombCount); // Subtracts
-     * discovered mines from the Mineblocks List<MineBlock> containedMines
-     * = new ArrayList<>(); for (Tile t : bigBlock.getTiles()) { if
-     * (t.hasBeenVisited() && t.isBomb()) { Set<Tile> soloTile = new
-     * HashSet<>(); soloTile.add(t); containedMines.add(new
-     * MineBlock(soloTile, 1)); } } for (MineBlock m : containedMines) {
-     * bigBlock.subtract(m); } blocks.add(bigBlock);
-     */
-
     // Creates a MineBlock for every discovered tile with neighboring mines
     for (int w = 0; w < width; w++) {
       for (int h = 0; h < height; h++) {
         Tile currentTile = board.getTile(h, w);
-        if (currentTile.hasBeenVisited() && currentTile.getAdjacentBombs() > 0) {
+        if (currentTile.hasBeenVisited()
+            && currentTile.getAdjacentBombs() > 0) {
           List<Tile> adjacentTiles = board.getAdjacentTiles(h, w);
           adjacentTiles.remove(currentTile);
           int adjacentBombs = currentTile.getAdjacentBombs();
@@ -156,18 +142,7 @@ public class AIPlayer extends GamePlayer {
 
           MineBlock mb1 = blockFromTile(adjacentBombs, unvisitedTiles);
           Boolean needsCheck = true;
-          // Subtracts discovered mines from the Mineblocks
-          // List<MineBlock> containedMines = new ArrayList<>();
-          // for (Tile t : mb1.getTiles()) {
-          // if (t.hasBeenVisited() && t.isBomb()) {
-          // Set<Tile> soloTile = new HashSet<>();
-          // soloTile.add(t);
-          // containedMines.add(new MineBlock(soloTile, 1));
-          // }
-          // }
-          // for (MineBlock m : containedMines) {
-          // mb1.subtract(m);
-          // }
+
           // Subtracts the MineBlock with other MineBlocks
           while (needsCheck) {
             needsCheck = false;
@@ -227,7 +202,8 @@ public class AIPlayer extends GamePlayer {
     for (MineBlock mb : blocks) {
       System.out.print("Block:" + mb.getNumMines() + " / "
           + mb.getTiles().size() + " -- ");
-      double probability = (double) mb.getNumMines() / mb.getTiles().size();
+      double probability =
+          (double) mb.getNumMines() / mb.getTiles().size();
 
 
       for (Tile adj : mb.getTiles()) {
@@ -274,44 +250,7 @@ public class AIPlayer extends GamePlayer {
           }
         }
       }
-      System.out.print("\n");
     }
-
-    // for (int i = 0; i < totalUncertain; i++) {
-    // uncertain.remove(0);
-    // }
-    // for (int i = 0; i < totalNotMine; i++) {
-    // certainNotMine.remove(0);
-    // }
-    // for (int i = 0; i < totalMine; i++) {
-    // certainMine.remove(0);
-    // }
-    for (MovePossibility m : usedUncertain) {
-      uncertain.remove(m);
-      // System.out.println(uncertain.size());
-    }
-    for (MovePossibility m : usedNotMine) {
-      certainNotMine.remove(m);
-      // System.out.println(certainNotMine.size());
-    }
-    System.out.print("Mines: ");
-    for (MovePossibility m : certainMine) {
-      System.out.print(m.getXCoord() + ", " + m.getYCoord() + ": "
-          + m.getMineProbability() + "||");
-    }
-    System.out.print("\n");
-    System.out.print("Not mines: ");
-    for (MovePossibility m : certainNotMine) {
-      System.out.print(m.getXCoord() + ", " + m.getYCoord() + ": "
-          + m.getMineProbability() + "||");
-    }
-    System.out.print("\n");
-    System.out.print("Uncertain: ");
-    for (MovePossibility m : uncertain) {
-      System.out.print(m.getXCoord() + ", " + m.getYCoord() + ": "
-          + m.getMineProbability() + "||");
-    }
-    System.out.print("\n");
   }
 
   private MineBlock blockFromTile(int totalSurrounding, List<Tile> adjacent) {
@@ -379,7 +318,8 @@ public class AIPlayer extends GamePlayer {
         return randomTile();
       }
     }
-    return MoveFactory.makeMove(likliest.getXCoord(), likliest.getYCoord(),
+    return MoveFactory.makeMove(likliest.getXCoord(),
+        likliest.getYCoord(),
         MoveType.CHECK);
   }
 

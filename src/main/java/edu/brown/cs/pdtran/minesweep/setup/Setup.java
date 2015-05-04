@@ -8,7 +8,7 @@ package edu.brown.cs.pdtran.minesweep.setup;
  * information as a Room, which is processed to become a game.
  * @author pdtran
  */
-public class Setup {
+public final class Setup {
   /**
    * Set up game specifications and return a room representing those
    * options. Room will be used to create a game.
@@ -47,6 +47,12 @@ public class Setup {
 
   }
 
+  /**
+   * Sets up a room with a room name and specifications.
+   * @param roomName A string that represents the name of the room.
+   * @param specs The GameSpecs that define the rules of play for the game.
+   * @return A Room with the corresponding attributes.
+   */
   public static Room setup(String roomName, GameSpecs specs) {
     return new Room(roomName, specs);
   }

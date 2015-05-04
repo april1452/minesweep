@@ -2,9 +2,16 @@ package edu.brown.cs.pdtran.minesweep.move;
 
 import edu.brown.cs.pdtran.minesweep.types.MoveType;
 
-public class MoveFactory {
+/**
+ * Creates a Move depending on the location of the move and what MoveType
+ * is listed.
+ * @author Clayton Sanford
+ */
+public final class MoveFactory {
 
-  private MoveFactory() {};
+  private MoveFactory() {
+
+  };
 
   /**
    * This is the intended constructor to make Moves.
@@ -19,8 +26,9 @@ public class MoveFactory {
         return new CheckTile(xCoord, yCoord);
       case FLAG:
         return new FlagTile(xCoord, yCoord);
+      default:
+        return null;
     }
-    return null;
-  }
 
+  }
 }

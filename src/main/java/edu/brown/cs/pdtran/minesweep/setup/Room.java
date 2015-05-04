@@ -27,7 +27,8 @@ public class Room extends Session {
     super(name, specs);
     teams = new ConcurrentHashMap<String, TeamFormation>();
     for (int i = 0; i < specs.getNumTeams(); i++) {
-      RequestHandler.addAndGetKey(teams, new TeamFormation("Team " + (i + 1)));
+      RequestHandler.addAndGetKey(teams, new TeamFormation("Team "
+          + (i + 1)));
     }
   }
 
@@ -36,6 +37,14 @@ public class Room extends Session {
     return teams;
   }
 
+  /**
+   * Adds a human player to a room.
+   * @param teamId The ID for the team to add the human.
+   * @param gamerId The ID for the game to add the human.
+   * @param hg The HumanGamer to be added.
+   * @throws SessionFullException Thrown if the game session has too many
+   *         players.
+   */
   public void addHuman(String teamId, String gamerId, HumanGamer hg)
       throws SessionFullException {
     TeamFormation teamToAdd = teams.get(teamId);
@@ -45,6 +54,14 @@ public class Room extends Session {
     teams.get(teamId).addHumanGamer(gamerId, hg);
   }
 
+  /**
+   * Switches a human player to another team.
+   * @param teamId The ID for the team the player is switching from.
+   * @param gamerId The ID for the player being switched.
+   * @param newTeamId The ID for the team to player is being switched to.
+   * @throws SessionFullException Thrown when the session the player is in
+   *         is full.
+   */
   public void switchTeam(String teamId, String gamerId, String newTeamId)
       throws SessionFullException {
     TeamFormation oldTeam = teams.get(teamId);
@@ -62,6 +79,14 @@ public class Room extends Session {
 
   }
 
+  /**
+   * Adds an AI to a requested team in the room.
+   * @param teamId The ID for the team to add it to.
+   * @param gamerId The ID for the AI gamer to add.
+   * @param ag The AIGamer object ot add.
+   * @throws SessionFullException Thrown if the team the AI tries to join
+   *         is full.
+   */
   public void addAi(String teamId, String gamerId, AIGamer ag)
       throws SessionFullException {
     TeamFormation teamToAdd = teams.get(teamId);

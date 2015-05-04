@@ -2,12 +2,11 @@ package edu.brown.cs.pdtran.minesweep.metagame;
 
 import java.util.Map;
 
-import edu.brown.cs.pdtran.minesweep.types.SessionType;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
+import edu.brown.cs.pdtran.minesweep.types.SessionType;
 
 /**
  * Contains information necessary in a room to produce a game from it: the

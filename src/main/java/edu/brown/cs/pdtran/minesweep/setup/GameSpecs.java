@@ -31,7 +31,8 @@ public class GameSpecs {
    * @param teamLives lives per team
    * @param difficulty density of mines on the board
    */
-  public GameSpecs(GameMode mode, BoardType shape, int matches, int numTeams,
+  public GameSpecs(GameMode mode, BoardType shape, int matches,
+      int numTeams,
       int numTeamPlayers, int teamLives, int[] dims, int difficulty) {
     this.mode = mode;
     this.boardType = shape;
@@ -100,7 +101,13 @@ public class GameSpecs {
     return boardDims;
   }
 
+  /**
+   * Gets the number of mines that should be present on the board based on
+   * the mine density specified.
+   * @return An integer representing the number of mines on the board.
+   */
   public int getNumMines() {
-    return difficulty * boardDims[0] * boardDims[1] / DIFFICULTY_MULTIPLIER;
+    return difficulty * boardDims[0] * boardDims[1]
+        / DIFFICULTY_MULTIPLIER;
   }
 }

@@ -70,7 +70,8 @@ public class GameServer extends WebSocketServer implements MoveHandler {
       String userId = messageJson.get("minesweepId").getAsString();
       String sessionId = messageJson.get("minesweepRoomId").getAsString();
 
-      String requestTypeString = messageJson.get("requestType").getAsString();
+      String requestTypeString =
+          messageJson.get("requestType").getAsString();
 
       RequestType requestType = RequestType.valueOf(requestTypeString);
       switch (requestType) {
@@ -85,33 +86,51 @@ public class GameServer extends WebSocketServer implements MoveHandler {
               .getAsString());
           break;
         case ADD_AI:
-          addAi(sessionId, messageJson.get("minesweepTeamId").getAsString(),
+          addAi(sessionId, messageJson.get("minesweepTeamId")
+              .getAsString(),
               userId, messageJson.get("difficulty").getAsString());
           break;
         case START_GAME:
           startGame(sessionId, userId);
           break;
         case MAKE_MOVE:
-          makeMove(sessionId, messageJson.get("minesweepTeamId").getAsString(),
+          makeMove(sessionId, messageJson.get("minesweepTeamId")
+              .getAsString(),
               MoveFactory.makeMove(messageJson.get("row").getAsInt(),
                   messageJson.get("col").getAsInt(),
-                  MoveType.valueOf(messageJson.get("moveType").getAsString())));
+                  MoveType.valueOf(messageJson.get("moveType")
+                      .getAsString())));
           break;
         default:
           System.out.println("No known types reached.");
       }
     } catch (Exception e) {
-      System.out.println("An unknown exception occurred: " + e.getMessage());
+      System.out.println("An unknown exception occurred: "
+          + e.getMessage());
       e.printStackTrace();
     }
   }
 
+  /**
+   * Creates a room with the first player.
+   * @param sessionId The unique ID of the session.
+   * @param userId The unique ID of the first user.
+   * @param name The name of the first user.
+   */
   public void initialize(String sessionId, String userId, String name) {
-    List<Update> updates = handler.humanJoinIfAbsent(sessionId, userId, name);
+    List<Update> updates =
+        handler.humanJoinIfAbsent(sessionId, userId, name);
 
     sendUpdates(updates);
   }
 
+  /**
+   * Moves a player to another team.
+   * @param sessionId The unique ID of the session.
+   * @param teamId The unique ID of the team being transferred from.
+   * @param userId The unique ID for the user.
+   * @param newTeamId The unique ID for the new team.
+   */
   public void switchTeam(String sessionId,
       String teamId,
       String userId,
@@ -122,6 +141,14 @@ public class GameServer extends WebSocketServer implements MoveHandler {
     sendUpdates(updates);
   }
 
+  /**
+   * Adds an AI to a team.
+   * @param sessionId The unique ID for the session.
+   * @param teamId The unique ID for a team.
+   * @param userId The unique ID for the user adding the AI.
+   * @param difficultyString A string representing the AI's difficulty:
+   *        "EASY", "MEDIUM", or "HARD".
+   */
   public void addAi(String sessionId,
       String teamId,
       String userId,
@@ -136,6 +163,11 @@ public class GameServer extends WebSocketServer implements MoveHandler {
     sendUpdate(update);
   }
 
+  /**
+   * Initiates the game when the "Start Game" button is pressed.
+   * @param sessionId The unique id for each session.
+   * @param userId The unique id for each user.
+   */
   public void startGame(String sessionId, String userId) {
     // TODO do something with team id?
     List<Update> updates = handler.startGame(sessionId, userId, this);

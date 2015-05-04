@@ -7,9 +7,11 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  * class.
  * @author agokasla
  */
-public class BoardFactory {
+public final class BoardFactory {
 
-  private BoardFactory() {};
+  private BoardFactory() {
+
+  };
 
   /**
    * This is the intended constructor to make Boards.
@@ -19,7 +21,10 @@ public class BoardFactory {
    * @param mines The number of mines on the board.
    * @return The made board.
    */
-  public static Board makeBoard(BoardType type, int width, int height, int mines) {
+  public static Board makeBoard(BoardType type,
+      int width,
+      int height,
+      int mines) {
     switch (type) {
       case DEFAULT:
         return new DefaultBoard(width, height, mines);
@@ -31,7 +36,8 @@ public class BoardFactory {
         return new HexagonalBoard(width, height, mines);
       case ENTANGLED:
         return new EntangledBoard();
+      default:
+        return null;
     }
-    return null;
   }
 }

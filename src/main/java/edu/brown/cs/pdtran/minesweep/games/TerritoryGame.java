@@ -62,7 +62,8 @@ public class TerritoryGame extends Game {
 
       if (newLives <= 0) {
         team.setIsLoser();
-        updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(teamId),
+        updates.add(new Update(UpdateType.DEFEAT,
+            new JsonPrimitive(teamId),
             team.getHumans()));
 
         int numPlaying = teams.size();
@@ -76,8 +77,9 @@ public class TerritoryGame extends Game {
             PlayerTeam otherTeam = entry.getValue();
             if (!otherTeam.getIsLoser()) {
               otherTeam.setIsWinner();
-              updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(
-                  entry.getKey()), otherTeam.getHumans()));
+              updates.add(new Update(UpdateType.VICTORY,
+                  new JsonPrimitive(
+                      entry.getKey()), otherTeam.getHumans()));
             }
           }
         }
@@ -85,7 +87,8 @@ public class TerritoryGame extends Game {
     } else if (response == MoveResponse.NOT_MINE) {
       Board board = team.getCurrentBoard();
 
-      territory.get(teamId).add(board.getTile(m.getYCoord(), m.getXCoord()));
+      territory.get(teamId).add(
+          board.getTile(m.getYCoord(), m.getXCoord()));
 
       if (board.isWinningBoard()) {
 
@@ -100,12 +103,14 @@ public class TerritoryGame extends Game {
         }
         PlayerTeam winner = teams.get(winningTeamId);
         winner.setIsWinner();
-        updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(teamId),
+        updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(
+            teamId),
             winner.getHumans()));
         for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
           if (entry.getKey() != winningTeamId) {
             entry.getValue().setIsLoser();
-            updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(entry
+            updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(
+                entry
                 .getKey()), entry.getValue().getHumans()));
           }
         }
@@ -119,7 +124,8 @@ public class TerritoryGame extends Game {
             tempTeam.getBoardInfo(), tempTeam.getHumans()));
         allHumans.addAll(tempTeam.getHumans());
       }
-      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(), allHumans));
+      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(),
+          allHumans));
     }
 
     return updates;
@@ -153,16 +159,19 @@ public class TerritoryGame extends Game {
   }
 
   @Override
-  protected ConcurrentMap<String, PlayerTeam> makeTeams(ConcurrentMap<String, TeamFormation> preTeams) {
+  protected ConcurrentMap<String, PlayerTeam> makeTeams(
+      ConcurrentMap<String, TeamFormation> preTeams) {
     ConcurrentMap<String, PlayerTeam> teams =
         new ConcurrentHashMap<String, PlayerTeam>();
     List<Board> boardsToPlay = new ArrayList<>();
     int[] dims = specs.getBoardDims();
-    boardsToPlay.add(BoardFactory.makeBoard(getSpecs().getBoardType(), dims[0],
+    boardsToPlay.add(BoardFactory.makeBoard(getSpecs().getBoardType(),
+        dims[0],
         dims[1], specs.getNumMines()));
     for (Map.Entry<String, TeamFormation> entry : preTeams.entrySet()) {
       teams.put(entry.getKey(),
-          new PlayerTeam(entry.getValue(), specs.getTeamLives(), boardsToPlay));
+          new PlayerTeam(entry.getValue(), specs.getTeamLives(),
+              boardsToPlay));
     }
     return teams;
   }

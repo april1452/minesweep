@@ -34,16 +34,30 @@ public class TeamFormation extends Team {
     return gamers;
   }
 
+  /**
+   * Adds an AI gamer to the room.
+   * @param gamerId The ID corresponding to the AI.
+   * @param ag The AIGamer object to be added.
+   */
   public void addAIGamer(String gamerId, AIGamer ag) {
     aiGamers.add(ag);
     addGamer(gamerId, ag);
   }
 
+  /**
+   * Adds a human gamer to the room.
+   * @param gamerId The ID corresponding to the player.
+   * @param hg The HumanPlayer object to be added.
+   */
   public void addHumanGamer(String gamerId, HumanGamer hg) {
     humanGamers.add(gamerId);
     addGamer(gamerId, hg);
   }
 
+  /**
+   * Gets the number of gamers in a particular team.
+   * @return An integer representing the number of gamers.
+   */
   public int getSize() {
     return gamers.size();
   }

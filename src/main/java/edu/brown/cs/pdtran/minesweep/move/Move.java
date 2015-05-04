@@ -22,6 +22,10 @@ public interface Move {
    */
   int getYCoord();
 
+  /**
+   * Gets the move type corresponding to the move.
+   * @return An enum representing the type of move: "CHECK" or "FLAG".
+   */
   MoveType getMoveType();
 
 }
