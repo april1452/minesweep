@@ -101,26 +101,35 @@ public class RequestHandler {
 
       Map<String, TeamFormation> teams = room.getTeams();
 
-      int smallestTeamSize = Integer.MAX_VALUE;
-      String smallestTeamId = null;
+
+      Entry<String, TeamFormation> smallestTeam = null;
 
       List<String> usersToUpdate = new ArrayList<>();
 
       for (Entry<String, TeamFormation> entry : teams.entrySet()) {
-        TeamFormation team = entry.getValue();
-        if (team.getPlayers().containsKey(gamerId)) {
-          usersToUpdate.add(gamerId);
-          updates.add(new Update(UpdateType.ROOM_UPDATE, room.getRoomInfo()
-              .toJson(), usersToUpdate));
-          return updates;
-        } else if (team.getSize() < smallestTeamSize) {
-          smallestTeamId = entry.getKey();
+        if (smallestTeam == null) {
+          smallestTeam = entry;
+        } else {
+
+          int smallestSize = smallestTeam.getValue().getSize();
+
+          TeamFormation team = entry.getValue();
+          if (team.getPlayers().containsKey(gamerId)) {
+            usersToUpdate.add(gamerId);
+            updates.add(new Update(UpdateType.ROOM_UPDATE, room.getRoomInfo()
+                .toJson(), usersToUpdate));
+            return updates;
+          } else if (team.getSize() < smallestSize
+              || (team.getSize() == smallestSize && team.getName().compareTo(
+                  smallestTeam.getValue().getName()) < 0)) {
+            smallestTeam = entry;
+          }
         }
       }
 
-      room.addHuman(smallestTeamId, gamerId, new HumanGamer(name));
+      room.addHuman(smallestTeam.getKey(), gamerId, new HumanGamer(name));
 
-      updates.add(getTeamAssignment(smallestTeamId, gamerId));
+      updates.add(getTeamAssignment(smallestTeam.getKey(), gamerId));
 
       updates.add(getRoomUpdate(room));
 

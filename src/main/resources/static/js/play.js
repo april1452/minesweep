@@ -124,20 +124,27 @@ function drawRoom(responseJson) {
 
         var teams = roomInfo.teams;
 
-        $.each(teams, function(i, team) {
+        var sortedIds = Object.keys(teams).sort(function(a,b) {
+            return teams[a].name.localeCompare(teams[b].name);
+        });
+
+        console.log(sortedIds);
+
+        $.each(sortedIds, function(i, teamId) {
+            var team = teams[teamId];
             innerBox += '<div class="span-2" style="padding-top:30px"><h4>' + team.name + "</h4>";
-            $.each(team.players, function(j, player) {
+            $.each(team.players, function(playerId, player) {
                 if (player.type=="HUMAN")
                     innerBox += '<a class="button line-purple">' + player.name + "</a><br>";
                 else 
                     innerBox += '<a class="button line-aqua">' + player.name + "</a><br>";
             });
             // add ai button
-            innerBox += '<a class="button aqua modal-trigger" data-modal-open="ai-choose-'+i+'" id="ai' + i + '">' + "Add AI</a><br>";
+            innerBox += '<a class="button aqua modal-trigger" data-modal-open="ai-choose-'+ teamId +'" id="ai' + teamId + '">' + "Add AI</a><br>";
             // join team button
-            innerBox += '<a class="button purple" id="buttonId' + i + '">' + "Join Team</a></div>";  
+            innerBox += '<a class="button purple" id="buttonId' + teamId + '">' + "Join Team</a></div>";  
             // choose ai difficulty modal
-            innerBox += '<div class="modalplate" data-modal-id="ai-choose-'+i+'"><div class="modalplate-title-bar"><a class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="ai span-2"><a class="button aqua large icon close" id="easy'+i+'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+i+'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+i+'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+i+'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
+            innerBox += '<div class="modalplate" data-modal-id="ai-choose-'+ teamId +'"><div class="modalplate-title-bar"><a class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="ai span-2"><a class="button aqua large icon close" id="easy'+ teamId +'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+ teamId +'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+ teamId +'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+ teamId +'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
         });
 
         // have to readd the sidebar; css issues
