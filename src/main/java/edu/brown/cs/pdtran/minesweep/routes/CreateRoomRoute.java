@@ -50,7 +50,7 @@ public class CreateRoomRoute implements Route {
     int[] boardDims = {boardWidth, boardHeight};
     GameSpecs specs =
         new GameSpecs(gameMode, boardType, 1, numTeams, numPlayers, numLives,
-            boardDims);
+            boardDims, difficulty);
 
     PreRoom room = new PreRoom(roomName, specs);
 

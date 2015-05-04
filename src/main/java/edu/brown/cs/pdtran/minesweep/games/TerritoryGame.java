@@ -28,7 +28,7 @@ public class TerritoryGame extends ClassicGame {
     List<Board> boardsToPlay = new ArrayList<>();
     int[] dims = specs.getBoardDims();
     boardsToPlay.add(BoardFactory.makeBoard(specs.getBoardType(), dims[0],
-        dims[1]));
+        dims[1], specs.getNumMines()));
     teams = new ConcurrentHashMap<String, PlayerTeam>();
     for (Map.Entry<String, TeamFormation> entry : room.getTeams().entrySet()) {
       teams.put(entry.getKey(),

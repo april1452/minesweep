@@ -14,19 +14,20 @@ public class BoardFactory {
   /**
    * This is the intended constructor to make Boards.
    * @param type The type of the board you wish to make.
+   * @param width Width of the board
+   * @param height Height of the board
+   * @param mines Number of mines on the board
    * @return The made board.
    */
-  public static Board makeBoard(BoardType type,
-      int width,
-      int height,
-      int bombCount) {
+
+  public static Board makeBoard(BoardType type, int width, int height, int mines) {
     switch (type) {
       case DEFAULT:
-        return new DefaultBoard(width, height, bombCount);
+        return new DefaultBoard(width, height, mines);
       case RECTANGULAR:
         return new RectangularBoard();
       case TRIANGULAR:
-        return new TriangularBoard();
+        return new TriangularBoard(width, height, mines);
       case HEXAGONAL:
         return new HexagonalBoard();
     }

@@ -26,7 +26,7 @@ var _ctx;
 $("#board").hide();
 $("#win").hide();
 $("#lose").hide();
-$("#start").hide();
+//$("#start").hide();
 
 var mineImage = new Image();
 mineImage.src = "/images/mine.png";
@@ -38,7 +38,6 @@ server_ip = server_ip.substring(0, server_ip.length - 5);
 
 var socket = new WebSocket("ws://" + server_ip + ":7777");
 var hexagon_grid;
-
 
 // set up cookies js
 socket.onopen = function(event) {
@@ -52,19 +51,6 @@ socket.onopen = function(event) {
         socket.send(JSON.stringify(sendData));
     });
 }
-
-// start the game
-$("#startButton").click(function() {
-    console.log('start button clicked');
-    $.getScript("../js/js.cookie.js", function(){
-        var sendData = {
-            requestType: "START_GAME",
-            minesweepId: $.cookie("minesweepId"),
-            minesweepRoomId: $.cookie("minesweepRoomId")
-        };  
-        socket.send(JSON.stringify(sendData));
-    });
-});
 
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
@@ -146,6 +132,21 @@ function drawRoom(responseJson) {
         var sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a class="button line-white large" id="disbandButton">Disband</a></div>'
 
         $("#teams").html(sidebar + innerBox);
+
+        $("#startButton").click(function() {
+            //init();
+            console.log('start button clicked');
+            $.getScript("../js/js.cookie.js", function(){
+                var sendData = {
+                    requestType: "START_GAME",
+                    minesweepId: $.cookie("minesweepId"),
+                    minesweepRoomId: $.cookie("minesweepRoomId")
+                };  
+                socket.send(JSON.stringify(sendData));
+            });
+        });
+
+        
         
         $.each(teams, function(i, team) {
             $('#buttonId' + i).click(function(){
@@ -219,7 +220,7 @@ function init() {
 }
 
 function drawBoard(responseJSON) {
-	
+    
     var board = JSON.parse(responseJSON);
     
     var width = board.width;
@@ -227,20 +228,20 @@ function drawBoard(responseJSON) {
     
     tileWidth = CANVAS_X / width;
     tileHeight = CANVAS_Y / height;
-
+    
     if(typeof(hexagon_grid) === 'undefined' || hexagon_grid == []){
-    	hexagon_grid = new HT.Grid(width, height);
-    	console.log(tileWidth);
-    	findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
-    	
-    	console.log("A grid is born");
+        hexagon_grid = new HT.Grid(width, height);
+        console.log(tileWidth);
+        findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
+        
+        console.log("A grid is born");
     }
     
     var tiles = board.tiles;
     
     globalBoard = board;
 
-    if (board.type == "DEFAULT") {
+    if (board.type == "DEFAULT"){
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
@@ -277,69 +278,109 @@ function drawBoard(responseJSON) {
             }
 
         });
-} else if (board.type == "TRIANGULAR") {
+    } else if (board.type == "TRIANGULAR"){
 
- _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
- tileWidth = CANVAS_X / (width / 2 + height / 2);
+         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
+         tileWidth = CANVAS_X / (width / 2 + height / 2);
 
- $.each(tiles, function(index, tile) {
-    var offset = tile.row * tileWidth / 2;
-    if (tile.column % 2 === 0) {
-        var x1 = tile.column / 2 * tileWidth + offset;
-        var x2 = (tile.column / 2 + 1) * tileWidth + of2010fset;
-        var x3 = (tile.column / 2 + 0.5) * tileWidth + offset;
-        var y1 = tile.row * tileHeight;
-        var y2 = tile.row * tileHeight;
-        var y3 = (tile.row + 1) * tileHeight;
-        triangleDraw(x1, x2, x3, y1, y2, y3, tile);
-        if (tile.isBomb && tile.visited) {
-            _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+        $.each(tiles, function(index, tile) {
+            var offset = tile.row * tileWidth / 2;
+            if (tile.column % 2 === 0) {
+                var x1 = tile.column / 2 * tileWidth + offset;
+                var x2 = (tile.column / 2 + 1) * tileWidth + offset;
+                var x3 = (tile.column / 2 + 0.5) * tileWidth + offset;
+                var y1 = tile.row * tileHeight;
+                var y2 = tile.row * tileHeight;
+                var y3 = (tile.row + 1) * tileHeight;
+                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                if (tile.isBomb && tile.visited) {
+                    _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+                }
+            } else {
+                var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
+                var x2 = tile.column / 2 * tileWidth + offset;
+                var x3 = (tile.column / 2 + 1) * tileWidth + offset;
+                var y1 = tile.row * tileHeight;
+                var y2 = (tile.row + 1) * tileHeight;
+                var y3 = (tile.row + 1) * tileHeight;
+                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                if (tile.isBomb && tile.visited) {
+                    _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+                }
+            } 
+        });
+   
+        _ctx.stroke();
+    } else if (board.type = "HEXAGONAL"){
+        //drawHexGrid();
+        $.each(tiles, function(index, tile)
+        {
+            var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
+            console.log(hexes);
+            if(tile.visited){
+                if(tile.isBomb){
+                    hexes.fillColor = BOMB;
+                } else {
+                    console.log("This is suppose to be visited");
+                    
+                    hexes.fillColor = EXPLORED;
+                }
+                console.log(hexes);
+            }
+        });
+        for (var h in HT.Grid.Static.Hexes)
+        {
+            var hex = HT.Grid.Static.Hexes[h];
+            if (hex.fillColor = EXPLORED)
+            {
+                console.log("Visited: " + hex);
+                console.log(hex);
+                
+            }
         }
+        drawHexGrid(hexagon_grid, _ctx);
+    } else if (board.type = "RECTANGULAR"){
+        console.log(board);
+
+        _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
+
+        $.each(tiles, function(index, tile) {
+            var tileX = tile.column * tileWidth;
+            var tileY = tile.row * tileHeight;
+            if (tile.visited) {
+                if(tile.isBomb) {
+                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeStyle = NORMAL_BORDER;
+                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                } else {
+                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeStyle = NORMAL_BORDER;
+                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                    if (tile.adjacentBombs > 0) {
+                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
+                        _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
+                        _ctx.textAlign = "center";
+                        _ctx.textBaseline = "middle";
+                        _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);
+                    }
+                }
+            } else {
+                _ctx.fillStyle = UNEXPLORED;
+                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                _ctx.strokeStyle = NORMAL_BORDER;
+                _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                /*if (tile.isFlag) {
+                    _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
+                }*/
+            }
+
+        });
     } else {
-        var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
-        var x2 = tile.column / 2 * tileWidth + offset;
-        var x3 = (tile.column / 2 + 1) * tileWidth + offset;
-        var y1 = tile.row * tileHeight;
-        var y2 = (tile.row + 1) * tileHeight;
-        var y3 = (tile.row + 1) * tileHeight;
-        triangleDraw(x1, x2, x3, y1, y2, y3, tile);
-        if (tile.isBomb && tile.visited) {
-            _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
-        }
-    } 
-});
-
-_ctx.stroke();
-} else if (board.type == "HEXAGONAL") {
- $.each(tiles, function(index, tile)
- {
-  var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
-  console.log(hexes);
-  if(tile.visited){
-   if(tile.isBomb){
-    hexes.fillColor = BOMB;
-} else {
-    console.log("This is suppose to be visited");
-
-    hexes.fillColor = EXPLORED;
-}
-console.log(hexes);
-}
-});
- for (var h in HT.Grid.Static.Hexes)
- {
-  var hex = HT.Grid.Static.Hexes[h];
-  if (hex.fillColor = EXPLORED)
-  {
-   console.log("Visisted: " + hex);
-   console.log(hex);
-
-}
-}
-drawHexGrid(hexagon_grid, _ctx);
-} else {
-    console.log("I had a stroke. Undefined board");
-}
+        console.log("I had a stroke. Undefined board");
+    }
 }
 
 function getTextColor(surrounding) {
