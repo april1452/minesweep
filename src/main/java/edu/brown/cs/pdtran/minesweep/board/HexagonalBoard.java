@@ -6,7 +6,14 @@ import java.util.List;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
-public class HexagonalBoard extends DefaultBoard implements Board, Cloneable {
+/**
+ * Represents a board with hexagonal-shaped tiles.
+ * @author Clayton Sanford
+ */
+public class HexagonalBoard extends DefaultBoard implements Board,
+    Cloneable {
+
+  private static final int ADJACENT_ARRAY_SIZE = 3;
 
   /**
    * The constructor.
@@ -28,7 +35,7 @@ public class HexagonalBoard extends DefaultBoard implements Board, Cloneable {
 
   @Override
   public List<Tile> getAdjacentTiles(int row, int col) {
-    List<Tile> tiles = new ArrayList<>(3);
+    List<Tile> tiles = new ArrayList<>(ADJACENT_ARRAY_SIZE);
 
     boolean isIndented = col % 2 == 1; // decides which side the isoceles
     // triangle

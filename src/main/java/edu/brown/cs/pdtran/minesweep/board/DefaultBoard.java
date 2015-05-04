@@ -27,11 +27,14 @@ public class DefaultBoard implements Board, Cloneable {
   private final int height;
   private final int bombCount;
 
+  private static final int DEFAULT_SIZE = 16;
+  private static final int DEFAULT_MINES = 40;
+
   /**
    * The default constructor.
    */
   public DefaultBoard() {
-    this(16, 16, 40);
+    this(DEFAULT_SIZE, DEFAULT_SIZE, DEFAULT_MINES);
   }
 
   /**
@@ -55,15 +58,15 @@ public class DefaultBoard implements Board, Cloneable {
   public DefaultBoard(Tile[][] grid) {
     this.width = grid[0].length;
     this.height = grid.length;
-    int bombCount = 0;
+    int bombs = 0;
     for (Tile[] row : grid) {
       for (Tile tile : row) {
         if (tile.isBomb()) {
-          bombCount++;
+          bombs++;
         }
       }
     }
-    this.bombCount = bombCount;
+    this.bombCount = bombs;
     this.grid = grid;
   }
 
@@ -189,7 +192,8 @@ public class DefaultBoard implements Board, Cloneable {
                 getAdjacentTiles(candidate.getRow(), candidate.getColumn());
             for (Tile neighbor : newCandidates) {
               if (!tilesToReveal.contains(neighbor)
-                  && neighbor.getAdjacentBombs() == 0 && !neighbor.isBomb()) {
+                  && neighbor.getAdjacentBombs() == 0
+                  && !neighbor.isBomb()) {
                 tilesWithNoAdjacentBombs.add(neighbor);
               }
             }
