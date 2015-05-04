@@ -16,7 +16,7 @@ import edu.brown.cs.pdtran.minesweep.metagame.Update;
 import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
-import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import edu.brown.cs.pdtran.minesweep.setup.Room;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
@@ -40,7 +40,7 @@ public class ClassicGame extends Game {
    * @param room Uses a room with game information to generate the game
    *        object.
    */
-  public ClassicGame(PreRoom room) {
+  public ClassicGame(Room room) {
     super(room);
     lives = new ConcurrentHashMap<String, Integer>();
     int teamLives = getSpecs().getTeamLives();
@@ -58,12 +58,6 @@ public class ClassicGame extends Game {
     if (response == MoveResponse.MINE) {
       int newLives = lives.get(teamId) - 1;
       lives.put(teamId, newLives);
-
-      List<String> allHumans = new ArrayList<>();
-      for (PlayerTeam tempTeam : getTeams().values()) {
-        allHumans.addAll(tempTeam.getHumans());
-      }
-      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(), allHumans));
 
       if (newLives <= 0) {
         team.setIsLoser();
@@ -105,6 +99,11 @@ public class ClassicGame extends Game {
     }
 
     if (response != MoveResponse.INVALID) {
+      List<String> allHumans = new ArrayList<>();
+      for (PlayerTeam tempTeam : getTeams().values()) {
+        allHumans.addAll(tempTeam.getHumans());
+      }
+      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(), allHumans));
       updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(), team
           .getHumans()));
     }

@@ -10,6 +10,9 @@ public class HexagonalBoard extends DefaultBoard implements Board, Cloneable {
 
   /**
    * The constructor.
+   * @param width An integer representing the width in tiles.
+   * @param height An integer representing the height in tiles.
+   * @param mines The number of mines on the board.
    */
   public HexagonalBoard(int width, int height, int mines) {
     super(width, height, mines);

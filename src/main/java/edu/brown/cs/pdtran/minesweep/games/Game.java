@@ -14,7 +14,7 @@ import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
-import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import edu.brown.cs.pdtran.minesweep.setup.Room;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 
 /**
@@ -31,11 +31,9 @@ public abstract class Game extends Session {
   /**
    * The constructor that builds a Game by using the Session constructor
    * that it extends.
-   * @param name The string representing the name of the game.
-   * @param specs The GameSpecs object that represents the settins for the
-   *        game.
+   * @param room The Room to be made into a Game.
    */
-  protected Game(PreRoom room) {
+  protected Game(Room room) {
     super(room.getName(), room.getSpecs());
     teams = makeTeams(room.getTeams());
   }
@@ -65,8 +63,8 @@ public abstract class Game extends Session {
   /**
    * Makes a move to the board on behalf of a team.
    * @param teamId The unique string corresponding to a team.
-   * @param playerId The unique string corresponding to a player.
    * @param m A Move object that specifies that the team is doing.
+   * @return A List of Updates for the board.
    */
   public abstract List<Update> makeMove(String teamId, Move m);
 

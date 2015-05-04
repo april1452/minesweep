@@ -286,6 +286,7 @@ public class DefaultBoard implements Board, Cloneable {
     JsonObject boardJson = new JsonObject();
     boardJson.addProperty("width", width);
     boardJson.addProperty("height", height);
+    boardJson.addProperty("bombCount", bombCount);
     JsonArray tilesJson = new JsonArray();
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {

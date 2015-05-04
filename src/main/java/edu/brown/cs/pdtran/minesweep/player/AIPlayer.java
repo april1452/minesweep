@@ -49,8 +49,8 @@ public class AIPlayer extends GamePlayer {
    * Creates an AIPlayer with a username and an AI difficulty. This version
    * will be used primarily for testing.
    * @param username A string unique to that player.
-   * @param difficulty An integer from 1 to 10 with 10 being the most
-   *        difficult.
+   * @param difficultyEnum An enum that represents the level of difficulty
+   *        of the AI.
    * @param data The BoardData object used by the AI to determine good
    *        moves to make.
    */
@@ -178,12 +178,12 @@ public class AIPlayer extends GamePlayer {
                 System.out.print("[" + mb2.getNumMines());
                 for (Tile t : mb2.getTiles()) {
                   System.out
-                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("] - [" + mb1.getNumMines());
                 for (Tile t : mb1.getTiles()) {
                   System.out
-                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("]\n");
 
@@ -198,12 +198,12 @@ public class AIPlayer extends GamePlayer {
                 System.out.print("[" + mb1.getNumMines());
                 for (Tile t : mb1.getTiles()) {
                   System.out
-                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("] - [" + mb2.getNumMines());
                 for (Tile t : mb2.getTiles()) {
                   System.out
-                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("]\n");
 
