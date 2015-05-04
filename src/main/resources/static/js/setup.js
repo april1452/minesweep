@@ -35,11 +35,8 @@ $("[name='gameMode']").click(function() {
 		case "TERRITORY":
 		$("#territory").show();
 		break;
-		case "PATHS":
-		$("#paths").show();
-		break;
-		case "FSU":
-		$("#fsu").show();
+		case "TIMER":
+		$("#timer").show();
 		break;
 	}
 });
