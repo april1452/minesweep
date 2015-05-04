@@ -18,7 +18,7 @@ import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
 import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
-import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import edu.brown.cs.pdtran.minesweep.setup.Room;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.types.UpdateType;
 
@@ -31,7 +31,7 @@ public class RequestHandler {
 
   private ConcurrentMap<String, Boolean> userIds;
   private ConcurrentMap<String, Session> sessions;
-  private ConcurrentMap<String, PreRoom> rooms;
+  private ConcurrentMap<String, Room> rooms;
   private ConcurrentMap<String, Game> games;
 
   /**
@@ -41,7 +41,7 @@ public class RequestHandler {
   public RequestHandler() throws IOException {
     userIds = new ConcurrentHashMap<String, Boolean>();
     sessions = new ConcurrentHashMap<String, Session>();
-    rooms = new ConcurrentHashMap<String, PreRoom>();
+    rooms = new ConcurrentHashMap<String, Room>();
     games = new ConcurrentHashMap<String, Game>();
   }
 
@@ -69,8 +69,8 @@ public class RequestHandler {
     return session;
   }
 
-  private PreRoom getRoom(String id) throws NoSuchSessionException {
-    PreRoom room = rooms.get(id);
+  private Room getRoom(String id) throws NoSuchSessionException {
+    Room room = rooms.get(id);
     if (room == null) {
       throw new NoSuchSessionException();
     }
@@ -97,7 +97,7 @@ public class RequestHandler {
     try {
       List<Update> updates = new ArrayList<>();
 
-      PreRoom room = getRoom(sessionId);
+      Room room = getRoom(sessionId);
 
       Map<String, TeamFormation> teams = room.getTeams();
 
@@ -154,7 +154,7 @@ public class RequestHandler {
     try {
       List<Update> updates = new ArrayList<>();
 
-      PreRoom room = getRoom(sessionId);
+      Room room = getRoom(sessionId);
       room.switchTeam(teamId, gamerId, newTeamId);
 
       updates.add(getTeamAssignment(newTeamId, gamerId));
@@ -179,7 +179,7 @@ public class RequestHandler {
       AIGamer g) {
 
     try {
-      PreRoom room = getRoom(sessionId);
+      Room room = getRoom(sessionId);
       room.addAi(teamId, aiId, g);
       return getRoomUpdate(room);
     } catch (NoSuchSessionException e) {
@@ -211,7 +211,7 @@ public class RequestHandler {
 
   }
 
-  private Update getRoomUpdate(PreRoom room) {
+  private Update getRoomUpdate(Room room) {
     List<String> playersToUpdate = getHumans(room);
     return new Update(UpdateType.ROOM_UPDATE, room.getRoomInfo().toJson(),
         playersToUpdate);
@@ -283,7 +283,7 @@ public class RequestHandler {
    *         exist.
    */
   public SessionInfo getSessionInfo(String id) throws NoSuchSessionException {
-    PreRoom room = getRoom(id);
+    Room room = getRoom(id);
     return room.getRoomInfo();
   }
 
@@ -301,7 +301,7 @@ public class RequestHandler {
       String userId,
       MoveHandler handler) {
     try {
-      PreRoom room = rooms.remove(sessionId);
+      Room room = rooms.remove(sessionId);
       if (room == null || sessions.remove(sessionId) == null) {
         throw new NoSuchSessionException();
       }
@@ -335,7 +335,7 @@ public class RequestHandler {
    *        kind of room we want.
    * @return The id genereated for the inputted room.
    */
-  public String addRoom(PreRoom room) {
+  public String addRoom(Room room) {
     String id = addAndGetKey(sessions, room);
     rooms.put(id, room);
     return id;

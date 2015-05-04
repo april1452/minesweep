@@ -13,7 +13,7 @@ import edu.brown.cs.pdtran.minesweep.types.SessionType;
  * ready to be played.
  * @author Clayton Sanford
  */
-public class PreRoom extends Session {
+public class Room extends Session {
   private String hostId;
   private ConcurrentMap<String, TeamFormation> teams;
 
@@ -23,7 +23,7 @@ public class PreRoom extends Session {
    * @param name The string corresponding to the name of the game.
    * @param specs The specifications for the room from the Setup page.
    */
-  public PreRoom(String name, GameSpecs specs) {
+  public Room(String name, GameSpecs specs) {
     super(name, specs);
     teams = new ConcurrentHashMap<String, TeamFormation>();
     for (int i = 0; i < specs.getNumTeams(); i++) {

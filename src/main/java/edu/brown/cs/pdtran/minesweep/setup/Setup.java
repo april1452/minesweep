@@ -47,7 +47,7 @@ public class Setup {
 
   }
 
-  public static PreRoom setup(String roomName, GameSpecs specs) {
-    return new PreRoom(roomName, specs);
+  public static Room setup(String roomName, GameSpecs specs) {
+    return new Room(roomName, specs);
   }
 }

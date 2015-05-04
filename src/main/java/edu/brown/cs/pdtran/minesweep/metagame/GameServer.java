@@ -52,6 +52,11 @@ public class GameServer extends WebSocketServer implements MoveHandler {
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean arg3) {
     System.out.println("A client has left.");
+    for (WebSocket client : clients.values()) {
+      if (conn == client) {
+        System.out.println("WE HAVE HIM CAPTAIN");
+      }
+    }
   }
 
   @Override
