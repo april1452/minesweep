@@ -33,22 +33,37 @@ public class HexagonalBoard extends DefaultBoard implements Board, Cloneable {
     boolean isIndented = col % 2 == 1; // decides which side the isoceles
     // triangle
     // is.
-    int newCol = isIndented ? col - 1 : col + 1;
+
+    int dRow = isIndented ? row : row - 1;
 
     for (int i = -1; i <= 1; i += 2) {
-      if (isWithinBoard(row + i, col)) {
+      if (isWithinBoard(col, row + i)) {
         tiles.add(grid[row + i][col]);
-      }
-      if (isWithinBoard(row + i, newCol)) {
-        tiles.add(grid[row + i][newCol]);
       }
     }
 
-    for (int i = -1; i <= 1; i++) {
-      if (isWithinBoard(row, col + i) && i != 0) {
-        tiles.add(grid[row][col + i]);
+    for (int i = -1; i <= 1; i += 2) {
+      for (int j = 0; j <= 1; j++) {
+        if (isWithinBoard(col + i, dRow + j)) {
+          tiles.add(grid[dRow + j][col + i]);
+        }
       }
+
+      assert (tiles.size() <= 6);
+
+      // for (int newCol = -1; newCol <= 1; newCol++) {
+      // // System.out.println("newCol:");
+      // for (int i = 0; i <= 1; i++) {
+      // if (isWithinBoard(col + newCol, dRow + i) && newCol == 0) {
+      // Tile t = getTile(dRow + i, col + newCol);
+      // tiles.add(t);
+      // // System.out.println("hello");
+      // // System.out.println(t.getColumn());
+      // }
+      // }
     }
+
+
     return tiles;
   }
 
