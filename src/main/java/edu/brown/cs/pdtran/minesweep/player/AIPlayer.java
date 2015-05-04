@@ -5,14 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.brown.cs.pdtran.minesweep.move.Move;
-
-import edu.brown.cs.pdtran.minesweep.move.CheckTile;
-import edu.brown.cs.pdtran.minesweep.move.FlagTile;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
+import edu.brown.cs.pdtran.minesweep.move.Move;
+import edu.brown.cs.pdtran.minesweep.move.MoveFactory;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.AiDifficulty;
+import edu.brown.cs.pdtran.minesweep.types.MoveType;
 import edu.brown.cs.pdtran.minesweep.types.PlayerType;
 
 /**
@@ -73,16 +72,16 @@ public class AIPlayer extends GamePlayer {
     usedNotMine = new ArrayList<>();
   }
 
-  // TODO CHANGE JAVADOCS
-
   /**
    * Specifies how the AI thread makes moves in real time. The AI waits a
    * specified amount of time with a degree of randomness and then makes a
    * move. By random number, the AI will either touch a space without a
    * mine, place a flag, or make a mistake. The cycle repeats until the
    * game is over.
+   * @param team The team the AI is a member of.
+   * @return The Move that the AI chose to do.
    */
-  public Move getMove() {
+  public Move getMove(PlayerTeam team) {
     // while (canPlay) {
     // try {
     // int moveTimeRandomness =
@@ -94,8 +93,8 @@ public class AIPlayer extends GamePlayer {
     if (moveChoice < mistakeProbability) {
       return randomTile();
     } else if (moveChoice < mistakeProbability + FLAG_PROBABILITY) {
-      // return setFlag();
-      return checkTile();
+      return setFlag(team);
+      // return checkTile();
       // return randomTile();
     } else {
       return checkTile();
@@ -324,15 +323,21 @@ public class AIPlayer extends GamePlayer {
     return new MineBlock(setTiles, totalSurrounding);
   }
 
-  private Move setFlag() {
-    MovePossibility flag = null;
-    if (!certainMine.isEmpty()) {
-      flag = certainMine.get(0);
-      certainMine.remove(0);
-      return new FlagTile(flag.getXCoord(), flag.getYCoord());
-    } else {
-      return checkTile();
+  private Move setFlag(PlayerTeam team) {
+    List<Tile> flaggedTiles = team.getFlaggedTiles();
+    for (MovePossibility mp : certainMine) {
+      if (!flaggedTiles.contains(mp.getTile())) {
+        return MoveFactory.makeMove(mp.getXCoord(), mp.getYCoord(),
+            MoveType.FLAG);
+      }
     }
+    // if (!certainMine.isEmpty()) {
+    // flag = certainMine.get(0);
+    // certainMine.remove(0);
+    // return MoveFactory.makeMove(flag.getXCoord(), flag.getYCoord(),
+    // MoveType.FLAG);
+    // } else {
+    return checkTile();
   }
 
   private Move checkTile() {
@@ -370,7 +375,8 @@ public class AIPlayer extends GamePlayer {
         return randomTile();
       }
     }
-    return new CheckTile(likliest.getYCoord(), likliest.getXCoord());
+    return MoveFactory.makeMove(likliest.getXCoord(), likliest.getYCoord(),
+        MoveType.CHECK);
   }
 
   private Move randomTile() {
@@ -397,7 +403,7 @@ public class AIPlayer extends GamePlayer {
         valid = true;
       }
     }
-    return new CheckTile(rWidth, rHeight);
+    return MoveFactory.makeMove(rWidth, rHeight, MoveType.CHECK);
   }
 
   @Override

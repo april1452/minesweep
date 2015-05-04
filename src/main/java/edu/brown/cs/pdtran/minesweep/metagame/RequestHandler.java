@@ -55,8 +55,8 @@ public class RequestHandler {
         new ArrayList<Entry<String, SessionInfo>>();
     for (Entry<String, Session> entry : sessions.entrySet()) {
       sessionsInfo
-      .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(entry
-          .getKey(), entry.getValue().getRoomInfo()));
+          .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(entry
+              .getKey(), entry.getValue().getRoomInfo()));
     }
     return sessionsInfo;
   }
@@ -297,8 +297,8 @@ public class RequestHandler {
       for (Entry<String, PlayerTeam> entry : game.getTeams().entrySet()) {
         PlayerTeam team = entry.getValue();
         for (AIPlayer ai : team.getAis()) {
-          new Thread(new AIRunnable(sessionId, entry.getKey(), ai, handler))
-          .start();
+          new Thread(new AIRunnable(sessionId, team, entry.getKey(), ai,
+              handler)).start();
         }
       }
 
