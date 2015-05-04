@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.board.BoardFactory;
+import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
-import edu.brown.cs.pdtran.minesweep.player.Move;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
@@ -28,8 +28,9 @@ public class LayersGame extends Game {
 
   private long startTime;
   protected ConcurrentMap<String, PlayerTeam> teams;
+  protected ConcurrentMap<String, Integer> lives;
   private static final int MILLISECONDS = 1000;
-  private static final int LAYERS_COUNT = 2;
+  private static final int LAYERS_COUNT = 5;
 
   /**
    * A constructor for a Layers Game.
@@ -37,8 +38,15 @@ public class LayersGame extends Game {
    *        object.
    */
   public LayersGame(PreRoom room) {
-    super(room.getName(), room.getSpecs());
+    super(room);
     teams = new ConcurrentHashMap<String, PlayerTeam>();
+
+    lives = new ConcurrentHashMap<String, Integer>();
+    int teamLives = getSpecs().getTeamLives();
+    for (String teamId : getTeams().keySet()) {
+      lives.put(teamId, teamLives);
+    }
+
     List<Board> boardsToPlay = new ArrayList<>();
     int[] dims = specs.getBoardDims();
     for (int i = 0; i < LAYERS_COUNT; i++) {
