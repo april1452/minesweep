@@ -11,8 +11,8 @@ public class HexagonalBoard extends DefaultBoard implements Board, Cloneable {
   /**
    * The constructor.
    */
-  public HexagonalBoard() {
-    super();
+  public HexagonalBoard(int width, int height, int mines) {
+    super(width, height, mines);
   }
 
   /**
