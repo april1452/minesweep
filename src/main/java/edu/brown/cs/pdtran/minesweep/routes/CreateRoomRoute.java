@@ -1,14 +1,14 @@
 package edu.brown.cs.pdtran.minesweep.routes;
 
-import spark.QueryParamsMap;
-import spark.Request;
-import spark.Response;
-import spark.Route;
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
 import edu.brown.cs.pdtran.minesweep.types.GameMode;
+import spark.QueryParamsMap;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 /**
  * Creates a Room using information from entered on the setup page.
@@ -50,7 +50,7 @@ public class CreateRoomRoute implements Route {
     int[] boardDims = {boardWidth, boardHeight};
     GameSpecs specs =
         new GameSpecs(gameMode, boardType, 1, numTeams, numPlayers, numLives,
-            boardDims);
+            boardDims, difficulty);
 
     PreRoom room = new PreRoom(roomName, specs);
 

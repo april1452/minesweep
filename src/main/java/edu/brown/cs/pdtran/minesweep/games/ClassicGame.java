@@ -56,6 +56,7 @@ public class ClassicGame extends Game {
     MoveResponse response = team.makeMove(m);
     if (response == MoveResponse.MINE) {
       int newLives = lives.get(teamId) - 1;
+      System.out.println(newLives);
       lives.put(teamId, newLives);
       if (newLives <= 0) {
         team.setIsLoser();
@@ -138,7 +139,7 @@ public class ClassicGame extends Game {
     List<Board> boardsToPlay = new ArrayList<>();
     int[] dims = specs.getBoardDims();
     boardsToPlay.add(BoardFactory.makeBoard(getSpecs().getBoardType(), dims[0],
-        dims[1], 40));
+        dims[1], specs.getNumMines()));
     for (Map.Entry<String, TeamFormation> entry : preTeams.entrySet()) {
       List<Board> copy = new ArrayList<>();
       for (Board board : boardsToPlay) {

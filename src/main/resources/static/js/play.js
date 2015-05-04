@@ -20,6 +20,7 @@ var tileWidth;
 var tileHeight;
 
 var globalBoard;
+var globalFlags;
 
 var _ctx;
 
@@ -82,7 +83,11 @@ socket.onmessage = function (event) {
             + "<br>" + "Lives: " + responseJson.lives);
     }
     
-    else if (updateType === "victory") {
+    else if (updateType === "VICTORY") {
+        victoryOrDefeat(responseJson.teamId);
+    }
+
+    else if (updateType === "DEFEAT") {
         victoryOrDefeat(responseJson.teamId);
     }
 
@@ -221,6 +226,7 @@ function init() {
 function drawBoard(data) {
     
     var board = data.board;
+    var flags = data.flags;
     
     console.log(board);
     
@@ -241,6 +247,7 @@ function drawBoard(data) {
     var tiles = board.tiles;
     
     globalBoard = board;
+    globalFlags = flags;
 
     if (board.type == "DEFAULT"){
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
@@ -273,9 +280,9 @@ function drawBoard(data) {
                 _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
                 _ctx.strokeStyle = NORMAL_BORDER;
                 _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
-                /*if (tile.isFlag) {
+                if (isFlag(flags, tile.column, tile.row)) {
                     _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
-                }*/
+                }
             }
 
         });
@@ -373,7 +380,7 @@ function drawBoard(data) {
                 _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
                 _ctx.strokeStyle = NORMAL_BORDER;
                 _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
-                /*if (tile.isFlag) {
+                /*if (isFlag()) {
                     _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
                 }*/
             }
@@ -404,6 +411,16 @@ function getTextColor(surrounding) {
     } else {
         return TEXT_COLOR;
     }
+}
+
+function isFlag(flags, x, y) {
+    var isFlag = false;
+    $.each(flags, function(index, flag) {
+        if (x === flag.x && y === flag.y) {
+            isFlag = true;
+        }
+    });
+    return isFlag;
 }
 
 function getFontSize(tileHeight, tileWidth) {
@@ -442,6 +459,9 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
     } else {
         _ctx.fillStyle = UNEXPLORED;
         _ctx.fill();
+        if (isFlag(globalFlags, tile.column, tile.row)) {
+            _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+        }
         //_ctx.strokeStyle = NORMAL_BORDER;
     }
 
@@ -471,12 +491,17 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
 
 $("#board").bind("contextmenu", function(e){
    console.log("Right click!!");
+   click("FLAG");
    return false;
 }); 
 
 
 $("#board").bind('click', function(event){
 	console.log(event.which);
+    click("CHECK");
+});
+
+function click(clickType) {
 	
     var board = $("#board")[0];
 
@@ -498,7 +523,7 @@ $("#board").bind('click', function(event){
                 minesweepTeamId: $.cookie("minesweepTeamId"),
                 row: row,
                 col: column,
-                moveType: "CHECK"
+                moveType: clickType
             };
             socket.send(JSON.stringify(sendData));
         });
@@ -564,7 +589,7 @@ $("#board").bind('click', function(event){
                         minesweepTeamId: $.cookie("minesweepTeamId"),
                         row: row,
                         col: column,
-                        moveType: "CHECK"
+                        moveType: clickType
                     };
                     socket.send(JSON.stringify(sendData));
                 });
@@ -589,7 +614,7 @@ $("#board").bind('click', function(event){
                     minesweepTeamId: $.cookie("minesweepTeamId"),
                     row: row,
                     col: column,
-                    moveType: "CHECK"
+                    moveType: clickType
                 };
                 socket.send(JSON.stringify(sendData));
             });
@@ -608,12 +633,12 @@ $("#board").bind('click', function(event){
             minesweepTeamId: $.cookie("minesweepTeamId"),
             row: row,
             col: column,
-            moveType: "CHECK"
+            moveType: clickType
         };
         socket.send(JSON.stringify(sendData));
     });
  }
-});
+};
 
 function win() {
     $("#board").hide();

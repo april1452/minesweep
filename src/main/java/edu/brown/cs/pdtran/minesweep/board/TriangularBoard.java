@@ -27,6 +27,10 @@ public class TriangularBoard extends DefaultBoard implements Board, Cloneable {
     super(grid);
   }
 
+  public TriangularBoard(int width, int height, int mines) {
+    super(width, height, mines);
+  }
+
   @Override
   public List<Tile> getAdjacentTiles(int row, int col) {
     List<Tile> tiles = new ArrayList<>(3);

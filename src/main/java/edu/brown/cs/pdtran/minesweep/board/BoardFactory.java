@@ -23,7 +23,7 @@ public class BoardFactory {
       case RECTANGULAR:
         return new RectangularBoard();
       case TRIANGULAR:
-        return new TriangularBoard();
+        return new TriangularBoard(width, height, mines);
       case HEXAGONAL:
         return new HexagonalBoard();
     }

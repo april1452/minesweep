@@ -220,4 +220,8 @@ public class PlayerTeam extends Team implements BoardData {
         return MoveResponse.INVALID;
     }
   }
+
+  public List<Tile> getFlaggedTiles() {
+    return flaggedTiles;
+  }
 }
