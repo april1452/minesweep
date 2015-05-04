@@ -5,9 +5,12 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
@@ -62,11 +65,11 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
           super
-              .getAdjacentTiles(row, col)
-              .stream()
-              .filter(
-                  (t) -> (t.getColumn() == col || t.getRow() == row)
-                      && !t.isBomb()).collect(Collectors.toList());
+          .getAdjacentTiles(row, col)
+          .stream()
+          .filter(
+              (t) -> (t.getColumn() == col || t.getRow() == row)
+              && !t.isBomb()).collect(Collectors.toList());
       if (candidateList.isEmpty()) {
         continue;
       }
@@ -133,6 +136,9 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
       }
     }
     boardJson.add("tiles", tilesJson);
+    Gson gson = new Gson();
+    boardJson.add("neighborTable",
+        (new JsonParser()).parse(gson.toJson(neighborTable)).getAsJsonObject());
     String boardType = this.getClass().getSimpleName();
     // boardType = boardType.substring(boardType.indexOf('.'));
     boardJson.addProperty("type", boardType);

@@ -46,8 +46,10 @@ socket.onopen = function(event) {
         var sendData = {
             requestType: "INITIALIZE",
             minesweepId: $.cookie("minesweepId"),
+            minesweepId: $.cookie("minesweepId"),
             minesweepRoomId: $.cookie("minesweepRoomId"),
             minesweepName: $.cookie("minesweepName")
+           
         };  
         socket.send(JSON.stringify(sendData));
     });
@@ -334,34 +336,32 @@ function drawBoard(data) {
    
         _ctx.stroke();
     } else if (board.type = "HEXAGONAL"){
-        //drawHexGrid();
+    	console.log("hexagonal");
+        drawHexGrid(hexagon_grid, _ctx);
         $.each(tiles, function(index, tile)
         {
-            var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
-            console.log(hexes);
+            var hex = hexagon_grid.GetHexAtPos(tile.column, tile.row);
+            console.log(hex);
             if(tile.visited){
                 if(tile.isBomb){
-                    hexes.fillColor = BOMB;
+                	console.log("this tile is a bomb");
+                    hex.fillColor = BOMB;
                 } else {
                     console.log("This is suppose to be visited");
                     
-                    hexes.fillColor = EXPLORED;
+                    hex.fillColor = EXPLORED;
                 }
-                console.log(hexes);
+            } else {
+            	hex.fillColor = UNEXPLORED;
             }
+            hex.Id = tile.adjacentBombs;
+            hex.preDraw(_ctx, hex.fillColor);
+            
         });
-        for (var h in HT.Grid.Static.Hexes)
-        {
-            var hex = HT.Grid.Static.Hexes[h];
-            if (hex.fillColor = EXPLORED)
-            {
-                console.log("Visited: " + hex);
-                console.log(hex);
-                
-            }
-        }
-        drawHexGrid(hexagon_grid, _ctx);
+        _ctx.stroke();
+        //drawHexGrid(hexagon_grid, _ctx);
     } else if (board.type = "RECTANGULAR"){
+    	console.log("Drawing Rectangle");
         console.log(board);
 
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
@@ -661,7 +661,6 @@ function click(clickType) {
                 socket.send(JSON.stringify(sendData));
             });
         }
-        socket.send(JSON.stringify(sendData));
     }
 }
 
