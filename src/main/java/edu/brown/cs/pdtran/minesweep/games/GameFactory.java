@@ -1,6 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.games;
 
-import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import edu.brown.cs.pdtran.minesweep.setup.Room;
 
 /**
  * Builds Game objects according to the mode enum specified by each room.
@@ -17,7 +17,7 @@ public final class GameFactory {
    * @param room A PreRoom object with information on the game's setup.
    * @return A Game object of the mode corresponding to the enum.
    */
-  public static Game generateGame(PreRoom room) {
+  public static Game generateGame(Room room) {
     switch (room.getSpecs().getMode()) {
       case CLASSIC:
         return new ClassicGame(room);

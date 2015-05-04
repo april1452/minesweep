@@ -14,7 +14,7 @@ import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
-import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import edu.brown.cs.pdtran.minesweep.setup.Room;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 
 /**
@@ -35,7 +35,7 @@ public abstract class Game extends Session {
    * @param specs The GameSpecs object that represents the settins for the
    *        game.
    */
-  protected Game(PreRoom room) {
+  protected Game(Room room) {
     super(room.getName(), room.getSpecs());
     teams = makeTeams(room.getTeams());
   }

@@ -2,7 +2,7 @@ package edu.brown.cs.pdtran.minesweep.routes;
 
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
-import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import edu.brown.cs.pdtran.minesweep.setup.Room;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
 import edu.brown.cs.pdtran.minesweep.types.GameMode;
 import spark.QueryParamsMap;
@@ -52,7 +52,7 @@ public class CreateRoomRoute implements Route {
         new GameSpecs(gameMode, boardType, 1, numTeams, numPlayers, numLives,
             boardDims, difficulty);
 
-    PreRoom room = new PreRoom(roomName, specs);
+    Room room = new Room(roomName, specs);
 
     String roomId = handler.addRoom(room);
 

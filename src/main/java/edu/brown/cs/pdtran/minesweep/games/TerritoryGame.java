@@ -16,7 +16,7 @@ import edu.brown.cs.pdtran.minesweep.metagame.Update;
 import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
-import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
+import edu.brown.cs.pdtran.minesweep.setup.Room;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
@@ -38,7 +38,7 @@ public class TerritoryGame extends Game {
    * @param room A PreRoom object that contains the specifications needed
    *        for the game.
    */
-  public TerritoryGame(PreRoom room) {
+  public TerritoryGame(Room room) {
     super(room);
     lives = new ConcurrentHashMap<String, Integer>();
     int teamLives = getSpecs().getTeamLives();
