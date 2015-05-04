@@ -1,12 +1,12 @@
 package edu.brown.cs.pdtran.minesweep.games;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 
+import com.google.gson.JsonElement;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.metagame.Session;
 import edu.brown.cs.pdtran.minesweep.metagame.Update;
@@ -56,14 +56,6 @@ public abstract class Game extends Session {
   }
 
   /**
-   * Gets the ids for the players contained in a team.
-   * @param teamId The unique string id corresponding to a team.
-   * @return A collection of strings representing the id of each player in
-   *         that team.
-   */
-  public abstract Collection<String> getPlayers(String teamId);
-
-  /**
    * Gets the score of a player given the player's GamePlayer object.
    * @param player A GamePlayer object representing a certain player.
    * @return An integer representing that player's score.
@@ -84,5 +76,7 @@ public abstract class Game extends Session {
    * @return The Board object that the team is using.
    */
   public abstract Board getBoard(String teamId);
+
+  public abstract JsonElement getGameData();
 
 }

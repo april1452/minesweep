@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
@@ -272,7 +273,7 @@ public class DefaultBoard implements Board, Cloneable {
   }
 
   @Override
-  public String toJson() {
+  public JsonElement toJson() {
     JsonObject boardJson = new JsonObject();
     boardJson.addProperty("width", width);
     boardJson.addProperty("height", height);
@@ -295,7 +296,7 @@ public class DefaultBoard implements Board, Cloneable {
     String boardType = getBoardType().toString();
     // boardType = boardType.substring(boardType.indexOf('.'));
     boardJson.addProperty("type", boardType);
-    return boardJson.toString();
+    return boardJson;
   }
 
   protected BoardType getBoardType() {

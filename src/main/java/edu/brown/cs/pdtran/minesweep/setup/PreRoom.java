@@ -1,14 +1,11 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.metagame.Session;
+import edu.brown.cs.pdtran.minesweep.metagame.SessionFullException;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 
 /**
@@ -39,28 +36,39 @@ public class PreRoom extends Session {
     return teams;
   }
 
-  public void addHuman(String teamId, String gamerId, HumanGamer hg) {
+  public void addHuman(String teamId, String gamerId, HumanGamer hg)
+      throws SessionFullException {
     TeamFormation teamToAdd = teams.get(teamId);
-    if (teamToAdd.getPlayers().entrySet().size() < specs.getNumTeamPlayers()) {
-      teams.get(teamId).addHumanGamer(gamerId, hg);
+    if (teamToAdd.getSize() >= specs.getNumTeamPlayers()) {
+      throw new SessionFullException();
     }
+    teams.get(teamId).addHumanGamer(gamerId, hg);
   }
 
-  public void switchTeam(String teamId, String gamerId, String newTeamId) {
+  public void switchTeam(String teamId, String gamerId, String newTeamId)
+      throws SessionFullException {
     TeamFormation oldTeam = teams.get(teamId);
+    TeamFormation newTeam = teams.get(newTeamId);
+
+    if (newTeam.getSize() >= specs.getNumTeamPlayers()) {
+      throw new SessionFullException();
+    }
+
     oldTeam.getHumans().remove(gamerId);
     Gamer gamer = oldTeam.getPlayers().remove(gamerId);
 
-    TeamFormation newTeam = teams.get(teamId);
     newTeam.getHumans().add(gamerId);
     newTeam.getPlayers().put(gamerId, gamer);
+
   }
 
-  public void addAi(String teamId, String gamerId, AIGamer ag) {
+  public void addAi(String teamId, String gamerId, AIGamer ag)
+      throws SessionFullException {
     TeamFormation teamToAdd = teams.get(teamId);
-    if (teamToAdd.getPlayers().entrySet().size() < specs.getNumTeamPlayers()) {
-      teams.get(teamId).addAIGamer(gamerId, ag);
+    if (teamToAdd.getSize() >= specs.getNumTeamPlayers()) {
+      throw new SessionFullException();
     }
+    teams.get(teamId).addAIGamer(gamerId, ag);
   }
 
 
@@ -69,12 +77,4 @@ public class PreRoom extends Session {
     return SessionType.SETUP;
   }
 
-  @Override
-  public Map<String, List<String>> getHumans() {
-    Map<String, List<String>> teamHumans = new HashMap<String, List<String>>();
-    for (Entry<String, TeamFormation> entry : teams.entrySet()) {
-      teamHumans.put(entry.getKey(), entry.getValue().getHumans());
-    }
-    return teamHumans;
-  }
 }

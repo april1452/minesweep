@@ -2,6 +2,7 @@ package edu.brown.cs.pdtran.minesweep.board;
 
 import java.util.List;
 
+import com.google.gson.JsonElement;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
@@ -81,5 +82,5 @@ public interface Board extends Cloneable {
    * Converts the Board object to a JSON object.
    * @return a JSON string representing the board.
    */
-  String toJson();
+  JsonElement toJson();
 }

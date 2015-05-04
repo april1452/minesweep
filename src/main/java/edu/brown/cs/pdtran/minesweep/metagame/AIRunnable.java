@@ -34,7 +34,7 @@ public class AIRunnable implements Runnable {
             (int) Math.round((Math.random() - RANDOM_SUBTRACTOR) * moveTime);
         Thread.sleep(moveTime + moveTimeRandomness);
         Move move = ai.getMove();
-        handler.makeMove(sessionId, teamId, aiId, move);
+        handler.makeMove(sessionId, teamId, move);
       } catch (InterruptedException e) {
         e.printStackTrace();
       } catch (NoSuchSessionException e) {

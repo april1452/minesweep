@@ -44,10 +44,10 @@ var hexagon_grid;
 socket.onopen = function(event) {
     $.getScript("../js/js.cookie.js", function(){
         var sendData = {
-            type: "INITIALIZE",
+            requestType: "INITIALIZE",
             minesweepId: $.cookie("minesweepId"),
             minesweepRoomId: $.cookie("minesweepRoomId"),
-            name: $.cookie("playerName")
+            minesweepName: $.cookie("minesweepName")
         };  
         socket.send(JSON.stringify(sendData));
     });
@@ -55,11 +55,10 @@ socket.onopen = function(event) {
 
 // start the game
 $("#startButton").click(function() {
-	//init();
     console.log('start button clicked');
     $.getScript("../js/js.cookie.js", function(){
         var sendData = {
-            type: "startGame",
+            requestType: "START_GAME",
             minesweepId: $.cookie("minesweepId"),
             minesweepRoomId: $.cookie("minesweepRoomId")
         };  
@@ -70,13 +69,23 @@ $("#startButton").click(function() {
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
     
+    console.log(responseJson);
+
+    var updateType = responseJson.updateType;
+
     // Pre game setup    
-    if (responseJson.type === "update") {
-            drawRoom(responseJson);
-        } 
+    if (updateType === "ROOM_UPDATE") {
+        drawRoom(responseJson);
+    } 
+
+    else if (updateType === "TEAM_ASSIGNMENT") {
+        $.getScript("../js/js.cookie.js", function() {
+            $.cookie("minesweepTeamId", responseJson.data);
+        });
+    }
 
     // Begin game, i.e. draw game board
-    else if (responseJson.type === "gameData") {
+    else if (updateType === "BOARD_UPDATE") {
         init();
         console.log(responseJson);
         drawBoard(responseJson.data);
@@ -88,8 +97,12 @@ socket.onmessage = function (event) {
             + "<br>" + "Lives: " + responseJson.lives);
     }
     
-    else if (responseJson.type === "victory") {
+    else if (updateType === "victory") {
         victoryOrDefeat(responseJson.teamId);
+    }
+
+    else if (updateType === "ERROR") {
+        alert(responseJson.data);
     }
 }
 
@@ -101,7 +114,7 @@ function victoryOrDefeat(teamId) {
         } else {
             lose();
         }
-  });
+    });
 }
 
 // draw pre game rooms
@@ -110,9 +123,9 @@ function drawRoom(responseJson) {
         var innerBox = "";
         
         var roomInfo = responseJson.data;
-    
+
         var teams = roomInfo.teams;
-    
+
         $.each(teams, function(i, team) {
             innerBox += '<div class="span-2" style="padding-top:30px"><h4>' + team.name + "</h4>";
             $.each(team.players, function(j, player) {
@@ -128,7 +141,7 @@ function drawRoom(responseJson) {
             // choose ai difficulty modal
             innerBox += '<div class="modalplate" data-modal-id="ai-choose-'+i+'"><div class="modalplate-title-bar"><a class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="ai span-2"><a class="button aqua large icon close" id="easy'+i+'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+i+'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+i+'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+i+'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
         });
-        
+
         // have to readd the sidebar; css issues
         var sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a class="button line-white large" id="disbandButton">Disband</a></div>'
 
@@ -139,7 +152,7 @@ function drawRoom(responseJson) {
                 joinRoom(i);
             });
         });
-    
+
         // create ai from modal screen
         $.each(teams, function(i, team) {
             $('#easy' + i).click(function(){
@@ -168,30 +181,30 @@ function drawRoom(responseJson) {
 // allow player to join a team
 function joinRoom(teamId) {
     $.getScript("../js/js.cookie.js", function(){
-        $.cookie("minesweepTeamId", teamId);
         var sendData = {
-            type: "joinRoom",
+            requestType: "SWITCH_TEAM",
             minesweepId: $.cookie("minesweepId"),
-            minesweepTeamId: teamId,
-            minesweepRoomId: $.cookie("minesweepRoomId")
+            minesweepTeamId: $.cookie("minesweepTeamId"),
+            minesweepRoomId: $.cookie("minesweepRoomId"),
+            newTeamId: teamId
 
         };
         socket.send(JSON.stringify(sendData));
-  });
+    });
 }
 
 // add an ai to a team
 function addAi(teamId, difficulty) {
-        $.getScript("../js/js.cookie.js", function(){
-            var sendData = {
-                type: "addAIPlayer",
-                minesweepId: $.cookie("minesweepId"),
-                minesweepTeamId: teamId,
-                minesweepRoomId: $.cookie("minesweepRoomId"),
-                difficulty: difficulty
-            };
-            socket.send(JSON.stringify(sendData));
-        });
+    $.getScript("../js/js.cookie.js", function(){
+        var sendData = {
+            requestType: "ADD_AI",
+            minesweepId: $.cookie("minesweepId"),
+            minesweepTeamId: teamId,
+            minesweepRoomId: $.cookie("minesweepRoomId"),
+            difficulty: difficulty
+        };
+        socket.send(JSON.stringify(sendData));
+    });
 }
 
 function init() {
@@ -264,69 +277,69 @@ function drawBoard(responseJSON) {
             }
 
         });
-    } else if (board.type == "TRIANGULAR") {
+} else if (board.type == "TRIANGULAR") {
 
-         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
-         tileWidth = CANVAS_X / (width / 2 + height / 2);
+ _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
+ tileWidth = CANVAS_X / (width / 2 + height / 2);
 
-        $.each(tiles, function(index, tile) {
-            var offset = tile.row * tileWidth / 2;
-            if (tile.column % 2 === 0) {
-                var x1 = tile.column / 2 * tileWidth + offset;
-                var x2 = (tile.column / 2 + 1) * tileWidth + of2010fset;
-                var x3 = (tile.column / 2 + 0.5) * tileWidth + offset;
-                var y1 = tile.row * tileHeight;
-                var y2 = tile.row * tileHeight;
-                var y3 = (tile.row + 1) * tileHeight;
-                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
-                if (tile.isBomb && tile.visited) {
-                    _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
-                }
-            } else {
-                var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
-                var x2 = tile.column / 2 * tileWidth + offset;
-                var x3 = (tile.column / 2 + 1) * tileWidth + offset;
-                var y1 = tile.row * tileHeight;
-                var y2 = (tile.row + 1) * tileHeight;
-                var y3 = (tile.row + 1) * tileHeight;
-                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
-                if (tile.isBomb && tile.visited) {
-                    _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
-                }
-            } 
-        });
-   
-        _ctx.stroke();
-    } else if (board.type == "HEXAGONAL") {
-    	$.each(tiles, function(index, tile)
-    	{
-    		var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
-    		console.log(hexes);
-    		if(tile.visited){
-    			if(tile.isBomb){
-    				hexes.fillColor = BOMB;
-    			} else {
-    				console.log("This is suppose to be visited");
-    			    
-    				hexes.fillColor = EXPLORED;
-    			}
-    			console.log(hexes);
-    		}
-    	});
-    	for (var h in HT.Grid.Static.Hexes)
-    	{
-    		var hex = HT.Grid.Static.Hexes[h];
-    		if (hex.fillColor = EXPLORED)
-    		{
-    			console.log("Visisted: " + hex);
-    			console.log(hex);
-    			
-    		}
-    	}
-    	drawHexGrid(hexagon_grid, _ctx);
+ $.each(tiles, function(index, tile) {
+    var offset = tile.row * tileWidth / 2;
+    if (tile.column % 2 === 0) {
+        var x1 = tile.column / 2 * tileWidth + offset;
+        var x2 = (tile.column / 2 + 1) * tileWidth + of2010fset;
+        var x3 = (tile.column / 2 + 0.5) * tileWidth + offset;
+        var y1 = tile.row * tileHeight;
+        var y2 = tile.row * tileHeight;
+        var y3 = (tile.row + 1) * tileHeight;
+        triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+        if (tile.isBomb && tile.visited) {
+            _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+        }
     } else {
-        console.log("I had a stroke. Undefined board");
-    }
+        var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
+        var x2 = tile.column / 2 * tileWidth + offset;
+        var x3 = (tile.column / 2 + 1) * tileWidth + offset;
+        var y1 = tile.row * tileHeight;
+        var y2 = (tile.row + 1) * tileHeight;
+        var y3 = (tile.row + 1) * tileHeight;
+        triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+        if (tile.isBomb && tile.visited) {
+            _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+        }
+    } 
+});
+
+_ctx.stroke();
+} else if (board.type == "HEXAGONAL") {
+ $.each(tiles, function(index, tile)
+ {
+  var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
+  console.log(hexes);
+  if(tile.visited){
+   if(tile.isBomb){
+    hexes.fillColor = BOMB;
+} else {
+    console.log("This is suppose to be visited");
+
+    hexes.fillColor = EXPLORED;
+}
+console.log(hexes);
+}
+});
+ for (var h in HT.Grid.Static.Hexes)
+ {
+  var hex = HT.Grid.Static.Hexes[h];
+  if (hex.fillColor = EXPLORED)
+  {
+   console.log("Visisted: " + hex);
+   console.log(hex);
+
+}
+}
+drawHexGrid(hexagon_grid, _ctx);
+} else {
+    console.log("I had a stroke. Undefined board");
+}
 }
 
 function getTextColor(surrounding) {
@@ -428,16 +441,16 @@ $("#board").bind('click', function(event){
     var x = event.pageX - board.offsetLeft;
     var y = event.pageY - board.offsetTop;
 
-    if (globalBoard.type == "DEFAULT"){
-        
+    if (globalBoard.type == "DEFAULT") {
+
         console.log("click");
-    	
+
         var row = Math.floor(y / tileHeight);
         var column = Math.floor(x / tileWidth);
-    
-        $.getScript("../js/js.cookie.js", function(){
+
+        $.getScript("../js/js.cookie.js", function() {
             var sendData = {
-                type: "makeMove",
+                requestType: "makeMove",
                 minesweepId: $.cookie("minesweepId"),
                 minesweepRoomId: $.cookie("minesweepRoomId"),
                 minesweepTeamId: $.cookie("minesweepTeamId"),
@@ -472,19 +485,19 @@ $("#board").bind('click', function(event){
         });
 
         if (selectedTile.column % 2 === 0) {
-                var x1 = selectedTile.column / 2 * tileWidth + offset;
-                var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
-                var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
-                var y1 = selectedTile.row * tileHeight;
-                var y2 = selectedTile.row * tileHeight;
-                var y3 = (selectedTile.row + 1) * tileHeight;
-            } else {
-                var x1 = selectedTile.column / 2 * tileWidth + offset;
-                var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
-                var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
-                var y1 = (selectedTile.row + 1) * tileHeight;
-                var y2 = (selectedTile.row + 1) * tileHeight;
-                var y3 = selectedTile.row * tileHeight;
+            var x1 = selectedTile.column / 2 * tileWidth + offset;
+            var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
+            var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
+            var y1 = selectedTile.row * tileHeight;
+            var y2 = selectedTile.row * tileHeight;
+            var y3 = (selectedTile.row + 1) * tileHeight;
+        } else {
+            var x1 = selectedTile.column / 2 * tileWidth + offset;
+            var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
+            var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
+            var y1 = (selectedTile.row + 1) * tileHeight;
+            var y2 = (selectedTile.row + 1) * tileHeight;
+            var y3 = selectedTile.row * tileHeight;
         }   
 
         if (edge) {
@@ -502,7 +515,7 @@ $("#board").bind('click', function(event){
 
                 $.getScript("../js/js.cookie.js", function(){
                     var sendData = {
-                        type: "makeMove",
+                        requestType: "makeMove",
                         minesweepId: $.cookie("minesweepId"),
                         minesweepRoomId: $.cookie("minesweepRoomId"),
                         minesweepTeamId: $.cookie("minesweepTeamId"),
@@ -524,26 +537,9 @@ $("#board").bind('click', function(event){
                 //console.log("Below border");
             }
             //console.log(row + " " + column);
-        $.getScript("../js/js.cookie.js", function(){
-            var sendData = {
-                type: "makeMove",
-                minesweepId: $.cookie("minesweepId"),
-                minesweepRoomId: $.cookie("minesweepRoomId"),
-                minesweepTeamId: $.cookie("minesweepTeamId"),
-                row: row,
-                col: column
-            };
-            socket.send(JSON.stringify(sendData));
-        });
-    } else if (globalBoard.type = "HEXAGONAL"){
-    	var p = new HT.Point(x, y);
-    	var hex = hexagon_grid.GetHexAt(p);
-    	var row = hex.PathCoOrdY;
-    	var column = hex.PathCoOrdX;
-    		
-    	$.getScript("../js/js.cookie.js", function(){
+            $.getScript("../js/js.cookie.js", function(){
                 var sendData = {
-                    type: "makeMove",
+                    requestType: "makeMove",
                     minesweepId: $.cookie("minesweepId"),
                     minesweepRoomId: $.cookie("minesweepRoomId"),
                     minesweepTeamId: $.cookie("minesweepTeamId"),
@@ -551,8 +547,26 @@ $("#board").bind('click', function(event){
                     col: column
                 };
                 socket.send(JSON.stringify(sendData));
-          });
-    }
+            });
+        }
+    } else if (globalBoard.type = "HEXAGONAL"){
+     var p = new HT.Point(x, y);
+     var hex = hexagon_grid.GetHexAt(p);
+     var row = hex.PathCoOrdY;
+     var column = hex.PathCoOrdX;
+
+     $.getScript("../js/js.cookie.js", function(){
+        var sendData = {
+            requestType: "makeMove",
+            minesweepId: $.cookie("minesweepId"),
+            minesweepRoomId: $.cookie("minesweepRoomId"),
+            minesweepTeamId: $.cookie("minesweepTeamId"),
+            row: row,
+            col: column
+        };
+        socket.send(JSON.stringify(sendData));
+    });
+ }
 });
 
 function win() {

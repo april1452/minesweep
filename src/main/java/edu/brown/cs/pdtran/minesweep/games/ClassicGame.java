@@ -1,7 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.games;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,9 +59,8 @@ public class ClassicGame extends Game {
    */
   @Override
   public int getGameScore(GamePlayer player) {
-    int score = (int) (System.currentTimeMillis() - startTime);
-    score = score / MILLISECONDS; // Number of seconds
-    return score;
+    // TODO?
+    return 0;
   }
 
   @Override
@@ -78,11 +76,6 @@ public class ClassicGame extends Game {
   @Override
   public Board getBoard(String teamId) {
     return teams.get(teamId).getCurrentBoard();
-  }
-
-  @Override
-  public Collection<String> getPlayers(String teamId) {
-    return teams.get(teamId).getPlayers().keySet();
   }
 
   @Override
@@ -102,12 +95,6 @@ public class ClassicGame extends Game {
           new PlayerTeam(entry.getValue(), specs.getTeamLives(), copy));
     }
     return teams;
-  }
-
-  @Override
-  public Map<String, List<String>> getHumans() {
-    // TODO Auto-generated method stub
-    return null;
   }
 
 }
