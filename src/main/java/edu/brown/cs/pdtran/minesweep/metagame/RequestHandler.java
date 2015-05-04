@@ -55,8 +55,8 @@ public class RequestHandler {
         new ArrayList<Entry<String, SessionInfo>>();
     for (Entry<String, Session> entry : sessions.entrySet()) {
       sessionsInfo
-      .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(entry
-          .getKey(), entry.getValue().getRoomInfo()));
+          .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(entry
+              .getKey(), entry.getValue().getRoomInfo()));
     }
     return sessionsInfo;
   }
@@ -227,9 +227,24 @@ public class RequestHandler {
     return updates;
   }
 
-  private Update getGameUpdate(Game game) {
+  private List<Update> getInitBoardUpdate(Game game) {
+    List<Update> updates = new ArrayList<>();
+    for (PlayerTeam team : game.getTeams().values()) {
+      List<String> playersToUpdate = team.getHumans();
+      updates.add(new Update(UpdateType.INIT_BOARD, team.getBoardInfo(),
+          playersToUpdate));
+    }
+    return updates;
+  }
+
+  private Update getInitInfo(Game game) {
     List<String> playersToUpdate = getHumans(game);
-    return new Update(UpdateType.GAME_UPDATE, game.getGameData(),
+    return new Update(UpdateType.INIT_INFO, game.getGameData(), playersToUpdate);
+  }
+
+  private Update getGameInfo(Game game) {
+    List<String> playersToUpdate = getHumans(game);
+    return new Update(UpdateType.INFO_UPDATE, game.getGameData(),
         playersToUpdate);
   }
 
@@ -298,12 +313,12 @@ public class RequestHandler {
         PlayerTeam team = entry.getValue();
         for (AIPlayer ai : team.getAis()) {
           new Thread(new AIRunnable(sessionId, entry.getKey(), ai, handler))
-          .start();
+              .start();
         }
       }
 
-      List<Update> updates = getAllBoardsUpdate(game);
-      updates.add(getGameUpdate(game));
+      List<Update> updates = getInitBoardUpdate(game);
+      updates.add(getInitInfo(game));
 
       return updates;
     } catch (NoSuchSessionException e) {

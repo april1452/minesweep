@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.board.BoardFactory;
@@ -56,8 +57,14 @@ public class ClassicGame extends Game {
     MoveResponse response = team.makeMove(m);
     if (response == MoveResponse.MINE) {
       int newLives = lives.get(teamId) - 1;
-      System.out.println(newLives);
       lives.put(teamId, newLives);
+
+      List<String> allHumans = new ArrayList<>();
+      for (PlayerTeam tempTeam : getTeams().values()) {
+        allHumans.addAll(tempTeam.getHumans());
+      }
+      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(), allHumans));
+
       if (newLives <= 0) {
         team.setIsLoser();
         updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(teamId),
@@ -75,7 +82,7 @@ public class ClassicGame extends Game {
             if (!otherTeam.getIsLoser()) {
               otherTeam.setIsWinner();
               updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(
-                  teamId), otherTeam.getHumans()));
+                  entry.getKey()), otherTeam.getHumans()));
             }
           }
         }
@@ -153,7 +160,14 @@ public class ClassicGame extends Game {
 
   @Override
   public JsonElement getGameData() {
-    return new JsonPrimitive("TEMPORARY");
+    JsonObject gameData = new JsonObject();
+    for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
+      PlayerTeam team = entry.getValue();
+      JsonObject teamJson = new JsonObject();
+      teamJson.addProperty("name", team.getName());
+      teamJson.addProperty("lives", lives.get(entry.getKey()));
+      gameData.add(entry.getKey(), teamJson);
+    }
+    return gameData;
   }
-
 }

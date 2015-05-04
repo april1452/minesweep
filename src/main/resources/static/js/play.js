@@ -70,25 +70,35 @@ socket.onmessage = function (event) {
             $.cookie("minesweepTeamId", responseJson.data);
         });
     }
-
-    // Begin game, i.e. draw game board
-    else if (updateType === "BOARD_UPDATE") {
+    
+    else if (updateType === "INIT_BOARD") {
         init();
         drawBoard(responseJson.data);
         $("#board").show();
         $("#teams").hide();
+
+    }
+    
+    else if (updateType === "INIT_INFO") {
         $("#infoBox").show();
-        $("#infoBox").empty();
-        $("#infoBox").html("Score: " + responseJson.score 
-            + "<br>" + "Lives: " + responseJson.lives);
+        drawInfo(responseJson);
+    }
+    
+    else if (updateType === "INFO_UPDATE") {
+        drawInfo(responseJson);
+    }
+
+    // Begin game, i.e. draw game board
+    else if (updateType === "BOARD_UPDATE") {
+        drawBoard(responseJson.data);
     }
     
     else if (updateType === "VICTORY") {
-        victoryOrDefeat(responseJson.teamId);
+        win();
     }
 
     else if (updateType === "DEFEAT") {
-        victoryOrDefeat(responseJson.teamId);
+        lose();
     }
 
     else if (updateType === "ERROR") {
@@ -96,15 +106,13 @@ socket.onmessage = function (event) {
     }
 }
 
-function victoryOrDefeat(teamId) {
-    $.getScript("../js/js.cookie.js", function(){
-        if(teamId === $.cookie("minesweepTeamId")) {
-            console.log("test");
-            win();
-        } else {
-            lose();
-        }
+function drawInfo(responseJson) {
+    $("#infoBox").empty();
+    var info = "";
+    $.each(responseJson.data, function(id, teamInfo) {
+        info += "Name: " + teamInfo.name + "<br>" + "Lives: " + teamInfo.lives + "<br>";
     });
+    $("#infoBox").html(info);
 }
 
 // draw pre game rooms
