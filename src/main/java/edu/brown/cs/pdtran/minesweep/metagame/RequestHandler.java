@@ -55,8 +55,8 @@ public class RequestHandler {
         new ArrayList<Entry<String, SessionInfo>>();
     for (Entry<String, Session> entry : sessions.entrySet()) {
       sessionsInfo
-          .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(entry
-              .getKey(), entry.getValue().getRoomInfo()));
+      .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(entry
+          .getKey(), entry.getValue().getRoomInfo()));
     }
     return sessionsInfo;
   }
@@ -324,7 +324,8 @@ public class RequestHandler {
         }
       }
 
-      List<Update> updates = getInitBoardUpdate(game);
+      List<Update> updates = new ArrayList<>();
+      updates.addAll(getInitBoardUpdate(game));
       updates.add(getInitInfo(game));
 
       return updates;

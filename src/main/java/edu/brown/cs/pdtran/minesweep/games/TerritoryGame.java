@@ -115,11 +115,11 @@ public class TerritoryGame extends Game {
     if (response != MoveResponse.INVALID) {
       List<String> allHumans = new ArrayList<>();
       for (PlayerTeam tempTeam : getTeams().values()) {
+        updates.add(new Update(UpdateType.BOARD_UPDATE,
+            tempTeam.getBoardInfo(), tempTeam.getHumans()));
         allHumans.addAll(tempTeam.getHumans());
       }
       updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(), allHumans));
-      updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(),
-          allHumans));
     }
 
     return updates;

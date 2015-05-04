@@ -3,6 +3,7 @@ package edu.brown.cs.pdtran.minesweep.player;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import edu.brown.cs.pdtran.minesweep.board.Board;
@@ -178,12 +179,12 @@ public class AIPlayer extends GamePlayer {
                 System.out.print("[" + mb2.getNumMines());
                 for (Tile t : mb2.getTiles()) {
                   System.out
-                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("] - [" + mb1.getNumMines());
                 for (Tile t : mb1.getTiles()) {
                   System.out
-                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("]\n");
 
@@ -198,12 +199,12 @@ public class AIPlayer extends GamePlayer {
                 System.out.print("[" + mb1.getNumMines());
                 for (Tile t : mb1.getTiles()) {
                   System.out
-                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("] - [" + mb2.getNumMines());
                 for (Tile t : mb2.getTiles()) {
                   System.out
-                      .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
                 }
                 System.out.print("]\n");
 
@@ -324,9 +325,12 @@ public class AIPlayer extends GamePlayer {
   }
 
   private Move setFlag(PlayerTeam team) {
-    List<Tile> flaggedTiles = team.getFlaggedTiles();
+    boolean[][] flaggedTiles = team.getFlaggedTiles();
     for (MovePossibility mp : certainMine) {
-      if (!flaggedTiles.contains(mp.getTile())) {
+      Tile tile = mp.getTile();
+      int x = tile.getColumn();
+      int y = tile.getRow();
+      if (!flaggedTiles[x][y]) {
         return MoveFactory.makeMove(mp.getXCoord(), mp.getYCoord(),
             MoveType.FLAG);
       }

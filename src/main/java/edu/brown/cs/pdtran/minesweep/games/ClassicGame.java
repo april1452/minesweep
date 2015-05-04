@@ -103,9 +103,9 @@ public class ClassicGame extends Game {
       for (PlayerTeam tempTeam : getTeams().values()) {
         allHumans.addAll(tempTeam.getHumans());
       }
-      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(), allHumans));
       updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(), team
           .getHumans()));
+      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(), allHumans));
     }
 
     return updates;

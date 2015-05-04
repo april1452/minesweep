@@ -286,16 +286,16 @@ function drawBoard(data) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = EXPLORED;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                    _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
+                    _ctx.drawImage(mineImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
                     _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(tileX, tileY, tileWidth - 2, tileHeight - 2);
+                    _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
                 } else {
                     _ctx.fillStyle = EXPLORED;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
 
                     _ctx.strokeStyle = BOMB_BORDER;
                     _ctx.lineWidth = 2;
-                    _ctx.strokeRect(tileX, tileY, tileWidth - 2, tileHeight - 2);
+                    _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
                     _ctx.lineWidth = 1;
                     if (tile.adjacentBombs > 0) {
                         _ctx.fillStyle = getTextColor(tile.adjacentBombs);
@@ -308,11 +308,11 @@ function drawBoard(data) {
             } else {
                 _ctx.fillStyle = UNEXPLORED;
                 _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                _ctx.strokeStyle = NORMAL_BORDER;
-                _ctx.strokeRect(tileX, tileY, tileWidth  - 2, tileHeight  - 2);
                 if (isFlag(flags, tile.column, tile.row)) {
-                    _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
+                    _ctx.drawImage(flagImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
                 }
+                _ctx.strokeStyle = NORMAL_BORDER;
+                _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth  - 2, tileHeight  - 2);
             }
 
         });
@@ -447,14 +447,8 @@ function getTextColor(surrounding) {
     }
 }
 
-function isFlag(flags, x, y) {
-    var isFlag = false;
-    $.each(flags, function(index, flag) {
-        if (x === flag.x && y === flag.y) {
-            isFlag = true;
-        }
-    });
-    return isFlag;
+function isFlag(flags, y, x) {
+    return flags[x][y];
 }
 
 function getFontSize(tileHeight, tileWidth) {

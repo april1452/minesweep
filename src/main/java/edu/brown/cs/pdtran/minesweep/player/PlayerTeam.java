@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.metagame.Team;
@@ -33,7 +34,7 @@ public class PlayerTeam extends Team implements BoardData {
   private int boardIndex;
   private List<AIPlayer> aiPlayers;
   private List<String> humanPlayers;
-  private List<Tile> flaggedTiles;
+  private boolean[][] flaggedTiles;
 
   /**
    * Creates a new Team to last through a game.
@@ -55,7 +56,15 @@ public class PlayerTeam extends Team implements BoardData {
           .toGamePlayer(this, aiPlayers));
     }
 
-    flaggedTiles = new ArrayList<>();
+    int width = boards.get(0).getWidth();
+    int height = boards.get(0).getHeight();
+
+    flaggedTiles = new boolean[width][height];
+    for (int i = 0; i < width; i++) {
+      for (int j = 0; j < height; j++) {
+        flaggedTiles[i][j] = false;
+      }
+    }
 
     score = 0;
     isWinner = false;
@@ -187,11 +196,12 @@ public class PlayerTeam extends Team implements BoardData {
     teamData.add("board", getCurrentBoard().toJson());
 
     JsonArray flags = new JsonArray();
-    for (Tile flagged : flaggedTiles) {
-      JsonObject flag = new JsonObject();
-      flag.addProperty("y", flagged.getRow());
-      flag.addProperty("x", flagged.getColumn());
-      flags.add(flag);
+    for (int i = 0; i < flaggedTiles.length; i++) {
+      JsonArray col = new JsonArray();
+      for (int j = 0; j < flaggedTiles[0].length; j++) {
+        col.add(new JsonPrimitive(flaggedTiles[i][j]));
+      }
+      flags.add(col);
     }
     teamData.add("flags", flags);
 
@@ -200,18 +210,16 @@ public class PlayerTeam extends Team implements BoardData {
 
   public MoveResponse makeMove(Move m) {
     Board currentBoard = getCurrentBoard();
+    int x = m.getXCoord();
+    int y = m.getYCoord();
     switch (m.getMoveType()) {
       case CHECK:
-        return currentBoard.makeMove(m.getXCoord(), m.getYCoord());
+        return currentBoard.makeMove(x, y);
       case FLAG:
-        if (currentBoard.isWithinBoard(m.getXCoord(), m.getYCoord())) {
-          Tile tile = currentBoard.getTile(m.getXCoord(), m.getYCoord());
+        if (currentBoard.isWithinBoard(x, y)) {
+          Tile tile = currentBoard.getTile(x, y);
           if (!tile.hasBeenVisited()) {
-            if (flaggedTiles.contains(tile)) {
-              flaggedTiles.remove(tile);
-            } else {
-              flaggedTiles.add(tile);
-            }
+            flaggedTiles[x][y] = !flaggedTiles[x][y];
             return MoveResponse.FLAG;
           }
         }
@@ -221,7 +229,7 @@ public class PlayerTeam extends Team implements BoardData {
     }
   }
 
-  public List<Tile> getFlaggedTiles() {
+  public boolean[][] getFlaggedTiles() {
     return flaggedTiles;
   }
 }
