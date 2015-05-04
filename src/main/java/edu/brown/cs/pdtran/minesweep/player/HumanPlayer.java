@@ -1,23 +1,21 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
-import edu.brown.cs.pdtran.minesweep.move.Move;
-
 import edu.brown.cs.pdtran.minesweep.move.CheckTile;
 import edu.brown.cs.pdtran.minesweep.move.FlagTile;
+import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.types.PlayerType;
 
 /**
- * This class represents what a human player controls when playing the game.
- * This gives the play the ability to make moves.
+ * This class represents what a human player controls when playing the
+ * game. This gives the play the ability to make moves.
  * @author Clayton Sanford
  */
 public class HumanPlayer extends GamePlayer {
 
   /**
-   * Creates an HumanPlayer with a username. This version will be used primarily
-   * for testing.
-   * @param name
-   *          A string unique to that player.
+   * Creates an HumanPlayer with a username. This version will be used
+   * primarily for testing.
+   * @param name A string unique to that player.
    */
   public HumanPlayer(String name) {
     super(name);
@@ -54,10 +52,8 @@ public class HumanPlayer extends GamePlayer {
 
   /**
    * Sets up the command to place a flag at a given tile.
-   * @param x
-   *          An integer representing the x-coordinate.
-   * @param y
-   *          An integer representing the y-coordinate.
+   * @param x An integer representing the x-coordinate.
+   * @param y An integer representing the y-coordinate.
    * @return A FlagTile Move that encapsulates that data.
    */
   public Move setFlag(int x, int y) {
@@ -66,10 +62,8 @@ public class HumanPlayer extends GamePlayer {
 
   /**
    * Sets up the command to check a given tile for a mine.
-   * @param x
-   *          An integer representing the x-coordinate.
-   * @param y
-   *          An integer representing the y-coordinate.
+   * @param x An integer representing the x-coordinate.
+   * @param y An integer representing the y-coordinate.
    * @return A CheckTile Move that encapsulates that data.
    */
   public Move checkTile(int x, int y) {

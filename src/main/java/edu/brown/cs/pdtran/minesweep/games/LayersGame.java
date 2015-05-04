@@ -61,7 +61,8 @@ public class LayersGame extends Game {
 
       if (newLives <= 0) {
         team.setIsLoser();
-        updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(teamId),
+        updates.add(new Update(UpdateType.DEFEAT,
+            new JsonPrimitive(teamId),
             team.getHumans()));
 
         int numPlaying = teams.size();
@@ -75,8 +76,9 @@ public class LayersGame extends Game {
             PlayerTeam otherTeam = entry.getValue();
             if (!otherTeam.getIsLoser()) {
               otherTeam.setIsWinner();
-              updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(
-                  entry.getKey()), otherTeam.getHumans()));
+              updates.add(new Update(UpdateType.VICTORY,
+                  new JsonPrimitive(
+                      entry.getKey()), otherTeam.getHumans()));
             }
           }
         }
@@ -87,13 +89,15 @@ public class LayersGame extends Game {
       if (board.isWinningBoard() && !team.nextBoard()) {
         if (!team.nextBoard()) {
           team.setIsWinner();
-          updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(teamId),
+          updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(
+              teamId),
               team.getHumans()));
           for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
             if (entry.getKey() != teamId) {
               entry.getValue().setIsLoser();
-              updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(entry
-                  .getKey()), entry.getValue().getHumans()));
+              updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(
+                  entry
+                      .getKey()), entry.getValue().getHumans()));
             }
           }
         }
@@ -105,9 +109,11 @@ public class LayersGame extends Game {
       for (PlayerTeam tempTeam : getTeams().values()) {
         allHumans.addAll(tempTeam.getHumans());
       }
-      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(), allHumans));
-      updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(), team
-          .getHumans()));
+      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(),
+          allHumans));
+      updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(),
+          team
+              .getHumans()));
     }
 
     return updates;
@@ -142,7 +148,8 @@ public class LayersGame extends Game {
   }
 
   @Override
-  protected ConcurrentMap<String, PlayerTeam> makeTeams(ConcurrentMap<String, TeamFormation> preTeams) {
+  protected ConcurrentMap<String, PlayerTeam> makeTeams(
+      ConcurrentMap<String, TeamFormation> preTeams) {
     ConcurrentMap<String, PlayerTeam> teams =
         new ConcurrentHashMap<String, PlayerTeam>();
     List<Board> boardsToPlay = new ArrayList<>();

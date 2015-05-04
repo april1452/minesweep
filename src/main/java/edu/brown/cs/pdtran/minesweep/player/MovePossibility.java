@@ -18,6 +18,8 @@ public class MovePossibility {
   private int clearMines;
   private Tile tile;
   private Tile[][] minePlacement;
+  private static final int HASH_START = 7;
+  private static final int HASH_MULT = 31;
 
   /**
    * Creates a MovePossibility using a given Tile from the Board.
@@ -85,6 +87,14 @@ public class MovePossibility {
     } else {
       return false;
     }
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = HASH_START;
+    hash = HASH_MULT * hash + tile.hashCode();
+    hash = HASH_MULT * hash + Double.hashCode(mineProbability);
+    return hash;
   }
 
 }

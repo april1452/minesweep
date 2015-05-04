@@ -38,15 +38,21 @@ public abstract class Game extends Session {
     teams = makeTeams(room.getTeams());
   }
 
-  protected abstract ConcurrentMap<String, PlayerTeam> makeTeams(ConcurrentMap<String, TeamFormation> preteams);
+  protected abstract ConcurrentMap<String, PlayerTeam> makeTeams(
+      ConcurrentMap<String, TeamFormation> preteams);
 
   @Override
   public ConcurrentMap<String, PlayerTeam> getTeams() {
     return teams;
   }
 
+  /**
+   * Gets the AI players in the game.
+   * @return A Map of team ids to lists of AI Players within each team.
+   */
   public Map<String, List<AIPlayer>> getAis() {
-    Map<String, List<AIPlayer>> ais = new HashMap<String, List<AIPlayer>>();
+    Map<String, List<AIPlayer>> ais =
+        new HashMap<String, List<AIPlayer>>();
     for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
       ais.put(entry.getKey(), entry.getValue().getAis());
     }
@@ -75,6 +81,11 @@ public abstract class Game extends Session {
    */
   public abstract Board getBoard(String teamId);
 
+  /**
+   * Gets the game data in a JSON element to be transferred to the front
+   * end.
+   * @return A JSON element with information needed in the front end.
+   */
   public abstract JsonElement getGameData();
 
 }

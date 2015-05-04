@@ -55,8 +55,8 @@ public class RequestHandler {
         new ArrayList<Entry<String, SessionInfo>>();
     for (Entry<String, Session> entry : sessions.entrySet()) {
       sessionsInfo
-          .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(entry
-              .getKey(), entry.getValue().getRoomInfo()));
+      .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(
+          entry.getKey(), entry.getValue().getRoomInfo()));
     }
     return sessionsInfo;
   }
@@ -91,6 +91,13 @@ public class RequestHandler {
     return game;
   }
 
+  /**
+   * Adds a human to a game if there is no human present.
+   * @param sessionId The unique ID for the session.
+   * @param gamerId The unique ID for the Gamer.
+   * @param name The name of the human.
+   * @return A List of Updates to be sent out to players.
+   */
   public List<Update> humanJoinIfAbsent(String sessionId,
       String gamerId,
       String name) {
@@ -116,12 +123,13 @@ public class RequestHandler {
           TeamFormation team = entry.getValue();
           if (team.getPlayers().containsKey(gamerId)) {
             usersToUpdate.add(gamerId);
-            updates.add(new Update(UpdateType.ROOM_UPDATE, room.getRoomInfo()
+            updates.add(new Update(UpdateType.ROOM_UPDATE, room
+                .getRoomInfo()
                 .toJson(), usersToUpdate));
             return updates;
           } else if (team.getSize() < smallestSize
-              || (team.getSize() == smallestSize && team.getName().compareTo(
-                  smallestTeam.getValue().getName()) < 0)) {
+              || (team.getSize() == smallestSize && team.getName()
+              .compareTo(smallestTeam.getValue().getName()) < 0)) {
             smallestTeam = entry;
           }
         }
@@ -179,6 +187,15 @@ public class RequestHandler {
     }
   }
 
+  /**
+   * Adds an AI to a Game.
+   * @param sessionId The unique ID for a session.
+   * @param teamId The unique ID for a team.
+   * @param requesterId The unique ID for the requester.
+   * @param aiId The unique ID for the AI.
+   * @param g The AIGamer to be added.
+   * @return An update that the AI has been added.
+   */
   public Update aiJoin(String sessionId,
       String teamId,
       String requesterId,
@@ -213,7 +230,8 @@ public class RequestHandler {
   private Update getTeamAssignment(String teamId, String gamerId) {
     List<String> playersToUpdate = new ArrayList<>();
     playersToUpdate.add(gamerId);
-    return new Update(UpdateType.TEAM_ASSIGNMENT, new JsonPrimitive(teamId),
+    return new Update(UpdateType.TEAM_ASSIGNMENT,
+        new JsonPrimitive(teamId),
         playersToUpdate);
 
   }
@@ -246,7 +264,8 @@ public class RequestHandler {
 
   private Update getInitInfo(Game game) {
     List<String> playersToUpdate = getHumans(game);
-    return new Update(UpdateType.INIT_INFO, game.getGameData(), playersToUpdate);
+    return new Update(UpdateType.INIT_INFO, game.getGameData(),
+        playersToUpdate);
   }
 
   private Update getGameInfo(Game game) {
@@ -273,7 +292,8 @@ public class RequestHandler {
    * @return The map with the new value added if it was not already present
    *         with a unique id string.
    */
-  public static <T> String addAndGetKey(ConcurrentMap<String, T> map, T value) {
+  public static <T> String addAndGetKey(ConcurrentMap<String, T> map,
+      T value) {
     while (true) {
       String id = UUID.randomUUID().toString();
       T previous = map.putIfAbsent(id, value);
@@ -290,7 +310,8 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the the room is in does not
    *         exist.
    */
-  public SessionInfo getSessionInfo(String id) throws NoSuchSessionException {
+  public SessionInfo getSessionInfo(String id)
+      throws NoSuchSessionException {
     Room room = getRoom(id);
     return room.getRoomInfo();
   }
@@ -356,6 +377,14 @@ public class RequestHandler {
     return addAndGetKey(userIds, true);
   }
 
+  /**
+   * Makes a move and gets a list of updates to be sent out to various
+   * players.
+   * @param sessionId The unique ID for the given session.
+   * @param teamId The unique ID for the given team.
+   * @param move The Move object representing a given move.
+   * @return A list of updates for the move to be sent out to players.
+   */
   public List<Update> makeMove(String sessionId, String teamId, Move move) {
     try {
       Game game = getGame(sessionId);

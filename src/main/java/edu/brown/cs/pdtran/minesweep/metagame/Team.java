@@ -34,8 +34,16 @@ public abstract class Team {
    */
   public abstract Map<String, ? extends Player> getPlayers();
 
+  /**
+   * Gets the AIPlayers on a given team.
+   * @return A List of AIPlayer objects on that team.
+   */
   public abstract List<? extends Player> getAis();
 
+  /**
+   * Gets the HumanPlayers on a given team.
+   * @return A List of HumanPlayer objects on that team.
+   */
   public abstract List<String> getHumans();
 
   /**

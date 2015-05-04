@@ -4,6 +4,14 @@ import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 
+/**
+ * Represents the thread that an AI Player runs on.
+ * <p>
+ * Governs whenever an AI player makes a move by waiting a certain amount
+ * of time before requesting information from the AI as to the best moves
+ * to choose.
+ * @author Clayton Sanford
+ */
 public class AIRunnable implements Runnable {
 
   private String sessionId;
@@ -18,6 +26,14 @@ public class AIRunnable implements Runnable {
   private static final int MAX_DIFFICULTY = 10;
   private static final double RANDOM_SUBTRACTOR = .5;
 
+  /**
+   * Constructs an AIRunnable.
+   * @param sessionId The unique id for the session.
+   * @param team The PlayerTeam object the AI is in.
+   * @param teamId The id of the team the AI Player belongs to.
+   * @param ai The AIPlayer that generates move possibilities.
+   * @param handler The MoveHandler for the AI's moves.
+   */
   public AIRunnable(String sessionId, PlayerTeam team, String teamId,
       AIPlayer ai, MoveHandler handler) {
     this.sessionId = sessionId;
@@ -34,7 +50,8 @@ public class AIRunnable implements Runnable {
       try {
         System.out.println(moveTime);
         int moveTimeRandomness =
-            (int) Math.round((Math.random() - RANDOM_SUBTRACTOR) * moveTime);
+            (int) Math.round((Math.random() - RANDOM_SUBTRACTOR)
+                * moveTime);
         Thread.sleep(moveTime + moveTimeRandomness);
         Move move = ai.getMove(team);
         handler.makeMove(sessionId, teamId, move);
