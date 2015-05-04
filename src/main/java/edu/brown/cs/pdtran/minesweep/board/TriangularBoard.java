@@ -55,7 +55,7 @@ public class TriangularBoard extends DefaultBoard implements Board, Cloneable {
 
   @Override
   public BoardType getBoardType() {
-    return BoardType.HEXAGONAL;
+    return BoardType.TRIANGULAR;
   }
 
   @Override

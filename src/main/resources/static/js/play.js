@@ -616,7 +616,7 @@ function click(clickType) {
             //console.log(row + " " + column);
             $.getScript("../js/js.cookie.js", function(){
                 var sendData = {
-                    requestType: "makeMove",
+                    requestType: "MAKE_MOVE",
                     minesweepId: $.cookie("minesweepId"),
                     minesweepRoomId: $.cookie("minesweepRoomId"),
                     minesweepTeamId: $.cookie("minesweepTeamId"),
