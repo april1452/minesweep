@@ -269,12 +269,15 @@ function drawBoard(data) {
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
                     _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
                     _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeRect(tileX, tileY, tileWidth - 2, tileHeight - 2);
                 } else {
                     _ctx.fillStyle = EXPLORED;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                    _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+
+                    _ctx.strokeStyle = BOMB_BORDER;
+                    _ctx.lineWidth = 2;
+                    _ctx.strokeRect(tileX, tileY, tileWidth - 2, tileHeight - 2);
+                    _ctx.lineWidth = 1;
                     if (tile.adjacentBombs > 0) {
                         _ctx.fillStyle = getTextColor(tile.adjacentBombs);
                         _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
@@ -287,7 +290,7 @@ function drawBoard(data) {
                 _ctx.fillStyle = UNEXPLORED;
                 _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
                 _ctx.strokeStyle = NORMAL_BORDER;
-                _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                _ctx.strokeRect(tileX, tileY, tileWidth  - 2, tileHeight  - 2);
                 if (isFlag(flags, tile.column, tile.row)) {
                     _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
                 }

@@ -90,8 +90,8 @@ public class LayersGame extends Game {
     } else if (response == MoveResponse.NOT_MINE) {
       Board board = team.getCurrentBoard();
 
-      if (board.isWinningBoard()) {
-        if (team.nextBoard()) {
+      if (board.isWinningBoard() && !team.nextBoard()) {
+        if (!team.nextBoard()) {
           team.setIsWinner();
           updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(teamId),
               team.getHumans()));
