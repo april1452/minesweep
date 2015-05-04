@@ -8,7 +8,9 @@ public class MoveFactory {
 
   /**
    * This is the intended constructor to make Moves.
-   * @param type The type of the move you wish to make.
+   * @param xCoord The x location of the move.
+   * @param yCoord The y location of the move.
+   * @param moveType The type of the move you wish to make.
    * @return The made move.
    */
   public static Move makeMove(int xCoord, int yCoord, MoveType moveType) {

@@ -26,6 +26,10 @@ public class GameSpecs {
    * @param matches number of matches/rounds to be played
    * @param shape board shape
    * @param dims board dimensions
+   * @param numTeams number of teams
+   * @param numTeamPlayers number of players per team
+   * @param teamLives lives per team
+   * @param difficulty density of mines on the board
    */
   public GameSpecs(GameMode mode, BoardType shape, int matches, int numTeams,
       int numTeamPlayers, int teamLives, int[] dims, int difficulty) {
