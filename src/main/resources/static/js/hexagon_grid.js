@@ -96,7 +96,7 @@ HT.Grid.prototype.GetHexId = function(row, col) {
  */
 HT.Grid.prototype.GetHexAt = function(/*Point*/ p) {
 	//find the hex that contains this point
-	console.log(HT.Grid.Static.Hexes);
+	//console.log(HT.Grid.Static.Hexes);
 	for (var h in HT.Grid.Static.Hexes)
 	{
 		var hex = HT.Grid.Static.Hexes[h];
@@ -105,14 +105,13 @@ HT.Grid.prototype.GetHexAt = function(/*Point*/ p) {
 			return HT.Grid.Static.Hexes[h];
 		}
 	}
-
-
 	return null;
 };
 
 
 HT.Grid.prototype.GetHexAtPos = function(x, y) {
 	//find the hex that contains this point
+	console.log(HT.Grid.Static.Hexes);
 	for (var h in HT.Grid.Static.Hexes)
 	{
 		var hex = HT.Grid.Static.Hexes[h];

@@ -83,7 +83,7 @@ function findHexWithWidthAndHeight(width, height)
 
 function drawHexGrid(grid, ctx)
 {
-	var canvas = document.getElementById("board");
+	//var canvas = document.getElementById("board");
 	//var ctx = canvas.getContext('2d');
 	ctx.clearRect(0, 0, 800, 600);
 	for(var h in HT.Grid.Static.Hexes)

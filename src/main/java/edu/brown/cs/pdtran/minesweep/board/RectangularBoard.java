@@ -5,9 +5,11 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
@@ -140,6 +142,9 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
     }
     boardJson.add("tiles", tilesJson);
     boardJson.addProperty("type", getBoardType().toString());
+    Gson gson = new Gson();
+    boardJson.add("neighborTable",
+        (new JsonParser()).parse(gson.toJson(neighborTable)).getAsJsonObject());
     return boardJson;
   }
 }
