@@ -16,10 +16,8 @@
     <label for="layersrad">Layers</label>
     <input type="radio" name="gameMode" value="TERRITORY" id="territoryrad">
     <label for="territoryrad">Territory</label>
-    <input type="radio" name="gameMode" value="PATHS" id="pathsrad">
-    <label for="pathsrad">Paths</label>
-    <input type="radio" name="gameMode" value="FSU" id="fsurad">
-    <label for="fsurad">F.S.U.</label>
+    <input type="radio" name="gameMode" value="TIMER" id="timerrad">
+    <label for="timerrad">Timer</label>
     <br>
 
     <label for="difficulty">Mine density:</label><input type="number" name="difficulty" id="difficulty" value="5" min="0" max="10" required>
@@ -28,11 +26,15 @@
 
     <h5 class="heading">Board</h5>
     <input type="radio" name="boardType" value="DEFAULT" id="rectangle" checked>
-    <label for="rectangle">Rectangle</label>
+    <label for="rectangle">Default</label>
     <input type="radio" name="boardType" value="TRIANGULAR" id="triangle">
     <label for="triangle">Triangle</label>
     <input type="radio" name="boardType" value="HEXAGONAL" id="hexagonal">
     <label for="hexagonal">Hexagon</label>
+    <input type="radio" name="boardType" value="RECTANGULAR" id="rectangular">
+    <label for="rectangular">Rectangular</label>
+    <input type="radio" name="boardType" value="ENTANGLED" id="entangled">
+    <label for="entangled">Entangled</label>
     <br>
 
     <label>Dimensions:</label>
@@ -74,7 +76,7 @@
     </div>
     <div id="layers" style="display: none">
         <h5>Layers Mode</h5>
-        <p>Teams are given a stack of boards to race through. The first team to complete all of its boards without losing its lives is the winner.</p>
+        <p>Teams are given a stack of five boards to race through. The first team to complete all of its boards without losing its lives is the winner.</p>
         
     </div>
     <div id="territory" style="display: none">
@@ -82,14 +84,10 @@
         <p>Teams attempt to conquer the most territory on a single board of Minesweeper. Each  space a team reveals without a mine is added that that team's territory and the team that finds the most spaces wins.</p>
         
     </div>
-    <div id="paths" style="display: none">
-        <h5>Paths Mode</h5>
-        <p>Teams race from one side of the board to the other. The first team to find a continuous path between both sides of the board wins.
+    <div id="timer" style="display: none">
+        <h5>Timer Mode</h5>
+        <p>Teams must race against the clock to complete their boards! Each team starts with one minute. Checking a square without a mine adds five seconds to the clock, but hitting a mine subtracts thirty!</p>
         
-    </div>
-    <div id="fsu" style="display: none">
-        <h5>F.S.U. Mode</h5>
-        <p>In this hostile game mode, teams directly interfere with their opponents. Each team can spent the points they've gained by uncovering mines on their board to move around undiscovered mmines on the board of their opponents.</p>
         
     </div>
 </div>

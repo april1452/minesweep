@@ -312,6 +312,9 @@ function drawBoard(data) {
                 var y2 = tile.row * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
                 triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                if (isFlag(globalFlags, tile.column, tile.row)) {
+                    _ctx.drawImage(flagImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+                }
                 if (tile.isBomb && tile.visited) {
                     _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
                 }
@@ -325,6 +328,9 @@ function drawBoard(data) {
                 triangleDraw(x1, x2, x3, y1, y2, y3, tile);
                 if (tile.isBomb && tile.visited) {
                     _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+                }
+                if (isFlag(globalFlags, tile.column, tile.row)) {
+                    _ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
                 }
             } 
         });
@@ -470,9 +476,6 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
     } else {
         _ctx.fillStyle = UNEXPLORED;
         _ctx.fill();
-        if (isFlag(globalFlags, tile.column, tile.row)) {
-            _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
-        }
         //_ctx.strokeStyle = NORMAL_BORDER;
     }
 
@@ -513,7 +516,7 @@ $("#board").bind('click', function(event){
 });
 
 function click(clickType) {
-	
+
     var board = $("#board")[0];
 
     var x = event.pageX - board.offsetLeft;
@@ -526,18 +529,21 @@ function click(clickType) {
         var row = Math.floor(y / tileHeight);
         var column = Math.floor(x / tileWidth);
 
-        $.getScript("../js/js.cookie.js", function() {
-            var sendData = {
-                requestType: "MAKE_MOVE",
-                minesweepId: $.cookie("minesweepId"),
-                minesweepRoomId: $.cookie("minesweepRoomId"),
-                minesweepTeamId: $.cookie("minesweepTeamId"),
-                row: row,
-                col: column,
-                moveType: clickType
-            };
-            socket.send(JSON.stringify(sendData));
-        });
+        if (!isFlag(globalFlags, column, row) || clickType === "FLAG") {
+
+            $.getScript("../js/js.cookie.js", function() {
+                var sendData = {
+                    requestType: "MAKE_MOVE",
+                    minesweepId: $.cookie("minesweepId"),
+                    minesweepRoomId: $.cookie("minesweepRoomId"),
+                    minesweepTeamId: $.cookie("minesweepTeamId"),
+                    row: row,
+                    col: column,
+                    moveType: clickType
+                };
+                socket.send(JSON.stringify(sendData));
+            });
+        }
 
     } else if (globalBoard.type == "TRIANGULAR") {
         var row = Math.floor(y / tileHeight);
@@ -592,19 +598,23 @@ function click(clickType) {
                 //console.log("Below border");
                 //console.log(row + " " + column);
 
-                $.getScript("../js/js.cookie.js", function(){
-                    var sendData = {
-                        requestType: "MAKE_MOVE",
-                        minesweepId: $.cookie("minesweepId"),
-                        minesweepRoomId: $.cookie("minesweepRoomId"),
-                        minesweepTeamId: $.cookie("minesweepTeamId"),
-                        row: row,
-                        col: column,
-                        moveType: clickType
-                    };
-                    socket.send(JSON.stringify(sendData));
-                });
+                if (!isFlag(globalFlags, column, row) && clickType === "CHECK") {
+
+                    $.getScript("../js/js.cookie.js", function() {
+                        var sendData = {
+                            requestType: "MAKE_MOVE",
+                            minesweepId: $.cookie("minesweepId"),
+                            minesweepRoomId: $.cookie("minesweepRoomId"),
+                            minesweepTeamId: $.cookie("minesweepTeamId"),
+                            row: row,
+                            col: column,
+                            moveType: clickType
+                        };
+                        socket.send(JSON.stringify(sendData));
+                    });
+                }
             }
+
         } else {
             var borderSlope = (y3 - y1) / (x3 - x1);
             var clickSlope = (y - y1) / (x - x1);
@@ -617,7 +627,31 @@ function click(clickType) {
                 //console.log("Below border");
             }
             //console.log(row + " " + column);
-            $.getScript("../js/js.cookie.js", function(){
+            if (!isFlag(globalFlags, column, row) && clickType === "CHECK") {
+
+                $.getScript("../js/js.cookie.js", function() {
+                    var sendData = {
+                        requestType: "MAKE_MOVE",
+                        minesweepId: $.cookie("minesweepId"),
+                        minesweepRoomId: $.cookie("minesweepRoomId"),
+                        minesweepTeamId: $.cookie("minesweepTeamId"),
+                        row: row,
+                        col: column,
+                        moveType: clickType
+                    };
+                    socket.send(JSON.stringify(sendData));
+                });
+            }
+        }
+    } else if (globalBoard.type = "HEXAGONAL"){
+        var p = new HT.Point(x, y);
+        var hex = hexagon_grid.GetHexAt(p);
+        var row = hex.PathCoOrdY;
+        var column = hex.PathCoOrdX;
+
+        if (!isFlag(globalFlags, column, row) && clickType === "CHECK") {
+
+            $.getScript("../js/js.cookie.js", function() {
                 var sendData = {
                     requestType: "MAKE_MOVE",
                     minesweepId: $.cookie("minesweepId"),
@@ -630,26 +664,9 @@ function click(clickType) {
                 socket.send(JSON.stringify(sendData));
             });
         }
-    } else if (globalBoard.type = "HEXAGONAL"){
-     var p = new HT.Point(x, y);
-     var hex = hexagon_grid.GetHexAt(p);
-     var row = hex.PathCoOrdY;
-     var column = hex.PathCoOrdX;
-
-     $.getScript("../js/js.cookie.js", function(){
-        var sendData = {
-            requestType: "MAKE_MOVE",
-            minesweepId: $.cookie("minesweepId"),
-            minesweepRoomId: $.cookie("minesweepRoomId"),
-            minesweepTeamId: $.cookie("minesweepTeamId"),
-            row: row,
-            col: column,
-            moveType: clickType
-        };
         socket.send(JSON.stringify(sendData));
-    });
- }
-};
+    }
+}
 
 function win() {
     $("#board").hide();

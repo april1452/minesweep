@@ -18,6 +18,7 @@ import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.PreRoom;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
+import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 import edu.brown.cs.pdtran.minesweep.types.UpdateType;
@@ -30,6 +31,7 @@ import edu.brown.cs.pdtran.minesweep.types.UpdateType;
 public class TerritoryGame extends Game {
 
   private ConcurrentMap<String, Integer> lives;
+  private ConcurrentMap<String, List<Tile>> territory;
 
   /**
    * Constructs a TerritoryGame.
@@ -43,7 +45,10 @@ public class TerritoryGame extends Game {
     for (String teamId : getTeams().keySet()) {
       lives.put(teamId, teamLives);
     }
-
+    territory = new ConcurrentHashMap<String, List<Tile>>();
+    for (String teamId : getTeams().keySet()) {
+      territory.put(teamId, new ArrayList<Tile>());
+    }
   }
 
   @Override
@@ -86,12 +91,25 @@ public class TerritoryGame extends Game {
     } else if (response == MoveResponse.NOT_MINE) {
       Board board = team.getCurrentBoard();
 
+      territory.get(teamId).add(board.getTile(m.getYCoord(), m.getXCoord()));
+
       if (board.isWinningBoard()) {
-        team.setIsWinner();
+
+        int winningTerritory = 0;
+        String winningTeamId = "";
+        for (Entry<String, List<Tile>> entry : territory.entrySet()) {
+          int territoryAmount = entry.getValue().size();
+          if (territoryAmount >= winningTerritory) {
+            winningTerritory = territoryAmount;
+            winningTeamId = entry.getKey();
+          }
+        }
+        PlayerTeam winner = teams.get(winningTeamId);
+        winner.getIsWinner();
         updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(teamId),
-            team.getHumans()));
+            winner.getHumans()));
         for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
-          if (entry.getKey() != teamId) {
+          if (entry.getKey() != winningTeamId) {
             entry.getValue().setIsLoser();
             updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(entry
                 .getKey()), entry.getValue().getHumans()));
