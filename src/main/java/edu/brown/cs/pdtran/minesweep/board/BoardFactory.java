@@ -26,6 +26,8 @@ public class BoardFactory {
         return new TriangularBoard(width, height, mines);
       case HEXAGONAL:
         return new HexagonalBoard();
+      case ENTANGLED:
+        return new EntangledBoard();
     }
     return null;
   }
