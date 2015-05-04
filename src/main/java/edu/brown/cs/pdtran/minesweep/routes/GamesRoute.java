@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.google.gson.JsonObject;
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
-import edu.brown.cs.pdtran.minesweep.metagame.RoomInfo;
+import edu.brown.cs.pdtran.minesweep.metagame.SessionInfo;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -29,11 +29,11 @@ public class GamesRoute implements Route {
 
   @Override
   public Object handle(Request req, Response res) {
-    List<Map.Entry<String, RoomInfo>> infos = handler.getRooms();
+    List<Map.Entry<String, SessionInfo>> infos = handler.getSessions();
     JsonObject sessionsJson = new JsonObject();
 
-    for (Map.Entry<String, RoomInfo> entry : infos) {
-      RoomInfo info = entry.getValue();
+    for (Map.Entry<String, SessionInfo> entry : infos) {
+      SessionInfo info = entry.getValue();
 
       sessionsJson.add(entry.getKey(), info.toJson());
     }

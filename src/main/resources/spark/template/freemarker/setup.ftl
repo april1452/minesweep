@@ -36,8 +36,9 @@
     <br>
 
     <label>Dimensions:</label>
-    <input type="number" name="width" id="width" placeholder="Width" value="20" min="1" required> x
-    <input type="number" name="height" id="height" placeholder="Height" value="20" min="1" required>
+    <input type="number" name="width" id="width" placeholder="Width" value="16" min="1" required> x
+    <input type="number" name="height" id="height" placeholder="Height" value="16" min="1" required>
+
     <br><br>
 
     <h5 class="heading">Teams</h5>

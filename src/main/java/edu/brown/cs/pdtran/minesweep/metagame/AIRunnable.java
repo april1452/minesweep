@@ -1,11 +1,12 @@
 package edu.brown.cs.pdtran.minesweep.metagame;
 
+import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
-import edu.brown.cs.pdtran.minesweep.player.Move;
 
 public class AIRunnable implements Runnable {
 
   private String sessionId;
+  private String aiId;
   private String teamId;
   private AIPlayer ai;
   private MoveHandler handler;
@@ -26,7 +27,6 @@ public class AIRunnable implements Runnable {
 
   @Override
   public void run() {
-    System.out.println("Ai started.");
     while (ai.getCanPlay()) {
       try {
         System.out.println(moveTime);
@@ -34,9 +34,7 @@ public class AIRunnable implements Runnable {
             (int) Math.round((Math.random() - RANDOM_SUBTRACTOR) * moveTime);
         Thread.sleep(moveTime + moveTimeRandomness);
         Move move = ai.getMove();
-        System.out.println(move.getXCoord() + " " + move.getYCoord());
         handler.makeMove(sessionId, teamId, move);
-        System.out.println("Move sent!\n");
       } catch (InterruptedException e) {
         e.printStackTrace();
       } catch (NoSuchSessionException e) {

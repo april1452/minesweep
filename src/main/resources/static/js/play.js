@@ -39,58 +39,40 @@ server_ip = server_ip.substring(0, server_ip.length - 5);
 var socket = new WebSocket("ws://" + server_ip + ":7777");
 var hexagon_grid;
 
-
 // set up cookies js
 socket.onopen = function(event) {
     $.getScript("../js/js.cookie.js", function(){
         var sendData = {
-            type: "init",
+            requestType: "INITIALIZE",
             minesweepId: $.cookie("minesweepId"),
             minesweepRoomId: $.cookie("minesweepRoomId"),
-            name: $.cookie("playerName")
+            minesweepName: $.cookie("minesweepName")
         };  
         socket.send(JSON.stringify(sendData));
     });
 }
 
-//$("#startGame").hide();
-
-console.log('made it this far');
-
-// start the game
-$("#startButton").click(function() {
-	//init();
-    console.log('start button clicked');
-    $.getScript("../js/js.cookie.js", function(){
-        var sendData = {
-            type: "startGame",
-            minesweepId: $.cookie("minesweepId"),
-            minesweepRoomId: $.cookie("minesweepRoomId")
-        };  
-        socket.send(JSON.stringify(sendData));
-    });
-});
-
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
     
+    console.log(responseJson);
+
+    var updateType = responseJson.updateType;
+
     // Pre game setup    
-    if(responseJson.type === "init") {
-        var teamToJoin;
-        $.each(responseJson.data.teams, function (teamId, teamInfo) {
-            teamToJoin = teamId;
-        });
-        joinRoom(teamToJoin);
-    }
-    
-    else if (responseJson.type === "update") {
+    if (updateType === "ROOM_UPDATE") {
         drawRoom(responseJson);
     } 
 
+    else if (updateType === "TEAM_ASSIGNMENT") {
+        $.getScript("../js/js.cookie.js", function() {
+            $.cookie("minesweepTeamId", responseJson.data);
+        });
+    }
+
     // Begin game, i.e. draw game board
-    else if (responseJson.type === "gameData") {
-    init();
-        console.log(responseJson);
+    else if (updateType === "BOARD_UPDATE") {
+        init();
         drawBoard(responseJson.data);
         $("#board").show();
         $("#teams").hide();
@@ -100,9 +82,12 @@ socket.onmessage = function (event) {
             + "<br>" + "Lives: " + responseJson.lives);
     }
     
-    else if (responseJson.type === "victory") {
-        console.log("test");
+    else if (updateType === "victory") {
         victoryOrDefeat(responseJson.teamId);
+    }
+
+    else if (updateType === "ERROR") {
+        alert(responseJson.data);
     }
 }
 
@@ -114,7 +99,7 @@ function victoryOrDefeat(teamId) {
         } else {
             lose();
         }
-  });
+    });
 }
 
 // draw pre game rooms
@@ -123,9 +108,9 @@ function drawRoom(responseJson) {
         var innerBox = "";
         
         var roomInfo = responseJson.data;
-    
+
         var teams = roomInfo.teams;
-    
+
         $.each(teams, function(i, team) {
             innerBox += '<div class="span-2" style="padding-top:30px"><h4>' + team.name + "</h4>";
             $.each(team.players, function(j, player) {
@@ -141,7 +126,7 @@ function drawRoom(responseJson) {
             // choose ai difficulty modal
             innerBox += '<div class="modalplate" data-modal-id="ai-choose-'+i+'"><div class="modalplate-title-bar"><a class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="ai span-2"><a class="button aqua large icon close" id="easy'+i+'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+i+'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+i+'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+i+'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
         });
-        
+
         // have to readd the sidebar; css issues
         var sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a class="button line-white large" id="disbandButton">Disband</a></div>'
 
@@ -152,7 +137,7 @@ function drawRoom(responseJson) {
             console.log('start button clicked');
             $.getScript("../js/js.cookie.js", function(){
                 var sendData = {
-                    type: "startGame",
+                    requestType: "START_GAME",
                     minesweepId: $.cookie("minesweepId"),
                     minesweepRoomId: $.cookie("minesweepRoomId")
                 };  
@@ -167,7 +152,7 @@ function drawRoom(responseJson) {
                 joinRoom(i);
             });
         });
-    
+
         // create ai from modal screen
         $.each(teams, function(i, team) {
             $('#easy' + i).click(function(){
@@ -196,29 +181,30 @@ function drawRoom(responseJson) {
 // allow player to join a team
 function joinRoom(teamId) {
     $.getScript("../js/js.cookie.js", function(){
-        $.cookie("minesweepTeamId", teamId);
         var sendData = {
-            type: "joinRoom",
+            requestType: "SWITCH_TEAM",
             minesweepId: $.cookie("minesweepId"),
-            minesweepTeamId: teamId,
-            minesweepRoomId: $.cookie("minesweepRoomId")
+            minesweepTeamId: $.cookie("minesweepTeamId"),
+            minesweepRoomId: $.cookie("minesweepRoomId"),
+            newTeamId: teamId
+
         };
         socket.send(JSON.stringify(sendData));
-  });
+    });
 }
 
 // add an ai to a team
 function addAi(teamId, difficulty) {
-        $.getScript("../js/js.cookie.js", function(){
-            var sendData = {
-                type: "addAIPlayer",
-                minesweepId: $.cookie("minesweepId"),
-                minesweepTeamId: teamId,
-                minesweepRoomId: $.cookie("minesweepRoomId"),
-                difficulty: difficulty
-            };
-            socket.send(JSON.stringify(sendData));
-        });
+    $.getScript("../js/js.cookie.js", function(){
+        var sendData = {
+            requestType: "ADD_AI",
+            minesweepId: $.cookie("minesweepId"),
+            minesweepTeamId: teamId,
+            minesweepRoomId: $.cookie("minesweepRoomId"),
+            difficulty: difficulty
+        };
+        socket.send(JSON.stringify(sendData));
+    });
 }
 
 function init() {
@@ -226,12 +212,17 @@ function init() {
     canvasBoard.height = CANVAS_Y;
     canvasBoard.width = CANVAS_X;
     _ctx = canvasBoard.getContext("2d");
+    $("#board").show();
+    $("#start").hide();
+    $("#teams").hide();
     
 }
 
-function drawBoard(responseJSON) {
-	
-    var board = JSON.parse(responseJSON);
+function drawBoard(data) {
+    
+    var board = data.board;
+    
+    console.log(board);
     
     var width = board.width;
     var height = board.height;
@@ -240,18 +231,18 @@ function drawBoard(responseJSON) {
     tileHeight = CANVAS_Y / height;
     
     if(typeof(hexagon_grid) === 'undefined' || hexagon_grid == []){
-    	hexagon_grid = new HT.Grid(width, height);
-    	console.log(tileWidth);
-    	findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
-    	
-    	console.log("A grid is born");
+        hexagon_grid = new HT.Grid(width, height);
+        console.log(tileWidth);
+        findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
+        
+        console.log("A grid is born");
     }
     
     var tiles = board.tiles;
     
     globalBoard = board;
 
-    if (board.type == "DefaultBoard"){
+    if (board.type == "DEFAULT"){
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
@@ -288,7 +279,7 @@ function drawBoard(responseJSON) {
             }
 
         });
-    } else if (board.type == "TriangularBoard"){
+    } else if (board.type == "TRIANGULAR"){
 
          _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
          tileWidth = CANVAS_X / (width / 2 + height / 2);
@@ -321,34 +312,73 @@ function drawBoard(responseJSON) {
         });
    
         _ctx.stroke();
-    } else if (board.type = "HexagonalBoard"){
-    	//drawHexGrid();
-    	$.each(tiles, function(index, tile)
-    	{
-    		var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
-    		console.log(hexes);
-    		if(tile.visited){
-    			if(tile.isBomb){
-    				hexes.fillColor = BOMB;
-    			} else {
-    				console.log("This is suppose to be visited");
-    			    
-    				hexes.fillColor = EXPLORED;
-    			}
-    			console.log(hexes);
-    		}
-    	});
-    	for (var h in HT.Grid.Static.Hexes)
-    	{
-    		var hex = HT.Grid.Static.Hexes[h];
-    		if (hex.fillColor = EXPLORED)
-    		{
-    			console.log("Visisted: " + hex);
-    			console.log(hex);
-    			
-    		}
-    	}
-    	drawHexGrid(hexagon_grid, _ctx);
+    } else if (board.type = "HEXAGONAL"){
+        //drawHexGrid();
+        $.each(tiles, function(index, tile)
+        {
+            var hexes = hexagon_grid.GetHexAtPos(tile.column, tile.row);
+            console.log(hexes);
+            if(tile.visited){
+                if(tile.isBomb){
+                    hexes.fillColor = BOMB;
+                } else {
+                    console.log("This is suppose to be visited");
+                    
+                    hexes.fillColor = EXPLORED;
+                }
+                console.log(hexes);
+            }
+        });
+        for (var h in HT.Grid.Static.Hexes)
+        {
+            var hex = HT.Grid.Static.Hexes[h];
+            if (hex.fillColor = EXPLORED)
+            {
+                console.log("Visited: " + hex);
+                console.log(hex);
+                
+            }
+        }
+        drawHexGrid(hexagon_grid, _ctx);
+    } else if (board.type = "RECTANGULAR"){
+        console.log(board);
+
+        _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
+
+        $.each(tiles, function(index, tile) {
+            var tileX = tile.column * tileWidth;
+            var tileY = tile.row * tileHeight;
+            if (tile.visited) {
+                if(tile.isBomb) {
+                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeStyle = NORMAL_BORDER;
+                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                } else {
+                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeStyle = NORMAL_BORDER;
+                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                    if (tile.adjacentBombs > 0) {
+                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
+                        _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
+                        _ctx.textAlign = "center";
+                        _ctx.textBaseline = "middle";
+                        _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);
+                    }
+                }
+            } else {
+                _ctx.fillStyle = UNEXPLORED;
+                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                _ctx.strokeStyle = NORMAL_BORDER;
+                _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                /*if (tile.isFlag) {
+                    _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
+                }*/
+            }
+
+        });
     } else {
         console.log("I had a stroke. Undefined board");
     }
@@ -436,7 +466,7 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
     _ctx.lineTo(x1, y1);
     _ctx.fill();
     _ctx.fillStyle = TEXT_COLOR;
-    _ctx.fillText(tile.adjacentBombs, (x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);  */
+    _ctx.fillText(tile.adjacentBombs, (x1 + http://localhost:4686/playx2 + x3) / 3, (y1 + y2 + y3) / 3);  */
 }
 
 $("#board").bind("contextmenu", function(e){
@@ -446,31 +476,34 @@ $("#board").bind("contextmenu", function(e){
 
 
 $("#board").bind('click', function(event){
+	console.log(event.which);
+	
     var board = $("#board")[0];
 
     var x = event.pageX - board.offsetLeft;
     var y = event.pageY - board.offsetTop;
 
-    if (globalBoard.type == "DefaultBoard"){
-        
+    if (globalBoard.type == "DEFAULT") {
+
         console.log("click");
-    	
+
         var row = Math.floor(y / tileHeight);
         var column = Math.floor(x / tileWidth);
-    
-        $.getScript("../js/js.cookie.js", function(){
+
+        $.getScript("../js/js.cookie.js", function() {
             var sendData = {
-                type: "makeMove",
+                requestType: "MAKE_MOVE",
                 minesweepId: $.cookie("minesweepId"),
                 minesweepRoomId: $.cookie("minesweepRoomId"),
                 minesweepTeamId: $.cookie("minesweepTeamId"),
                 row: row,
-                col: column
+                col: column,
+                moveType: "CHECK"
             };
             socket.send(JSON.stringify(sendData));
         });
 
-    } else if (globalBoard.type == "TriangularBoard") {
+    } else if (globalBoard.type == "TRIANGULAR") {
         var row = Math.floor(y / tileHeight);
         var offset = row * tileWidth / 2;
         var estimate = Math.floor((x - offset) / tileWidth * 2);
@@ -495,19 +528,19 @@ $("#board").bind('click', function(event){
         });
 
         if (selectedTile.column % 2 === 0) {
-                var x1 = selectedTile.column / 2 * tileWidth + offset;
-                var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
-                var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
-                var y1 = selectedTile.row * tileHeight;
-                var y2 = selectedTile.row * tileHeight;
-                var y3 = (selectedTile.row + 1) * tileHeight;
-            } else {
-                var x1 = selectedTile.column / 2 * tileWidth + offset;
-                var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
-                var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
-                var y1 = (selectedTile.row + 1) * tileHeight;
-                var y2 = (selectedTile.row + 1) * tileHeight;
-                var y3 = selectedTile.row * tileHeight;
+            var x1 = selectedTile.column / 2 * tileWidth + offset;
+            var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
+            var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
+            var y1 = selectedTile.row * tileHeight;
+            var y2 = selectedTile.row * tileHeight;
+            var y3 = (selectedTile.row + 1) * tileHeight;
+        } else {
+            var x1 = selectedTile.column / 2 * tileWidth + offset;
+            var x2 = (selectedTile.column / 2 + 1) * tileWidth + offset;
+            var x3 = (selectedTile.column / 2 + 0.5) * tileWidth + offset;
+            var y1 = (selectedTile.row + 1) * tileHeight;
+            var y2 = (selectedTile.row + 1) * tileHeight;
+            var y3 = selectedTile.row * tileHeight;
         }   
 
         if (edge) {
@@ -525,12 +558,13 @@ $("#board").bind('click', function(event){
 
                 $.getScript("../js/js.cookie.js", function(){
                     var sendData = {
-                        type: "makeMove",
+                        requestType: "MAKE_MOVE",
                         minesweepId: $.cookie("minesweepId"),
                         minesweepRoomId: $.cookie("minesweepRoomId"),
                         minesweepTeamId: $.cookie("minesweepTeamId"),
                         row: row,
-                        col: column
+                        col: column,
+                        moveType: "CHECK"
                     };
                     socket.send(JSON.stringify(sendData));
                 });
@@ -547,37 +581,38 @@ $("#board").bind('click', function(event){
                 //console.log("Below border");
             }
             //console.log(row + " " + column);
-
             $.getScript("../js/js.cookie.js", function(){
                 var sendData = {
-                    type: "makeMove",
+                    requestType: "makeMove",
                     minesweepId: $.cookie("minesweepId"),
                     minesweepRoomId: $.cookie("minesweepRoomId"),
                     minesweepTeamId: $.cookie("minesweepTeamId"),
                     row: row,
-                    col: column
+                    col: column,
+                    moveType: "CHECK"
                 };
                 socket.send(JSON.stringify(sendData));
             });
         }
-    } else if (globalBoard.type = "HexagonalBoard"){
-    	var p = new HT.Point(x, y);
-    	var hex = hexagon_grid.GetHexAt(p);
-    	var row = hex.PathCoOrdY;
-    	var column = hex.PathCoOrdX;
-    		
-    	$.getScript("../js/js.cookie.js", function(){
-                var sendData = {
-                    type: "makeMove",
-                    minesweepId: $.cookie("minesweepId"),
-                    minesweepRoomId: $.cookie("minesweepRoomId"),
-                    minesweepTeamId: $.cookie("minesweepTeamId"),
-                    row: row,
-                    col: column
-                };
-                socket.send(JSON.stringify(sendData));
-          });
-    }
+    } else if (globalBoard.type = "HEXAGONAL"){
+     var p = new HT.Point(x, y);
+     var hex = hexagon_grid.GetHexAt(p);
+     var row = hex.PathCoOrdY;
+     var column = hex.PathCoOrdX;
+
+     $.getScript("../js/js.cookie.js", function(){
+        var sendData = {
+            requestType: "MAKE_MOVE",
+            minesweepId: $.cookie("minesweepId"),
+            minesweepRoomId: $.cookie("minesweepRoomId"),
+            minesweepTeamId: $.cookie("minesweepTeamId"),
+            row: row,
+            col: column,
+            moveType: "CHECK"
+        };
+        socket.send(JSON.stringify(sendData));
+    });
+ }
 });
 
 function win() {

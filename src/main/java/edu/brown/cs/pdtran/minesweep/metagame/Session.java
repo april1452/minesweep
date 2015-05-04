@@ -64,11 +64,11 @@ public abstract class Session {
    * @return The RoomInfo object that depends upon the name, session type,
    *         game specs, and teams.
    */
-  public RoomInfo getRoomInfo() {
+  public SessionInfo getRoomInfo() {
     Map<String, TeamInfo> teams = new HashMap<String, TeamInfo>();
     for (Map.Entry<String, ? extends Team> entry : getTeams().entrySet()) {
       teams.put(entry.getKey(), entry.getValue().getTeamInfo());
     }
-    return new RoomInfo(name, getSessionType(), specs, teams);
+    return new SessionInfo(name, getSessionType(), specs, teams);
   }
 }

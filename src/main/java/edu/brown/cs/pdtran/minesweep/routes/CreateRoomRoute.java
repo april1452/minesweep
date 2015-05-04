@@ -47,8 +47,6 @@ public class CreateRoomRoute implements Route {
     int numPlayers = Integer.parseInt(params.value("numPlayers"));
     int numLives = Integer.parseInt(params.value("numLives"));
 
-    String hostName = params.value("hostName");
-
     int[] boardDims = {boardWidth, boardHeight};
     GameSpecs specs =
         new GameSpecs(gameMode, boardType, 1, numTeams, numPlayers, numLives,
@@ -59,7 +57,6 @@ public class CreateRoomRoute implements Route {
     String roomId = handler.addRoom(room);
 
     res.cookie("minesweepRoomId", roomId);
-    res.cookie("playerName", hostName);
 
     return true;
   }

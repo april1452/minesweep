@@ -3,8 +3,6 @@ package edu.brown.cs.pdtran.minesweep.metagame;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -14,16 +12,12 @@ import org.java_websocket.server.WebSocketServer;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import edu.brown.cs.pdtran.minesweep.board.Board;
-import edu.brown.cs.pdtran.minesweep.games.Game;
-import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
-import edu.brown.cs.pdtran.minesweep.player.CheckTile;
-import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
-import edu.brown.cs.pdtran.minesweep.player.Move;
-import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
+import edu.brown.cs.pdtran.minesweep.move.Move;
+import edu.brown.cs.pdtran.minesweep.move.MoveFactory;
 import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
-import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
 import edu.brown.cs.pdtran.minesweep.types.AiDifficulty;
+import edu.brown.cs.pdtran.minesweep.types.MoveType;
+import edu.brown.cs.pdtran.minesweep.types.RequestType;
 
 /**
  * This class extends WebSocketServer to create a server that multiple
@@ -62,145 +56,106 @@ public class GameServer extends WebSocketServer implements MoveHandler {
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-    JsonObject messageJson = parser.parse(message).getAsJsonObject();
-    String userId = messageJson.get("minesweepId").getAsString();
-    String sessionId = messageJson.get("minesweepRoomId").getAsString();
-    String messageType = messageJson.get("type").getAsString();
-    switch (messageType) {
-      case "init":
-        try {
-          JsonObject update = new JsonObject();
-          update.addProperty("type", "init");
-          update.add("data", handler.getRoomInfo(sessionId).toJson());
 
-          conn.send(update.toString());
-        } catch (NoSuchSessionException e) {
-          System.out.println("Could not find room.");
-        }
-        break;
-      case "joinRoom":
-        try {
-          String name = messageJson.get("name").getAsString();
+    System.out.println(message);
+
+    try {
+      JsonObject messageJson = parser.parse(message).getAsJsonObject();
+
+      String userId = messageJson.get("minesweepId").getAsString();
+      String sessionId = messageJson.get("minesweepRoomId").getAsString();
+
+      String requestTypeString = messageJson.get("requestType").getAsString();
+
+      RequestType requestType = RequestType.valueOf(requestTypeString);
+      switch (requestType) {
+        case INITIALIZE:
           clients.put(userId, conn);
-          String teamId = messageJson.get("minesweepTeamId").getAsString();
-          HumanGamer gamer = new HumanGamer(name);
-          Map<String, List<String>> usersToUpdate =
-              handler.humanJoinIfAbsent(sessionId, teamId, userId, gamer);
-
-          JsonObject update = new JsonObject();
-          update.addProperty("type", "update");
-          update.add("data", handler.getRoomInfo(sessionId).toJson());
-
-          updateSession(usersToUpdate, update.toString());
-        } catch (NoSuchSessionException e) {
-          System.out.println("Could not find room.");
-        }
-        break;
-      case "addAIPlayer":
-        try {
-          String difficultyString = messageJson.get("difficulty").getAsString();
-          AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
-          String teamId = messageJson.get("minesweepTeamId").getAsString();
-          String aiId = handler.getUserId();
-          AIGamer gamer = new AIGamer(aiDifficulty);
-          Map<String, List<String>> usersToUpdate =
-              handler.aiJoinIfAbsent(sessionId, teamId, aiId, gamer);
-
-          JsonObject update = new JsonObject();
-          update.addProperty("type", "update");
-          update.add("data", handler.getRoomInfo(sessionId).toJson());
-
-          updateSession(usersToUpdate, update.toString());
-
+          initialize(sessionId, userId, messageJson.get("minesweepName")
+              .getAsString());
           break;
-        } catch (NoSuchSessionException e) {
-          System.out
-          .println("Could not find room (perhaps it was already started?).");
-        }
-      case "startGame":
-        try {
-          Map<String, List<AIPlayer>> aisToStart = handler.startGame(sessionId);
-
-          for (Entry<String, List<AIPlayer>> entry : aisToStart.entrySet()) {
-            for (AIPlayer player : entry.getValue()) {
-              new Thread(
-                  new AIRunnable(sessionId, entry.getKey(), player, this))
-              .start();
-            }
-          }
-
-          Game game = handler.getGame(sessionId);
-
-          JsonObject gameData = new JsonObject();
-          gameData.addProperty("type", "gameData");
-          for (Entry<String, PlayerTeam> entry : game.getTeams().entrySet()) {
-            PlayerTeam team = entry.getValue();
-            gameData.addProperty("data", team.getCurrentBoard().toJson());
-            updateTeam(team.getHumans(), gameData.toString());
-            gameData.remove("data");
-          }
-        } catch (NoSuchSessionException e) {
-          System.out
-          .println("Could not find room (perhaps it was already started?).");
-        }
-        break;
-      case "makeMove":
-        try {
-          String teamId = messageJson.get("minesweepTeamId").getAsString();
-          int row = messageJson.get("row").getAsInt();
-          int col = messageJson.get("col").getAsInt();
-
-          Move move = new CheckTile(col, row);
-
-          System.out.println(col + " " + row);
-
-          makeMove(sessionId, teamId, move);
-
-        } catch (NoSuchSessionException e) {
-          System.out.println("Could not find game.");
-        }
-        break;
-      default:
-        System.out.println("No known types reached.");
+        case SWITCH_TEAM:
+          switchTeam(sessionId, messageJson.get("minesweepTeamId")
+              .getAsString(), userId, messageJson.get("newTeamId")
+              .getAsString());
+          break;
+        case ADD_AI:
+          addAi(sessionId, messageJson.get("minesweepTeamId").getAsString(),
+              userId, messageJson.get("difficulty").getAsString());
+          break;
+        case START_GAME:
+          startGame(sessionId, userId);
+          break;
+        case MAKE_MOVE:
+          makeMove(sessionId, messageJson.get("minesweepTeamId").getAsString(),
+              MoveFactory.makeMove(messageJson.get("row").getAsInt(),
+                  messageJson.get("col").getAsInt(),
+                  MoveType.valueOf(messageJson.get("moveType").getAsString())));
+          break;
+        default:
+          System.out.println("No known types reached.");
+      }
+    } catch (Exception e) {
+      System.out.println("An unknown exception occurred: " + e.getMessage());
+      e.printStackTrace();
     }
+  }
+
+  public void initialize(String sessionId, String userId, String name) {
+    List<Update> updates = handler.humanJoinIfAbsent(sessionId, userId, name);
+
+    sendUpdates(updates);
+  }
+
+  public void switchTeam(String sessionId,
+      String teamId,
+      String userId,
+      String newTeamId) {
+    List<Update> updates =
+        handler.humanSwitch(sessionId, teamId, userId, newTeamId);
+
+    sendUpdates(updates);
+  }
+
+  public void addAi(String sessionId,
+      String teamId,
+      String userId,
+      String difficultyString) {
+    String aiId = handler.getUserId();
+
+    AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
+    AIGamer gamer = new AIGamer(aiDifficulty);
+
+    Update update = handler.aiJoin(sessionId, teamId, userId, aiId, gamer);
+
+    sendUpdate(update);
+  }
+
+  public void startGame(String sessionId, String userId) {
+    // TODO do something with team id?
+    List<Update> updates = handler.startGame(sessionId, userId, this);
+
+    sendUpdates(updates);
   }
 
   @Override
-  public void makeMove(String sessionId, String teamId, Move m)
+  public void makeMove(String sessionId, String teamId, Move move)
       throws NoSuchSessionException {
-    Game game = handler.getGame(sessionId);
-    Board board = game.makeMove(teamId, m);
+    List<Update> updates = handler.makeMove(sessionId, teamId, move);
 
-    JsonObject gameData = new JsonObject();
-    if (board == null) {
-      for (PlayerTeam team : game.getTeams().values()) {
-        for (GamePlayer player : team.getPlayers().values()) {
-          player.endPlay();
-        }
-      }
-      gameData.addProperty("type", "victory");
-      gameData.addProperty("teamId", teamId);
-      for (PlayerTeam team : game.getTeams().values()) {
-        updateTeam(team.getHumans(), gameData.toString());
-      }
-    } else {
-      gameData.addProperty("type", "gameData");
-      gameData.addProperty("data", board.toJson());
-      gameData.addProperty("lives", game.getTeams().get(teamId).getLives());
-      gameData.addProperty("score", game.getTeams().get(teamId).getScore());
-      updateTeam(game.getTeams().get(teamId).getHumans(), gameData.toString());
+    sendUpdates(updates);
+  }
+
+  private void sendUpdates(List<Update> updates) {
+    for (Update update : updates) {
+      sendUpdate(update);
     }
   }
 
-  private void updateSession(Map<String, List<String>> usersToUpdate,
-      String message) throws NoSuchSessionException {
-    for (Entry<String, List<String>> entry : usersToUpdate.entrySet()) {
-      updateTeam(entry.getValue(), message);
-    }
-  }
-
-  private void updateTeam(List<String> usersToUpdate, String message) {
-    for (String id : usersToUpdate) {
+  private void sendUpdate(Update update) {
+    String message = update.getMessage();
+    System.out.println(message);
+    for (String id : update.getUsersToUpdate()) {
       WebSocket conn = clients.get(id);
       if (conn.isOpen()) {
         conn.send(message);

@@ -6,11 +6,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.metagame.Team;
+import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.setup.Gamer;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
+import edu.brown.cs.pdtran.minesweep.tile.Tile;
+import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 
 /**
  * Represents a Team of Players that works together in a game of Minesweep.
@@ -27,6 +33,7 @@ public class PlayerTeam extends Team implements BoardData {
   private int boardIndex;
   private List<AIPlayer> aiPlayers;
   private List<String> humanPlayers;
+  private List<Tile> flaggedTiles;
 
   /**
    * Creates a new Team to last through a game.
@@ -48,10 +55,14 @@ public class PlayerTeam extends Team implements BoardData {
           .toGamePlayer(this, aiPlayers));
     }
 
+    flaggedTiles = new ArrayList<>();
+
     score = 0;
     isWinner = false;
     isLoser = false;
   }
+
+
 
   @Override
   public Board getCurrentBoard() {
@@ -169,5 +180,44 @@ public class PlayerTeam extends Team implements BoardData {
   @Override
   public List<AIPlayer> getAis() {
     return aiPlayers;
+  }
+
+  public JsonElement getBoardInfo() {
+    JsonObject teamData = new JsonObject();
+    teamData.add("board", getCurrentBoard().toJson());
+
+    JsonArray flags = new JsonArray();
+    for (Tile flagged : flaggedTiles) {
+      JsonObject flag = new JsonObject();
+      flag.addProperty("y", flagged.getRow());
+      flag.addProperty("x", flagged.getColumn());
+      flags.add(flag);
+    }
+    teamData.add("flags", flags);
+
+    return teamData;
+  }
+
+  public MoveResponse makeMove(Move m) {
+    Board currentBoard = getCurrentBoard();
+    switch (m.getMoveType()) {
+      case CHECK:
+        return currentBoard.makeMove(m.getXCoord(), m.getYCoord());
+      case FLAG:
+        if (currentBoard.isWithinBoard(m.getXCoord(), m.getYCoord())) {
+          Tile tile = currentBoard.getTile(m.getXCoord(), m.getYCoord());
+          if (!tile.hasBeenVisited()) {
+            if (flaggedTiles.contains(tile)) {
+              flaggedTiles.remove(tile);
+            } else {
+              flaggedTiles.add(tile);
+            }
+            return MoveResponse.FLAG;
+          }
+        }
+        return MoveResponse.INVALID;
+      default:
+        return MoveResponse.INVALID;
+    }
   }
 }

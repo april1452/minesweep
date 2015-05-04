@@ -1,9 +1,12 @@
-package edu.brown.cs.pdtran.minesweep.player;
+package edu.brown.cs.pdtran.minesweep.move;
+
+import edu.brown.cs.pdtran.minesweep.types.MoveType;
+
 
 /**
- * This class's objects are used to communicate a player's wish to place a flag
- * on a certain tile to the network. These flags have no impact on gameplay, but
- * can be seen on the board.
+ * This class's objects are used to communicate a player's wish to place a
+ * flag on a certain tile to the network. These flags have no impact on
+ * gameplay, but can be seen on the board.
  * @author Clayton
  */
 public class FlagTile implements Move {
@@ -13,10 +16,8 @@ public class FlagTile implements Move {
 
   /**
    * Constructs a FlagTile object.
-   * @param xCoord
-   *          An integer representing the tile's x-coordinate.
-   * @param yCoord
-   *          An integer representing the tile's y-coordinate.
+   * @param xCoord An integer representing the tile's x-coordinate.
+   * @param yCoord An integer representing the tile's y-coordinate.
    */
   public FlagTile(int xCoord, int yCoord) {
     this.xCoord = xCoord;
@@ -39,6 +40,11 @@ public class FlagTile implements Move {
    */
   public int getYCoord() {
     return yCoord;
+  }
+
+  @Override
+  public MoveType getMoveType() {
+    return MoveType.FLAG;
   }
 
 }

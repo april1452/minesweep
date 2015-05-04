@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.metagame.Session;
+import edu.brown.cs.pdtran.minesweep.metagame.SessionFullException;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 
 /**
@@ -13,7 +14,7 @@ import edu.brown.cs.pdtran.minesweep.types.SessionType;
  * @author Clayton Sanford
  */
 public class PreRoom extends Session {
-  private String host;
+  private String hostId;
   private ConcurrentMap<String, TeamFormation> teams;
 
   /**
@@ -35,34 +36,45 @@ public class PreRoom extends Session {
     return teams;
   }
 
-  public String addHuman(String teamId, String gamerId, HumanGamer hg) {
+  public void addHuman(String teamId, String gamerId, HumanGamer hg)
+      throws SessionFullException {
     TeamFormation teamToAdd = teams.get(teamId);
-    if (teamToAdd.getPlayers().entrySet().size() < specs.getNumTeamPlayers()) {
-      removeFromAllTeams(gamerId);
-      teams.get(teamId).addHumanGamer(gamerId, hg);
+    if (teamToAdd.getSize() >= specs.getNumTeamPlayers()) {
+      throw new SessionFullException();
     }
-    return null;
+    teams.get(teamId).addHumanGamer(gamerId, hg);
   }
 
-  public String addAi(String teamId, String gamerId, AIGamer ag) {
-    TeamFormation teamToAdd = teams.get(teamId);
-    if (teamToAdd.getPlayers().entrySet().size() < specs.getNumTeamPlayers()) {
-      removeFromAllTeams(gamerId);
-      teams.get(teamId).addAIGamer(gamerId, ag);
+  public void switchTeam(String teamId, String gamerId, String newTeamId)
+      throws SessionFullException {
+    TeamFormation oldTeam = teams.get(teamId);
+    TeamFormation newTeam = teams.get(newTeamId);
+
+    if (newTeam.getSize() >= specs.getNumTeamPlayers()) {
+      throw new SessionFullException();
     }
-    // TODO check if game is full
-    return null;
+
+    oldTeam.getHumans().remove(gamerId);
+    Gamer gamer = oldTeam.getPlayers().remove(gamerId);
+
+    newTeam.getHumans().add(gamerId);
+    newTeam.getPlayers().put(gamerId, gamer);
+
   }
 
-  public void removeFromAllTeams(String gamerId) {
-    for (TeamFormation team : getTeams().values()) {
-      team.getPlayers().remove(gamerId);
-      team.getHumans().remove(gamerId);
+  public void addAi(String teamId, String gamerId, AIGamer ag)
+      throws SessionFullException {
+    TeamFormation teamToAdd = teams.get(teamId);
+    if (teamToAdd.getSize() >= specs.getNumTeamPlayers()) {
+      throw new SessionFullException();
     }
+    teams.get(teamId).addAIGamer(gamerId, ag);
   }
+
 
   @Override
   public SessionType getSessionType() {
     return SessionType.SETUP;
   }
+
 }

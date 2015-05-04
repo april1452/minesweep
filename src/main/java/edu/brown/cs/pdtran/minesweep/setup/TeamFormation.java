@@ -44,6 +44,10 @@ public class TeamFormation extends Team {
     addGamer(gamerId, hg);
   }
 
+  public int getSize() {
+    return gamers.size();
+  }
+
   @Override
   public List<AIGamer> getAis() {
     return aiGamers;

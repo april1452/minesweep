@@ -35,7 +35,10 @@ function getGames() {
                 
                 
                 $("#join-" + roomId).click(function() {
-                    document.cookie = "minesweepRoomId=" + roomId + "; playerName=" + $("#player-name-"+roomId).val();
+                    $.getScript("../js/js.cookie.js", function() {
+                        $.cookie("minesweepRoomId", roomId);
+                        $.cookie("minesweepName", $("#player-name-"+roomId).val());
+                    });
                     window.location.href = "/play";
                 });
             }

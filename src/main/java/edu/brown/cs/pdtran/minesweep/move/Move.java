@@ -1,4 +1,6 @@
-package edu.brown.cs.pdtran.minesweep.player;
+package edu.brown.cs.pdtran.minesweep.move;
+
+import edu.brown.cs.pdtran.minesweep.types.MoveType;
 
 /**
  * An interface whose implementations represent an action taken by a player
@@ -19,5 +21,7 @@ public interface Move {
    * @return An integer representing the tile's y-coordinate.
    */
   int getYCoord();
+
+  MoveType getMoveType();
 
 }

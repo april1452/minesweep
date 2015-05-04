@@ -1,8 +1,11 @@
-package edu.brown.cs.pdtran.minesweep.player;
+package edu.brown.cs.pdtran.minesweep.move;
+
+import edu.brown.cs.pdtran.minesweep.types.MoveType;
+
 
 /**
- * This class represents a Move that "touches" a tile, checking whether or not
- * it is a mine.
+ * This class represents a Move that "touches" a tile, checking whether or
+ * not it is a mine.
  * @author Clayton
  */
 public class CheckTile implements Move {
@@ -12,10 +15,8 @@ public class CheckTile implements Move {
 
   /**
    * Constructs a CheckTile object.
-   * @param xCoord
-   *          An integer representing the tile's x-coordinate.
-   * @param yCoord
-   *          An integer representing the tile's y-coordinate.
+   * @param xCoord An integer representing the tile's x-coordinate.
+   * @param yCoord An integer representing the tile's y-coordinate.
    */
   public CheckTile(int xCoord, int yCoord) {
     this.xCoord = xCoord;
@@ -38,6 +39,11 @@ public class CheckTile implements Move {
    */
   public int getYCoord() {
     return yCoord;
+  }
+
+  @Override
+  public MoveType getMoveType() {
+    return MoveType.CHECK;
   }
 
 }
