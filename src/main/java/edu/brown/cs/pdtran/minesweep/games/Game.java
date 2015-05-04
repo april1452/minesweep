@@ -31,9 +31,7 @@ public abstract class Game extends Session {
   /**
    * The constructor that builds a Game by using the Session constructor
    * that it extends.
-   * @param name The string representing the name of the game.
-   * @param specs The GameSpecs object that represents the settins for the
-   *        game.
+   * @param room The Room to be made into a Game.
    */
   protected Game(Room room) {
     super(room.getName(), room.getSpecs());
@@ -65,8 +63,8 @@ public abstract class Game extends Session {
   /**
    * Makes a move to the board on behalf of a team.
    * @param teamId The unique string corresponding to a team.
-   * @param playerId The unique string corresponding to a player.
    * @param m A Move object that specifies that the team is doing.
+   * @return A List of Updates for the board.
    */
   public abstract List<Update> makeMove(String teamId, Move m);
 

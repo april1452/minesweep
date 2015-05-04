@@ -112,6 +112,16 @@ function drawInfo(responseJson) {
     $.each(responseJson.data, function(id, teamInfo) {
         info += "Name: " + teamInfo.name + "<br>" + "Lives: " + teamInfo.lives + "<br>";
     });
+    var revealedBombs = 0;
+    $.each(globalBoard.tiles, function(index, tile) {
+        if (tile.isBomb && tile.visited) {
+            revealedBombs++;
+        }
+    })
+    console.log(globalBoard.bombCount + " " + globalFlags.length + revealedBombs);
+    console.log(info);
+    info += "Mines Remaining: " + (globalBoard.bombCount - globalFlags.length - revealedBombs) + "<br>";
+    console.log(info);
     $("#infoBox").html(info);
 }
 

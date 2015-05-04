@@ -26,7 +26,7 @@ public abstract class Gamer extends Player {
    * An abstract method that converts the Gamer to a GamePlayer.
    * @param data The BoardData object where a player (especially an AI) can
    *        find out information about the board object.
-   * @param aiPlayers
+   * @param aiPlayers The AIPlayers to be added to the game.
    * @return The GamePlayer corresponding to the Gamer, which can be used
    *         in-game.
    */
