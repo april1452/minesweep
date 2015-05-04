@@ -60,12 +60,6 @@ public class TerritoryGame extends Game {
       int newLives = lives.get(teamId) - 1;
       lives.put(teamId, newLives);
 
-      List<String> allHumans = new ArrayList<>();
-      for (PlayerTeam tempTeam : getTeams().values()) {
-        allHumans.addAll(tempTeam.getHumans());
-      }
-      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(), allHumans));
-
       if (newLives <= 0) {
         team.setIsLoser();
         updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(teamId),
@@ -105,7 +99,7 @@ public class TerritoryGame extends Game {
           }
         }
         PlayerTeam winner = teams.get(winningTeamId);
-        winner.getIsWinner();
+        winner.setIsWinner();
         updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(teamId),
             winner.getHumans()));
         for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
@@ -119,8 +113,13 @@ public class TerritoryGame extends Game {
     }
 
     if (response != MoveResponse.INVALID) {
-      updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(), team
-          .getHumans()));
+      List<String> allHumans = new ArrayList<>();
+      for (PlayerTeam tempTeam : getTeams().values()) {
+        allHumans.addAll(tempTeam.getHumans());
+      }
+      updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(), allHumans));
+      updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(),
+          allHumans));
     }
 
     return updates;

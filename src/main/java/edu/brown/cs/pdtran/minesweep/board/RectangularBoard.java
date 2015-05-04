@@ -9,6 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
+import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
 /**
  * This class adds an interesting element by linking some Tiles on the
@@ -113,6 +114,11 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
   }
 
   @Override
+  protected BoardType getBoardType() {
+    return BoardType.RECTANGULAR;
+  }
+
+  @Override
   public JsonElement toJson() {
     JsonObject boardJson = new JsonObject();
     boardJson.addProperty("width", getWidth());
@@ -133,9 +139,7 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
       }
     }
     boardJson.add("tiles", tilesJson);
-    String boardType = this.getClass().getSimpleName();
-    // boardType = boardType.substring(boardType.indexOf('.'));
-    boardJson.addProperty("type", boardType);
+    boardJson.addProperty("type", getBoardType().toString());
     return boardJson;
   }
 }
