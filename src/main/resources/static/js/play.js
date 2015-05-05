@@ -55,6 +55,8 @@ server_ip = server_ip.substring(0, server_ip.length - 5);
 var socket = new WebSocket("ws://" + server_ip + ":7777");
 var hexagon_grid;
 
+$('#teams').hide();
+
 // set up cookies js
 socket.onopen = function(event) {
     $.getScript("../js/js.cookie.js", function(){
@@ -64,16 +66,14 @@ socket.onopen = function(event) {
             minesweepId: $.cookie("minesweepId"),
             minesweepRoomId: $.cookie("minesweepRoomId"),
             minesweepName: $.cookie("minesweepName")
-
         };  
         socket.send(JSON.stringify(sendData));
     });
+    $('#teams').show();
 }
 
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
-    
-    console.log(responseJson);
 
     var updateType = responseJson.updateType;
 

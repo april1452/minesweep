@@ -27,6 +27,7 @@ public class EntangledBoard extends DefaultBoard implements Board {
     super(width, height, mines);
     neighborTable = HashBasedTable.create();
     assert (neighborTable != null);
+    overWrittenTiles = HashBasedTable.create();
     reconfigureBoard(getWidth() * getHeight() / 10);
   }
 
@@ -67,8 +68,8 @@ public class EntangledBoard extends DefaultBoard implements Board {
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
           super.getAdjacentTiles(row, col).stream()
-              .filter((t) -> t.isBomb() == getTile(row, col).isBomb())
-              .collect(Collectors.toList());
+          .filter((t) -> t.isBomb() == getTile(row, col).isBomb())
+          .collect(Collectors.toList());
       if (candidateList.isEmpty()) {
         continue;
       }
