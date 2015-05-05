@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.metagame.Team;
@@ -242,15 +243,11 @@ public class PlayerTeam extends Team implements BoardData {
     }
   }
 
-<<<<<<< HEAD
-  public boolean[][] getFlaggedTiles() {
-=======
   /**
    * Gets a list of all flagged tiles on that given team.
    * @return A List of Tile objects that have flags on them.
    */
-  public List<Tile> getFlaggedTiles() {
->>>>>>> ae98d62cf39d771d9edd72cc96e44a5328754dee
+  public boolean[][] getFlaggedTiles() {
     return flaggedTiles;
   }
 }

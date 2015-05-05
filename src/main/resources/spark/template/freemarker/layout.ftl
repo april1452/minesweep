@@ -30,10 +30,13 @@
     </div>
     <div class="modalplate-content">
         Classic mode<br>
+        Teams race to complete a simple Minesweeper board. Each team has the same board setup, and the a team wins if it finishes the board first or its opponents run out of lives.<br><br>
         Layers mode<br>
+        Teams are given a stack of five boards to race through. The first team to complete all of its boards without losing its lives is the winner.<br><br>
         Territory mode<br>
-        Paths mode<br>
-        Shake mode<br>
+        Teams attempt to conquer the most territory on a single board of Minesweeper. Each  space a team reveals without a mine is added that that team's territory and the team that finds the most spaces wins.<br><br>
+        Timer mode<br>
+        Teams must race against the clock to complete their boards! Each team starts with one minute. Checking a square without a mine adds five seconds to the clock, but hitting a mine subtracts thirty!
     </div>
 	</div>
 
@@ -44,7 +47,7 @@
         <h5>minesweep+</h5>
     </div>
     <div class="modalplate-content">
-        Created for Professor John Jannotti's Intro to Software Engineering course at Brown University.<br><br> © 2015 Aravind Elangovan, Clayton Sanford, Phuc Anh (April) Tran, Aaron Gokaslan. All rights reserved.
+        © 2015 Aravind Elangovan, Clayton Sanford, Phuc Anh (April) Tran, Aaron Gokaslan. All rights reserved. Created for Professor John Jannotti's Intro to Software Engineering course at Brown University.<br><br><center><img src="images/bsr.jpg" style="width: 50%"></center>
     </div>
 	</div>
 

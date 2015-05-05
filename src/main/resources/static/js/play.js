@@ -24,10 +24,9 @@ var globalFlags;
 
 var _ctx;
 
-$("#board").hide();
+$("#game").hide();
 $("#win").hide();
 $("#lose").hide();
-//$("#start").hide();
 
 var mineImage = new Image();
 mineImage.src = "/images/mine.png";
@@ -76,7 +75,7 @@ socket.onmessage = function (event) {
     else if (updateType === "INIT_BOARD") {
         init();
         drawBoard(responseJson.data);
-        $("#board").show();
+        $("#game").show();
         $("#teams").hide();
 
     }
@@ -244,8 +243,8 @@ function init() {
     canvasBoard.height = CANVAS_Y;
     canvasBoard.width = CANVAS_X;
     _ctx = canvasBoard.getContext("2d");
-    $("#board").show();
-    $("#start").hide();
+    //_ctx.scale(.9,.9);
+    $("#game").show();
     $("#teams").hide();
     
 }
@@ -679,11 +678,11 @@ function click(clickType) {
 }
 
 function win() {
-    $("#board").hide();
+    $("#game").hide();
     $("#win").show();
 }
 
 function lose() {
-    $("#board").hide();
+    $("#game").hide();
     $("#lose").show();
 }

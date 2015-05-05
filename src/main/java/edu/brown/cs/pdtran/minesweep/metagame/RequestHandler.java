@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.google.gson.JsonPrimitive;
+
 import edu.brown.cs.pdtran.minesweep.games.Game;
 import edu.brown.cs.pdtran.minesweep.games.GameFactory;
 import edu.brown.cs.pdtran.minesweep.move.Move;
@@ -55,8 +56,8 @@ public class RequestHandler {
         new ArrayList<Entry<String, SessionInfo>>();
     for (Entry<String, Session> entry : sessions.entrySet()) {
       sessionsInfo
-          .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(
-              entry.getKey(), entry.getValue().getRoomInfo()));
+      .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(
+          entry.getKey(), entry.getValue().getRoomInfo()));
     }
     return sessionsInfo;
   }
@@ -129,7 +130,7 @@ public class RequestHandler {
             return updates;
           } else if (team.getSize() < smallestSize
               || (team.getSize() == smallestSize && team.getName()
-                  .compareTo(smallestTeam.getValue().getName()) < 0)) {
+              .compareTo(smallestTeam.getValue().getName()) < 0)) {
             smallestTeam = entry;
           }
         }
@@ -224,7 +225,7 @@ public class RequestHandler {
     List<String> playersToUpdate = new ArrayList<>();
     playersToUpdate.add(gamerId);
     return new Update(UpdateType.ERROR, new JsonPrimitive(
-        "The team you tried to join was full."), playersToUpdate);
+        "Woops, this team is full."), playersToUpdate);
   }
 
   private Update getTeamAssignment(String teamId, String gamerId) {
