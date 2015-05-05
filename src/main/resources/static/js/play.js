@@ -341,7 +341,6 @@ function drawBoard(data) {
                 _ctx.strokeStyle = NORMAL_BORDER;
                 _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth  - 2, tileHeight  - 2);
             }
-
         });
     } else if (board.type == "TRIANGULAR"){
 
@@ -382,7 +381,7 @@ function drawBoard(data) {
         });
    
         _ctx.stroke();
-    } else if (board.type = "HEXAGONAL"){
+    } else if (board.type == "HEXAGONAL"){
     	console.log("hexagonal");
         drawHexGrid(hexagon_grid, _ctx);
         $.each(tiles, function(index, tile)
@@ -402,7 +401,7 @@ function drawBoard(data) {
             	hex.fillColor = UNEXPLORED;
             }
             hex.Id = tile.adjacentBombs;
-            hexIsFlag = isFlag(globalFlags, tile.column, tile.row);
+            var hexIsFlag = isFlag(globalFlags, tile.column, tile.row);
             //ctx, color, isMine, isFlag, visited, numMines
             hex.preDraw(_ctx, hex.fillColor, tile.isBomb, hexIsFlag, tile.visited, tile.adjacentBombs);
             //hex.preDraw(_ctx, hex.fillColor);
@@ -410,7 +409,7 @@ function drawBoard(data) {
         });
         _ctx.stroke();
         //drawHexGrid(hexagon_grid, _ctx);
-    } else if (board.type = "RECTANGULAR"){
+    } else if (board.type == "RECTANGULAR"){
     	console.log("Drawing Rectangle");
         console.log(board);
 
@@ -450,6 +449,46 @@ function drawBoard(data) {
             }
 
         });
+    } else if (board.type == "ENTANGLED"){
+        _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
+
+        $.each(tiles, function(index, tile) {
+            var tileX = tile.column * tileWidth;
+            var tileY = tile.row * tileHeight;
+            if (tile.visited) {
+                if(tile.isBomb) {
+                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.drawImage(mineImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
+                    _ctx.strokeStyle = NORMAL_BORDER;
+                    _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
+                } else {
+                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+
+                    _ctx.strokeStyle = BOMB_BORDER;
+                    _ctx.lineWidth = 2;
+                    _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
+                    _ctx.lineWidth = 1;
+                    if (tile.adjacentBombs > 0) {
+                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
+                        _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
+                        _ctx.textAlign = "center";
+                        _ctx.textBaseline = "middle";
+                        _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);
+                    }
+                }
+            } else {
+                _ctx.fillStyle = UNEXPLORED;
+                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                if (isFlag(flags, tile.column, tile.row)) {
+                    _ctx.drawImage(flagImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
+                }
+                _ctx.strokeStyle = NORMAL_BORDER;
+                _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth  - 2, tileHeight  - 2);
+            }
+        });
+        
     } else {
         console.log("I had a stroke. Undefined board");
     }
@@ -682,7 +721,7 @@ function click(clickType) {
                 });
             }
         }
-    } else if (globalBoard.type = "HEXAGONAL"){
+    } else if (globalBoard.type == "HEXAGONAL"){
         var p = new HT.Point(x, y);
         var hex = hexagon_grid.GetHexAt(p);
         var row = hex.PathCoOrdY;
