@@ -242,15 +242,11 @@ public class PlayerTeam extends Team implements BoardData {
     }
   }
 
-<<<<<<< HEAD
   public boolean[][] getFlaggedTiles() {
-=======
-  /**
-   * Gets a list of all flagged tiles on that given team.
-   * @return A List of Tile objects that have flags on them.
-   */
-  public List<Tile> getFlaggedTiles() {
->>>>>>> ae98d62cf39d771d9edd72cc96e44a5328754dee
+    /**
+     * Gets a list of all flagged tiles on that given team.
+     * @return A List of Tile objects that have flags on them.
+     */
     return flaggedTiles;
   }
 }
