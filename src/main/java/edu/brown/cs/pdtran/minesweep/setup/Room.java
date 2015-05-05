@@ -117,15 +117,16 @@ public class Room extends Session {
     List<AIGamer> aiGamers = team.getAis();
     List<String> toRemove = new ArrayList<>();
     for (Entry<String, Gamer> entry : team.getPlayers().entrySet()) {
-      if (aiGamers.contains(entry.getValue())) {
-        toRemove.add(entry.getKey());
+      for (AIGamer ai : aiGamers) {
+        if (entry.getValue().equals(ai)) {
+          toRemove.add(entry.getKey());
+        }
       }
     }
-    team.getAis().clear();
+    aiGamers.clear();
     for (String removeId : toRemove) {
       team.getPlayers().remove(removeId);
     }
-
   }
 
   public void removeHuman(String teamId, String userId) {
