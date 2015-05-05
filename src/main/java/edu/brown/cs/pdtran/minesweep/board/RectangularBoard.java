@@ -21,7 +21,7 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  * @author agokasla
  */
 public class RectangularBoard extends DefaultBoard implements Board,
-Cloneable {
+    Cloneable {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
   private Table<Integer, Integer, Tile> overWrittenTiles;
@@ -55,11 +55,15 @@ Cloneable {
    * @param grid Allows you to specify a grid.
    * @param neighborTile A table that contains neighbors mapped to a
    *        certain spot on the board.
+   * @param overWrittenTile A table that contains Tiles that have been
+   *        overwritten.
    */
   public RectangularBoard(Tile[][] grid,
-      Table<Integer, Integer, List<Tile>> neighborTile) {
+      Table<Integer, Integer, List<Tile>> neighborTile,
+      Table<Integer, Integer, Tile> overWrittenTiles) {
     this(grid);
     this.neighborTable = neighborTile;
+    this.overWrittenTiles = overWrittenTiles;
     assert (neighborTable != null);
   }
 
@@ -73,11 +77,11 @@ Cloneable {
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
           super
-              .getAdjacentTiles(row, col)
-              .stream()
-              .filter(
-                  (t) -> (t.getColumn() == col || t.getRow() == row)
-                      && !t.isBomb()).collect(Collectors.toList());
+          .getAdjacentTiles(row, col)
+          .stream()
+          .filter(
+              (t) -> (t.getColumn() == col || t.getRow() == row)
+              && !t.isBomb()).collect(Collectors.toList());
       if (candidateList.isEmpty()) {
         continue;
       }
@@ -123,7 +127,8 @@ Cloneable {
       }
     }
     return new RectangularBoard(newGrid,
-        HashBasedTable.create(neighborTable));
+        HashBasedTable.create(neighborTable),
+        HashBasedTable.create(overWrittenTiles));
   }
 
   @Override
@@ -165,7 +170,7 @@ Cloneable {
     }
     boardJson.add("neighborTable",
         (new JsonParser()).parse(gson.toJson(neighborTable))
-            .getAsJsonObject());
+        .getAsJsonObject());
     (new JsonParser()).parse(gson.toJson(neighborMap)).getAsJsonObject();
     return boardJson;
   }

@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
@@ -16,6 +15,7 @@ import edu.brown.cs.pdtran.minesweep.tile.Tile;
 public class EntangledBoard extends DefaultBoard implements Board {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
+  private Table<Integer, Integer, Tile> overWrittenTiles;
 
   /**
    * The constructor.
@@ -41,6 +41,23 @@ public class EntangledBoard extends DefaultBoard implements Board {
   }
 
   /**
+   * The constructor.
+   * @param grid Allows you to specify a grid.
+   * @param neighborTile A table that contains neighbors mapped to a
+   *        certain spot on the board.
+   * @param overWrittenTile A table that contains Tiles that have been
+   *        overwritten.
+   */
+  public EntangledBoard(Tile[][] grid,
+      Table<Integer, Integer, List<Tile>> neighborTile,
+      Table<Integer, Integer, Tile> overWrittenTiles) {
+    this(grid);
+    this.neighborTable = neighborTile;
+    this.overWrittenTiles = overWrittenTiles;
+    assert (neighborTable != null);
+  }
+
+  /**
    * Reconfigures the grid as you see fit.
    * @param mergeNum The number you wish to merge together.
    */
@@ -50,8 +67,8 @@ public class EntangledBoard extends DefaultBoard implements Board {
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
           super.getAdjacentTiles(row, col).stream()
-          .filter((t) -> t.isBomb() == getTile(row, col).isBomb())
-          .collect(Collectors.toList());
+              .filter((t) -> t.isBomb() == getTile(row, col).isBomb())
+              .collect(Collectors.toList());
       if (candidateList.isEmpty()) {
         continue;
       }
@@ -94,6 +111,8 @@ public class EntangledBoard extends DefaultBoard implements Board {
         newGrid[i][j] = grid[i][j].clone();
       }
     }
-    return new EntangledBoard(newGrid);
+    return new EntangledBoard(newGrid,
+        HashBasedTable.create(neighborTable),
+        HashBasedTable.create(overWrittenTiles));
   }
 }

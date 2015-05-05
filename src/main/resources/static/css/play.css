@@ -33,6 +33,10 @@ div.flick-inner {
 	width: 20% !important;
 }
 
+#board {
+	float: left;
+}
+
 #infoBox {
 	padding-top: 5px;
 	padding-left: 10px;

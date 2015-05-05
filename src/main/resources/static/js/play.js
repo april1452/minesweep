@@ -207,7 +207,7 @@ function drawRoom(responseJson) {
         });
 
         
-        
+        // switch teach button
         $.each(teams, function(i, team) {
             $('#buttonId' + i).click(function(){
                 joinRoom(i);
@@ -467,7 +467,6 @@ function drawBoard(data) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = EXPLORED;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-<<<<<<< Updated upstream
                     _ctx.drawImage(mineImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
                     _ctx.strokeStyle = NORMAL_BORDER;
                     _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
@@ -755,21 +754,15 @@ function click(clickType) {
 }
 
 function win() {
-<<<<<<< HEAD
     $("#game").hide();
-=======
     $("#board").hide();
     $("#infoBox").hide();
->>>>>>> f49fd58e8dd076a4d31f11549f416bb1e01e4cc4
     $("#win").show();
 }
 
 function lose() {
-<<<<<<< HEAD
     $("#game").hide();
-=======
     $("#board").hide();
     $("#infoBox").hide();
->>>>>>> f49fd58e8dd076a4d31f11549f416bb1e01e4cc4
     $("#lose").show();
 }
