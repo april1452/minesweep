@@ -223,9 +223,9 @@ function drawRoom(responseJson) {
         // have to readd the sidebar; css issues
         var sidebar;
         if (isHost) {
-            sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a class="button line-white large" id="disbandButton">Disband</a></div>';
+            sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a href="/" class="button line-white large" id="disbandButton">Disband</a></div>';
         } else {
-            sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="leaveButton">Leave Room</a></div>';
+            sidebar = '<div id="start" class="span-2"><a href="/" class="button line-white large" id="leaveButton">Leave Room</a></div>';
         }
 
         $("#teams").html(sidebar + innerBox);
