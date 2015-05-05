@@ -165,6 +165,7 @@ function drawRoom(responseJson) {
         var innerBox = "";
         
         var roomInfo = responseJson.data;
+        var isHost = roomInfo.isHost;
 
         var teams = roomInfo.teams;
 
@@ -189,10 +190,19 @@ function drawRoom(responseJson) {
             innerBox += '<a class="button purple" id="buttonId' + teamId + '">' + "Join Team</a></div>";  
             // choose ai difficulty modal
             innerBox += '<div class="modalplate" data-modal-id="ai-choose-'+ teamId +'"><div class="modalplate-title-bar"><a class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="ai span-2"><a class="button aqua large icon close" id="easy'+ teamId +'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+ teamId +'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+ teamId +'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+ teamId +'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
+            // remove all ais
+            if (isHost) {
+                innerBox += '<a class="button aqua" id="removeAI-' + teamId + '">' + "Add AI</a><br>";
+            }
         });
 
         // have to readd the sidebar; css issues
-        var sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a class="button line-white large" id="disbandButton">Disband</a></div>'
+        var sidebar;
+        if (isHost) {
+            sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a class="button line-white large" id="disbandButton">Disband</a></div>';
+        } else {
+            sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="leaveButton">Leave Room</a></div>';
+        }
 
         $("#teams").html(sidebar + innerBox);
         
@@ -209,8 +219,46 @@ function drawRoom(responseJson) {
             });
         });
 
+        $("#disbandButton").click(function() {
+            console.log('disband button clicked');
+            $.getScript("../js/js.cookie.js", function(){
+                var sendData = {
+                    requestType: "DISBAND_ROOM",
+                    minesweepId: $.cookie("minesweepId"),
+                    minesweepRoomId: $.cookie("minesweepRoomId")
+                };  
+                socket.send(JSON.stringify(sendData));
+            });
+        });
+
+        $("#leaveButton").click(function() {
+            console.log('leave button clicked');
+            $.getScript("../js/js.cookie.js", function(){
+                var sendData = {
+                    requestType: "LEAVE_ROOM",
+                    minesweepId: $.cookie("minesweepId"),
+                    minesweepTeamId: $.cookie("minesweepTeamId"),
+                    minesweepRoomId: $.cookie("minesweepRoomId")
+                };  
+                socket.send(JSON.stringify(sendData));
+            });
+        });
         
-        // switch teach button
+        $.each(teams, function(i, team) {
+            $('#removeAI-' + i).click(function(){
+               $.getScript("../js/js.cookie.js", function(){
+                    var sendData = {
+                        requestType: "REMOVE_AIS",
+                        minesweepId: $.cookie("minesweepId"),
+                        minesweepTeamId: $.cookie("minesweepTeamId"),
+                        minesweepRoomId: $.cookie("minesweepRoomId")
+                    };  
+                    socket.send(JSON.stringify(sendData));
+                }); 
+            });
+        });   
+
+        // switch team button
         $.each(teams, function(i, team) {
             $('#buttonId' + i).click(function(){
                 joinRoom(i);
@@ -484,7 +532,7 @@ function drawBoard(data) {
                     _ctx.lineWidth = 1;
                     var output = "";
                     if (tile.adjacentBombs > 0) {
-                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);]
+                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
                         output+= tile.adjacentBombs;
                     }
                     var link = board.neighborTable[neighbor.row][neighbor.col];
@@ -495,7 +543,7 @@ function drawBoard(data) {
                     _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
                     _ctx.textAlign = "center";
                     _ctx.textBaseline = "middle";
-                    _ctx.fillText(, tileX + tileWidth / 2, tileY + tileHeight / 2);
+                    _ctx.fillText(tileX + tileWidth / 2, tileY + tileHeight / 2);
 
                 }
             } else {
