@@ -422,37 +422,72 @@ function drawBoard(data) {
     } else if (board.type == "RECTANGULAR"){
     	console.log("Drawing Rectangle");
         console.log(board);
+        tilesArray = board.tilesArray;
 
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
+            var x = index % globalBoard.width;
+            var y = Math.floor(index / globalBoard.width);
+
             var tileX = index % globalBoard.width * tileWidth;
             var tileY = Math.floor(index / globalBoard.width) * tileHeight;
+            if (tilesArray[x][y] === null) {
+                var newWidth = tileWidth;
+                var newHeight = tileHeight;
+                var newX = tileX;
+                var newY = tileY;
+            } else {
+                var otherTile = tilesArray[x][y];
+                var otherX = otherTile.column;
+                var otherY = otherTile.row;
+                if (x < otherX) {
+                    var newWidth = tileWidth * 2;
+                    var newHeight = tileHeight;
+                    var newX = tileX;
+                    var newY = tileY;
+                } else if (x > otherX) {
+                    var newWidth = tileWidth * 2;
+                    var newHeight = tileHeight;
+                    var newX = tileX - tileWidth;
+                    var newY = tileY;
+                } else if (y > otherY) {
+                    var newWidth = tileWidth;
+                    var newHeight = tileHeight * 2;
+                    var newX = tileX;
+                    var newY = tileY;
+                } else if (y < otherY) {
+                    var newWidth = tileWidth;
+                    var newHeight = tileHeight * 2;
+                    var newX = tileX;
+                    var newY = tileY - tileHeight;
+                }
+            }
             if (tile.visited) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = EXPLORED;
-                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.fillRect(newX, newY, newWidth, newHeight);
                     _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
                     _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeRect(newX, newY, newWidth, newHeight);
                 } else {
                     _ctx.fillStyle = EXPLORED;
-                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.fillRect(newX, newY, newWidth, newHeight);
                     _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeRect(newX, newY, newWidth, newHeight);
                     if (tile.adjacentBombs > 0) {
                         _ctx.fillStyle = getTextColor(tile.adjacentBombs);
                         _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
                         _ctx.textAlign = "center";
                         _ctx.textBaseline = "middle";
-                        _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);
+                        _ctx.fillText(tile.adjacentBombs, newX + newWidth / 2, newY + newHeight / 2);
                     }
                 }
             } else {
                 _ctx.fillStyle = UNEXPLORED;
-                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                _ctx.fillRect(newX, newY, newWidth, newHeight);
                 _ctx.strokeStyle = NORMAL_BORDER;
-                _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                _ctx.strokeRect(newX, newY, newWidth, newHeight);
                 /*if (isFlag()) {
                     _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
                 }*/
