@@ -5,5 +5,5 @@ package edu.brown.cs.pdtran.minesweep.types;
  * @author Clayton Sanford
  */
 public enum GameMode {
-  CLASSIC, LAYERS, TERRITORY;
+  CLASSIC, LAYERS, TERRITORY, TIMER
 }

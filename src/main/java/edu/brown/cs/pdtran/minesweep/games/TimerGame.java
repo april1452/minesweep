@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -14,6 +15,7 @@ import com.google.gson.JsonPrimitive;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.board.BoardFactory;
 import edu.brown.cs.pdtran.minesweep.metagame.Update;
+import edu.brown.cs.pdtran.minesweep.metagame.UpdateSender;
 import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
@@ -23,31 +25,33 @@ import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 import edu.brown.cs.pdtran.minesweep.types.UpdateType;
 
-/**
- * The class that represents code needed for the layers game mode.
- * <p>
- * In this game mode, each team solves a stack of copies of the same
- * boards, and the winning team either is the team that lasts the longest
- * or is the team that finishes all boards fist.
- * @author Clayton Sanford
- */
-public class LayersGame extends Game {
+public class TimerGame extends Game {
+  UpdateSender updateSender;
+  private Timer timer;
+  private ConcurrentMap<String, PlayerTimer> timers;
 
-  private ConcurrentMap<String, Integer> lives;
-  private static final int LAYERS_COUNT = 5;
+  private static final long INIT_TIME_MILLIS = 60000;
+  private static final long MINE_LOSS_MILLIS = 20000;
+  private static final long EXPLORE_GAIN_MILLIS = 5000;
+
 
   /**
-   * A constructor for a Layers Game.
+   * A constructor for a ClassicGame.
    * @param room Uses a room with game information to generate the game
    *        object.
    */
-  public LayersGame(Room room) {
+  public TimerGame(Room room, UpdateSender updateSender) {
     super(room);
-    System.out.println("MADE LAYERS GAME");
-    lives = new ConcurrentHashMap<String, Integer>();
-    int teamLives = getSpecs().getTeamLives();
+    this.updateSender = updateSender;
+    timers = new ConcurrentHashMap<String, PlayerTimer>();
+    timer = new Timer();
+
     for (String teamId : getTeams().keySet()) {
-      lives.put(teamId, teamLives);
+      PlayerTimer playerTimer =
+          new PlayerTimer(this, teamId, System.currentTimeMillis(),
+              INIT_TIME_MILLIS);
+      timer.schedule(playerTimer, INIT_TIME_MILLIS);
+      timers.put(teamId, playerTimer);
     }
   }
 
@@ -57,49 +61,45 @@ public class LayersGame extends Game {
     PlayerTeam team = teams.get(teamId);
     MoveResponse response = team.makeMove(m);
     if (response == MoveResponse.MINE) {
-      int newLives = lives.get(teamId) - 1;
-      lives.put(teamId, newLives);
-
-      if (newLives <= 0) {
-        team.setIsLoser();
-        updates.add(new Update(UpdateType.DEFEAT,
-            new JsonPrimitive(teamId),
-            team.getHumans()));
-
-        int numPlaying = teams.size();
-        for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
-          if (entry.getValue().getIsLoser()) {
-            numPlaying--;
-          }
-        }
-        if (numPlaying == 1) {
-          for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
-            PlayerTeam otherTeam = entry.getValue();
-            if (!otherTeam.getIsLoser()) {
-              otherTeam.setIsWinner();
-              updates.add(new Update(UpdateType.VICTORY,
-                  new JsonPrimitive(
-                      entry.getKey()), otherTeam.getHumans()));
-            }
-          }
-        }
+      PlayerTimer oldTimer = timers.get(teamId);
+      oldTimer.cancel();
+      long elapsedTime =
+          System.currentTimeMillis() - oldTimer.getStartTime();
+      long remainingTime = oldTimer.getDelay() - elapsedTime;
+      long newDelay = remainingTime - MINE_LOSS_MILLIS;
+      if (newDelay <= 0) {
+        updates.addAll(getLossUpdate(teamId));
       }
+      PlayerTimer newTimer =
+          new PlayerTimer(this, teamId, System.currentTimeMillis(),
+              newDelay);
+      timer.schedule(newTimer, newDelay);
+      timers.put(teamId, newTimer);
     } else if (response == MoveResponse.NOT_MINE) {
+      PlayerTimer oldTimer = timers.get(teamId);
+      oldTimer.cancel();
+      long elapsedTime =
+          System.currentTimeMillis() - oldTimer.getStartTime();
+      long remainingTime = oldTimer.getDelay() - elapsedTime;
+      long newDelay = remainingTime + EXPLORE_GAIN_MILLIS;
+      PlayerTimer newTimer =
+          new PlayerTimer(this, teamId, System.currentTimeMillis(),
+              newDelay);
+      timer.schedule(newTimer, newDelay);
+      timers.put(teamId, newTimer);
+
       Board board = team.getCurrentBoard();
 
-      if (board.isWinningBoard() && !team.nextBoard()) {
-        if (!team.nextBoard()) {
-          team.setIsWinner();
-          updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(
-              teamId),
-              team.getHumans()));
-          for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
-            if (entry.getKey() != teamId) {
-              entry.getValue().setIsLoser();
-              updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(
-                  entry
-                  .getKey()), entry.getValue().getHumans()));
-            }
+      if (board.isWinningBoard()) {
+        timer.purge();
+        team.setIsWinner();
+        updates.add(new Update(UpdateType.VICTORY, new JsonPrimitive(
+            teamId), team.getHumans()));
+        for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
+          if (entry.getKey() != teamId) {
+            entry.getValue().setIsLoser();
+            updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(
+                entry.getKey()), entry.getValue().getHumans()));
           }
         }
       }
@@ -110,6 +110,7 @@ public class LayersGame extends Game {
       for (PlayerTeam tempTeam : getTeams().values()) {
         allHumans.addAll(tempTeam.getHumans());
       }
+
       JsonArray colorsJson = new JsonArray();
       for (int i = 0; i < colors.length; i++) {
         JsonArray col = new JsonArray();
@@ -127,11 +128,43 @@ public class LayersGame extends Game {
               .getHumans()));
       updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(),
           allHumans));
+
     }
 
     return updates;
   }
 
+  public void timerLoss(String teamId) {
+    updateSender.sendUpdates(getLossUpdate(teamId));
+  }
+
+  private List<Update> getLossUpdate(String teamId) {
+    List<Update> updates = new ArrayList<Update>();
+    PlayerTeam team = getTeams().get(teamId);
+    team.setIsLoser();
+    updates.add(new Update(UpdateType.DEFEAT,
+        new JsonPrimitive(teamId), team.getHumans()));
+
+    int numPlaying = teams.size();
+    for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
+      if (entry.getValue().getIsLoser()) {
+        numPlaying--;
+      }
+    }
+    if (numPlaying == 1) {
+      timer.purge();
+      for (Entry<String, PlayerTeam> entry : getTeams().entrySet()) {
+        PlayerTeam otherTeam = entry.getValue();
+        if (!otherTeam.getIsLoser()) {
+          otherTeam.setIsWinner();
+          updates
+          .add(new Update(UpdateType.VICTORY, new JsonPrimitive(
+              entry.getKey()), otherTeam.getHumans()));
+        }
+      }
+    }
+    return updates;
+  }
 
   /**
    * Gets the number of moves remaining.
@@ -167,11 +200,8 @@ public class LayersGame extends Game {
         new ConcurrentHashMap<String, PlayerTeam>();
     List<Board> boardsToPlay = new ArrayList<>();
     int[] dims = specs.getBoardDims();
-    for (int i = 0; i < LAYERS_COUNT; i++) {
-      boardsToPlay.add(BoardFactory.makeBoard(getSpecs().getBoardType(),
-          dims[0], dims[1], specs.getNumMines()));
-    }
-
+    boardsToPlay.add(BoardFactory.makeBoard(getSpecs().getBoardType(),
+        dims[0], dims[1], specs.getNumMines()));
     for (Map.Entry<String, TeamFormation> entry : preTeams.entrySet()) {
       List<Board> copy = new ArrayList<>();
       for (Board board : boardsToPlay) {
@@ -190,7 +220,11 @@ public class LayersGame extends Game {
       PlayerTeam team = entry.getValue();
       JsonObject teamJson = new JsonObject();
       teamJson.addProperty("name", team.getName());
-      teamJson.addProperty("lives", lives.get(entry.getKey()));
+      PlayerTimer timer = timers.get(entry.getKey());
+      long elapsedTime =
+          System.currentTimeMillis() - timer.getStartTime();
+      long remainingTime = timer.getDelay() - elapsedTime;
+      teamJson.addProperty("time", remainingTime);
       gameData.add(entry.getKey(), teamJson);
     }
     return gameData;

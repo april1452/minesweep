@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -18,7 +19,6 @@ import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
 import edu.brown.cs.pdtran.minesweep.setup.Room;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
-import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 import edu.brown.cs.pdtran.minesweep.types.UpdateType;
@@ -31,7 +31,12 @@ import edu.brown.cs.pdtran.minesweep.types.UpdateType;
 public class TerritoryGame extends Game {
 
   private ConcurrentMap<String, Integer> lives;
-  private ConcurrentMap<String, List<Tile>> territory;
+  private Map<String, String> teamColors;
+  private Map<String, Integer> numTerritories;
+
+  public static final String[] COLOR_CHOICES = {
+    "Cyan", "LightGreen", "LightSalmon", "PaleVioletRed"
+  };
 
   /**
    * Constructs a TerritoryGame.
@@ -41,13 +46,18 @@ public class TerritoryGame extends Game {
   public TerritoryGame(Room room) {
     super(room);
     lives = new ConcurrentHashMap<String, Integer>();
+    teamColors = new ConcurrentHashMap<String, String>();
+    numTerritories = new ConcurrentHashMap<String, Integer>();
+
     int teamLives = getSpecs().getTeamLives();
+
+
+    int i = 0;
     for (String teamId : getTeams().keySet()) {
       lives.put(teamId, teamLives);
-    }
-    territory = new ConcurrentHashMap<String, List<Tile>>();
-    for (String teamId : getTeams().keySet()) {
-      territory.put(teamId, new ArrayList<Tile>());
+      teamColors.put(teamId, COLOR_CHOICES[i]);
+      numTerritories.put(teamId, 0);
+      i++;
     }
   }
 
@@ -56,9 +66,16 @@ public class TerritoryGame extends Game {
     List<Update> updates = new ArrayList<>();
     PlayerTeam team = teams.get(teamId);
     MoveResponse response = team.makeMove(m);
+
+    int x = m.getXCoord();
+    int y = m.getYCoord();
+
     if (response == MoveResponse.MINE) {
       int newLives = lives.get(teamId) - 1;
       lives.put(teamId, newLives);
+
+      colors[x][y] = teamColors.get(teamId);
+      numTerritories.put(teamId, numTerritories.get(teamId) + 1);
 
       if (newLives <= 0) {
         team.setIsLoser();
@@ -87,15 +104,16 @@ public class TerritoryGame extends Game {
     } else if (response == MoveResponse.NOT_MINE) {
       Board board = team.getCurrentBoard();
 
-      territory.get(teamId).add(
-          board.getTile(m.getYCoord(), m.getXCoord()));
+      colors[x][y] = teamColors.get(teamId);
+      numTerritories.put(teamId, numTerritories.get(teamId) + 1);
+
 
       if (board.isWinningBoard()) {
 
         int winningTerritory = 0;
         String winningTeamId = "";
-        for (Entry<String, List<Tile>> entry : territory.entrySet()) {
-          int territoryAmount = entry.getValue().size();
+        for (Entry<String, Integer> entry : numTerritories.entrySet()) {
+          int territoryAmount = entry.getValue();
           if (territoryAmount >= winningTerritory) {
             winningTerritory = territoryAmount;
             winningTeamId = entry.getKey();
@@ -111,7 +129,7 @@ public class TerritoryGame extends Game {
             entry.getValue().setIsLoser();
             updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(
                 entry
-                .getKey()), entry.getValue().getHumans()));
+                    .getKey()), entry.getValue().getHumans()));
           }
         }
       }
@@ -119,9 +137,21 @@ public class TerritoryGame extends Game {
 
     if (response != MoveResponse.INVALID) {
       List<String> allHumans = new ArrayList<>();
+
+      JsonArray colorsJson = new JsonArray();
+      for (int i = 0; i < colors.length; i++) {
+        JsonArray col = new JsonArray();
+        for (int j = 0; j < colors[0].length; j++) {
+          col.add(new JsonPrimitive(colors[i][j]));
+        }
+        colorsJson.add(col);
+      }
+
       for (PlayerTeam tempTeam : getTeams().values()) {
-        updates.add(new Update(UpdateType.BOARD_UPDATE,
-            tempTeam.getBoardInfo(), tempTeam.getHumans()));
+        JsonObject boardInfo = tempTeam.getBoardInfo().getAsJsonObject();
+        boardInfo.add("colors", colorsJson);
+        updates.add(new Update(UpdateType.BOARD_UPDATE, boardInfo,
+            tempTeam.getHumans()));
         allHumans.addAll(tempTeam.getHumans());
       }
       updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(),
