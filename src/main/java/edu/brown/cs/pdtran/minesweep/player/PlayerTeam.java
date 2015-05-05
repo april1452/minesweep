@@ -10,7 +10,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.metagame.Team;
@@ -229,10 +228,10 @@ public class PlayerTeam extends Team implements BoardData {
     int y = m.getYCoord();
     switch (m.getMoveType()) {
       case CHECK:
-        return currentBoard.makeMove(x, y);
+        return currentBoard.makeMove(y, x);
       case FLAG:
         if (currentBoard.isWithinBoard(x, y)) {
-          Tile tile = currentBoard.getTile(x, y);
+          Tile tile = currentBoard.getTile(y, x);
           if (!tile.hasBeenVisited()) {
             flaggedTiles[x][y] = !flaggedTiles[x][y];
             return MoveResponse.FLAG;

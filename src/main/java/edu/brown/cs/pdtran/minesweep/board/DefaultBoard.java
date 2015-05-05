@@ -173,7 +173,7 @@ public class DefaultBoard implements Board, Cloneable {
   @Override
   public MoveResponse makeMove(final int row, final int column) {
     MoveResponse moveResponse;
-    if (isWithinBoard(row, column)) {
+    if (isWithinBoard(column, row)) {
       Tile target = grid[row][column];
       if (!target.hasBeenVisited()) {
         target.setVisited();
@@ -235,7 +235,6 @@ public class DefaultBoard implements Board, Cloneable {
         // return false;
         // }
         if (!currentTile.isBomb() && !currentTile.hasBeenVisited()) {
-          System.out.println(i + " " + j);
           return false;
         }
       }

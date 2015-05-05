@@ -3,7 +3,7 @@
       
 <div id="teams" class="row">
   <div id="start" class="span-2">
-    <a class="button line-white large" id="startButton">Start Game!</a>
+    <a class="button line-white large" id="startButton">Start!</a>
     <a class="button line-white large" id="disbandButton">Disband</a>
   </div>
 </div>
@@ -34,9 +34,6 @@
   </ul>
 </div>
 
-<script src="/js/HexagonTools.js"></script>
-<script src="/js/hexagon_grid.js"></script>
-<script src="/js/HexCalcs.js"></script>
 <script src="/js/play.js"></script>   
 </#assign>
 <#include "layout.ftl">

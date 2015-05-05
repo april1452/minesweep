@@ -36,7 +36,7 @@ public class AIPlayer extends GamePlayer {
   private static final double BASE_TIME = 5;
   private static final double TIME_MULTIPLIER = 25;
   private static final int MAX_DIFFICULTY = 10;
-  private static final double MISTAKE_MULTIPLIER = 0;
+  private static final double MISTAKE_MULTIPLIER = 0.001;
   private static final double FLAG_PROBABILITY = .3;
   private static final double RANDOM_SUBTRACTOR = .5;
   private static final double CUTOFF_PROBABILITY = .5;
@@ -150,17 +150,17 @@ public class AIPlayer extends GamePlayer {
               if (mb2.contains(mb1) && !mb1.getTiles().isEmpty()) {
                 mb2.subtract(mb1);
 
-                System.out.print("[" + mb2.getNumMines());
-                for (Tile t : mb2.getTiles()) {
-                  System.out
-                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
-                }
-                System.out.print("] - [" + mb1.getNumMines());
-                for (Tile t : mb1.getTiles()) {
-                  System.out
-                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
-                }
-                System.out.print("]\n");
+                // System.out.print("[" + mb2.getNumMines());
+                // for (Tile t : mb2.getTiles()) {
+                // System.out
+                // .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                // }
+                // System.out.print("] - [" + mb1.getNumMines());
+                // for (Tile t : mb1.getTiles()) {
+                // System.out
+                // .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                // }
+                // System.out.print("]\n");
 
                 needsCheck = true;
                 if (mb2.getTiles().isEmpty()) {
@@ -170,17 +170,17 @@ public class AIPlayer extends GamePlayer {
               } else if (mb1.contains(mb2) && !mb2.getTiles().isEmpty()) {
                 mb1.subtract(mb2);
 
-                System.out.print("[" + mb1.getNumMines());
-                for (Tile t : mb1.getTiles()) {
-                  System.out
-                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
-                }
-                System.out.print("] - [" + mb2.getNumMines());
-                for (Tile t : mb2.getTiles()) {
-                  System.out
-                  .print("(" + t.getRow() + "," + t.getColumn() + ")");
-                }
-                System.out.print("]\n");
+                // System.out.print("[" + mb1.getNumMines());
+                // for (Tile t : mb1.getTiles()) {
+                // System.out
+                // .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                // }
+                // System.out.print("] - [" + mb2.getNumMines());
+                // for (Tile t : mb2.getTiles()) {
+                // System.out
+                // .print("(" + t.getRow() + "," + t.getColumn() + ")");
+                // }
+                // System.out.print("]\n");
 
                 if (mb1.getTiles().isEmpty()) {
                   break;
@@ -199,8 +199,8 @@ public class AIPlayer extends GamePlayer {
 
     // Converts MineBlocks to MovePossibilities
     for (MineBlock mb : blocks) {
-      System.out.print("Block:" + mb.getNumMines() + " / "
-          + mb.getTiles().size() + " -- ");
+      // System.out.print("Block:" + mb.getNumMines() + " / "
+      // + mb.getTiles().size() + " -- ");
       double probability =
           (double) mb.getNumMines() / mb.getTiles().size();
 
@@ -208,8 +208,8 @@ public class AIPlayer extends GamePlayer {
       for (Tile adj : mb.getTiles()) {
         if (!adj.hasBeenVisited()) {
           MovePossibility mp = new MovePossibility(adj, probability);
-          System.out.print(mp.getXCoord() + ", " + mp.getYCoord() + ": "
-              + mp.getMineProbability() + " || ");
+          // System.out.print(mp.getXCoord() + ", " + mp.getYCoord() + ": "
+          // + mp.getMineProbability() + " || ");
           if (probability == 0) {
             certainNotMine.add(mp);
           } else if (probability == 1) {
@@ -268,7 +268,7 @@ public class AIPlayer extends GamePlayer {
       Tile tile = mp.getTile();
       int x = tile.getColumn();
       int y = tile.getRow();
-      if (!flaggedTiles[y][x]) {
+      if (!flaggedTiles[x][y]) {
         return MoveFactory.makeMove(mp.getXCoord(), mp.getYCoord(),
             MoveType.FLAG);
       }
@@ -285,7 +285,7 @@ public class AIPlayer extends GamePlayer {
   private Move checkTile() {
     MovePossibility likliest = null;
     if (!certainNotMine.isEmpty()) {
-      System.out.println("Certain not mine");
+      // System.out.println("Certain not mine");
       totalNotMine++;
       // likliest = certainNotMine.get(0);
       // certainNotMine.remove(0);
@@ -302,18 +302,18 @@ public class AIPlayer extends GamePlayer {
             && !m.getTile().hasBeenVisited()) {
           currentMove = m;
           probability = m.getMineProbability();
-          System.out.println(m.getXCoord() + ", " + m.getYCoord() + ": "
-              + m.getMineProbability());
+          // System.out.println(m.getXCoord() + ", " + m.getYCoord() + ": "
+          // + m.getMineProbability());
 
         }
       }
       if (!(currentMove == null) && probability <= CUTOFF_PROBABILITY) {
-        System.out.println("Uncertain ordered");
+        // System.out.println("Uncertain ordered");
         likliest = currentMove;
         totalUncertain++;
         usedUncertain.add(currentMove);
       } else {
-        System.out.println("Uncertain random");
+        // System.out.println("Uncertain random");
         return randomTile();
       }
     }
@@ -341,7 +341,7 @@ public class AIPlayer extends GamePlayer {
     while (!valid) {
       rWidth = (int) Math.ceil(Math.random() * width) - 1;
       rHeight = (int) Math.ceil(Math.random() * height) - 1;
-      Tile tile = board.getTile(rWidth, rHeight);
+      Tile tile = board.getTile(rHeight, rWidth);
       if (!tile.hasBeenVisited()) {
         valid = true;
       }
@@ -393,8 +393,7 @@ public class AIPlayer extends GamePlayer {
 
   @Override
   public PlayerType getType() {
-    // TODO Auto-generated method stub
-    return null;
+    return PlayerType.AI;
   }
 
   /**

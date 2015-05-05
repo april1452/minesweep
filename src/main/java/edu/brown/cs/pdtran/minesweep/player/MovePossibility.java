@@ -32,8 +32,8 @@ public class MovePossibility {
     this.tile = tile;
     mineCount = tile.getAdjacentBombs();
     this.mineProbability = mineProbability;
-    xCoord = tile.getRow();
-    yCoord = tile.getColumn();
+    xCoord = tile.getColumn();
+    yCoord = tile.getRow();
   }
 
   /**

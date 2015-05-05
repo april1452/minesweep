@@ -64,8 +64,7 @@ function hideInfo() {
 	$("#classic").hide();
 	$("#layers").hide();
 	$("#territory").hide();
-	$("#paths").hide();
-	$("#fsu").hide();
+	$("#timer").hide();
 };
 
 

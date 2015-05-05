@@ -25,7 +25,7 @@ import edu.brown.cs.pdtran.minesweep.types.RequestType;
  * @author Clayton
  */
 public class GameServer extends WebSocketServer implements MoveHandler,
-UpdateSender {
+    UpdateSender {
 
   private JsonParser parser;
   private ConcurrentMap<String, WebSocket> clients;
@@ -53,11 +53,6 @@ UpdateSender {
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean arg3) {
     System.out.println("A client has left.");
-    for (WebSocket client : clients.values()) {
-      if (conn == client) {
-        System.out.println("WE HAVE HIM CAPTAIN");
-      }
-    }
   }
 
   @Override
@@ -108,8 +103,8 @@ UpdateSender {
         case MAKE_MOVE:
           makeMove(sessionId, messageJson.get("minesweepTeamId")
               .getAsString(),
-              MoveFactory.makeMove(messageJson.get("row").getAsInt(),
-                  messageJson.get("col").getAsInt(),
+              MoveFactory.makeMove(messageJson.get("col").getAsInt(),
+                  messageJson.get("row").getAsInt(),
                   MoveType.valueOf(messageJson.get("moveType")
                       .getAsString())));
           break;
