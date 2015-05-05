@@ -56,8 +56,8 @@ public class RequestHandler {
         new ArrayList<Entry<String, SessionInfo>>();
     for (Entry<String, Session> entry : sessions.entrySet()) {
       sessionsInfo
-          .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(
-              entry.getKey(), entry.getValue().getRoomInfo()));
+      .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(
+          entry.getKey(), entry.getValue().getRoomInfo()));
     }
     return sessionsInfo;
   }
@@ -137,7 +137,7 @@ public class RequestHandler {
             return updates;
           } else if (team.getSize() < smallestSize
               || (team.getSize() == smallestSize && team.getName()
-                  .compareTo(smallestTeam.getValue().getName()) < 0)) {
+              .compareTo(smallestTeam.getValue().getName()) < 0)) {
             smallestTeam = entry;
           }
         }
@@ -346,6 +346,7 @@ public class RequestHandler {
       Room room = getRoom(sessionId);
       if (room.isHost(userId)) {
         rooms.remove(sessionId);
+        sessions.remove(sessionId);
         updates.add(new Update(UpdateType.SESSION_DISBAND,
             new JsonPrimitive("The session was disbanded."),
             getHumans(room)));
