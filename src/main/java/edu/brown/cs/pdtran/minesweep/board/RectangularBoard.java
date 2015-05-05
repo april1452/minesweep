@@ -1,8 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.board;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.HashBasedTable;
@@ -24,7 +22,8 @@ public class RectangularBoard extends DefaultBoard implements Board,
     Cloneable {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
-  private Table<Integer, Integer, Tile> overWrittenTiles;
+  // private Table<Integer, Integer, Tile> overWrittenTiles;
+  private Tile[][] links;
 
   /**
    * The constructor.
@@ -35,7 +34,8 @@ public class RectangularBoard extends DefaultBoard implements Board,
   public RectangularBoard(int width, int height, int mines) {
     super(width, height, mines);
     neighborTable = HashBasedTable.create();
-    overWrittenTiles = HashBasedTable.create();
+    // overWrittenTiles = HashBasedTable.create();
+    links = new Tile[getHeight()][getWidth()];
     assert (neighborTable != null);
     reconfigureBoard(getWidth() * getHeight() / 10);
   }
@@ -55,15 +55,15 @@ public class RectangularBoard extends DefaultBoard implements Board,
    * @param grid Allows you to specify a grid.
    * @param neighborTile A table that contains neighbors mapped to a
    *        certain spot on the board.
-   * @param overWrittenTile A table that contains Tiles that have been
-   *        overwritten.
+   * @param links An array of connected tiles.
    */
   public RectangularBoard(Tile[][] grid,
       Table<Integer, Integer, List<Tile>> neighborTile,
-      Table<Integer, Integer, Tile> overWrittenTiles) {
+      Tile[][] links) {
     this(grid);
     this.neighborTable = neighborTile;
-    this.overWrittenTiles = overWrittenTiles;
+    this.links = links;
+    // this.overWrittenTiles = overWrittenTiles;
     assert (neighborTable != null);
   }
 
@@ -103,8 +103,8 @@ public class RectangularBoard extends DefaultBoard implements Board,
     neighbors.addAll(super.getAdjacentTiles(row2, col2));
     neighborTable.put(row, col, neighbors);
     neighborTable.put(row2, col2, neighbors);
-    overWrittenTiles.put(row, col, tile2merge);
-    overWrittenTiles.put(row2, col2, tile);
+    links[row][col] = tile2merge;
+    // overWrittenTiles.put(row2, col2, tile);
     setTile(tile, row2, col2);
   }
 
@@ -128,7 +128,7 @@ public class RectangularBoard extends DefaultBoard implements Board,
     }
     return new RectangularBoard(newGrid,
         HashBasedTable.create(neighborTable),
-        HashBasedTable.create(overWrittenTiles));
+        links.clone());
   }
 
   @Override
@@ -159,19 +159,19 @@ public class RectangularBoard extends DefaultBoard implements Board,
     boardJson.add("tiles", tilesJson);
     boardJson.addProperty("type", getBoardType().toString());
     Gson gson = new Gson();
-    Map<String, Tile> neighborMap = new HashMap<>();
-    for (Integer i : overWrittenTiles.columnKeySet()) {
-      String output = "(" + i;
-      Map<Integer, Tile> c = overWrittenTiles.column(i);
-      for (Integer j : c.keySet()) {
-        output += "," + j + ")";
-        neighborMap.put(output, overWrittenTiles.get(i, j));
-      }
-    }
+    /*
+     * Map<String, Tile> neighborMap = new HashMap<>(); for (Integer i :
+     * overWrittenTiles.columnKeySet()) { String output = "(" + i;
+     * Map<Integer, Tile> c = overWrittenTiles.column(i); for (Integer j :
+     * c.keySet()) { output += "," + j + ")"; neighborMap.put(output,
+     * overWrittenTiles.get(i, j)); } }
+     */
     boardJson.add("neighborTable",
         (new JsonParser()).parse(gson.toJson(neighborTable))
-        .getAsJsonObject());
-    (new JsonParser()).parse(gson.toJson(neighborMap)).getAsJsonObject();
+            .getAsJsonObject());
+    boardJson.add("tilesArray",
+        (new JsonParser()).parse(gson.toJson(links))
+            .getAsJsonObject());
     return boardJson;
   }
 }

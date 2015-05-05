@@ -44,6 +44,8 @@ server_ip = server_ip.substring(0, server_ip.length - 5);
 var socket = new WebSocket("ws://" + server_ip + ":7777");
 var hexagon_grid;
 
+$('#teams').hide();
+
 // set up cookies js
 socket.onopen = function(event) {
     $.getScript("../js/js.cookie.js", function(){
@@ -53,10 +55,10 @@ socket.onopen = function(event) {
             minesweepId: $.cookie("minesweepId"),
             minesweepRoomId: $.cookie("minesweepRoomId"),
             minesweepName: $.cookie("minesweepName")
-           
         };  
         socket.send(JSON.stringify(sendData));
     });
+    $('#teams').show();
 }
 
 socket.onmessage = function (event) {
@@ -484,7 +486,7 @@ function drawBoard(data) {
                     _ctx.lineWidth = 1;
                     var output = "";
                     if (tile.adjacentBombs > 0) {
-                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);]
+                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
                         output+= tile.adjacentBombs;
                     }
                     var link = board.neighborTable[neighbor.row][neighbor.col];
@@ -495,7 +497,7 @@ function drawBoard(data) {
                     _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
                     _ctx.textAlign = "center";
                     _ctx.textBaseline = "middle";
-                    _ctx.fillText(, tileX + tileWidth / 2, tileY + tileHeight / 2);
+                    _ctx.fillText(output, tileX + tileWidth / 2, tileY + tileHeight / 2);
 
                 }
             } else {
