@@ -47,12 +47,15 @@ public class CreateRoomRoute implements Route {
     int numPlayers = Integer.parseInt(params.value("numPlayers"));
     int numLives = Integer.parseInt(params.value("numLives"));
 
+    String hostId = params.value("hostId");
+
     int[] boardDims = {boardWidth, boardHeight};
     GameSpecs specs =
-        new GameSpecs(gameMode, boardType, 1, numTeams, numPlayers, numLives,
+        new GameSpecs(gameMode, boardType, 1, numTeams, numPlayers,
+            numLives,
             boardDims, difficulty);
 
-    Room room = new Room(roomName, specs);
+    Room room = new Room(hostId, roomName, specs);
 
     String roomId = handler.addRoom(room);
 

@@ -53,7 +53,7 @@ public final class Setup {
    * @param specs The GameSpecs that define the rules of play for the game.
    * @return A Room with the corresponding attributes.
    */
-  public static Room setup(String roomName, GameSpecs specs) {
-    return new Room(roomName, specs);
+  public static Room setup(String hostId, String roomName, GameSpecs specs) {
+    return new Room(hostId, roomName, specs);
   }
 }

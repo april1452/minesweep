@@ -13,14 +13,25 @@ SIX_MINE = "#660000";
 SEVEN_MINE = "#666666";
 EIGHT_MINE = "#000000";
 
-var CANVAS_X = 800;
-var CANVAS_Y = 800;
+var SIZE = Math.min(0.9 * $(window).height(), 0.8 *$(window).width());
+
+var CANVAS_X = SIZE;
+var CANVAS_Y = SIZE;
+
+$(window).resize(function () {
+    SIZE = Math.min(0.9 * $(window).height(), 0.8 *$(window).width());
+    
+    CANVAS_X = SIZE;
+    CANVAS_Y = SIZE;
+    
+    init();
+    drawBoard();
+});
 
 var tileWidth;
 var tileHeight;
 
-var globalBoard;
-var globalFlags;
+var globalData;
 
 var _ctx;
 
@@ -44,6 +55,8 @@ server_ip = server_ip.substring(0, server_ip.length - 5);
 var socket = new WebSocket("ws://" + server_ip + ":7777");
 var hexagon_grid;
 
+$('#teams').hide();
+
 // set up cookies js
 socket.onopen = function(event) {
     $.getScript("../js/js.cookie.js", function(){
@@ -53,16 +66,14 @@ socket.onopen = function(event) {
             minesweepId: $.cookie("minesweepId"),
             minesweepRoomId: $.cookie("minesweepRoomId"),
             minesweepName: $.cookie("minesweepName")
-           
         };  
         socket.send(JSON.stringify(sendData));
     });
+    $('#teams').show();
 }
 
 socket.onmessage = function (event) {
     var responseJson = JSON.parse(event.data);
-    
-    console.log(responseJson);
 
     var updateType = responseJson.updateType;
 
@@ -79,8 +90,9 @@ socket.onmessage = function (event) {
     
     else if (updateType === "INIT_BOARD") {
         init();
-        drawBoard(responseJson.data);
-        $("#game").show();
+        globalData = responseJson.data;
+        drawBoard();
+        $("#board").show();
         $("#teams").hide();
 
     }
@@ -96,7 +108,8 @@ socket.onmessage = function (event) {
 
     // Begin game, i.e. draw game board
     else if (updateType === "BOARD_UPDATE") {
-        drawBoard(responseJson.data);
+        globalData = responseJson.data;
+        drawBoard();
     }
     
     else if (updateType === "VICTORY") {
@@ -107,6 +120,11 @@ socket.onmessage = function (event) {
         lose();
     }
 
+    else if (updateType === "SESSION_DISBANDED") {
+        alert(responseJson.data);
+        window.href.location = "/";
+    }
+
     else if (updateType === "ERROR") {
         alert(responseJson.data);
     }
@@ -115,19 +133,27 @@ socket.onmessage = function (event) {
 var timer;
 
 function drawInfo(responseJson) {
+    var board = globalData.board;
+    var flags = globalData.flags;
+
     var isTimedMode = false;
     $("#infoBox").empty();
 
     var info = "";
     var revealedBombs = 0;
-    $.each(globalBoard.tiles, function(index, tile) {
+    $.each(board.tiles, function(index, tile) {
         if (tile.isBomb && tile.visited) {
             revealedBombs++;
         }
-    })
-    console.log(globalBoard.bombCount + " " + globalFlags.length + revealedBombs);
+    });
+    
+    var board = globalData.board;
+    vard flags = globalData.flags;
+    
+    
+    console.log(board.bombCount + " " + flags.length + revealedBombs);
     console.log(info);
-    info = "Mines Remaining: " + (globalBoard.bombCount - globalFlags.length - revealedBombs) + "<br>";
+    info = "Mines Remaining: " + (board.bombCount - flags.length - revealedBombs) + "<br>";
 
     $.each(responseJson.data, function(id, teamInfo) {
         info += '<img class="info-icon" src="images/user.png">' + teamInfo.name + "<br>" 
@@ -163,7 +189,7 @@ function drawInfo(responseJson) {
 function drawRoom(responseJson) {
     $.getScript("/webplate/stack.js", function() {
         var innerBox = "";
-        
+
         var roomInfo = responseJson.data;
         var isHost = roomInfo.isHost;
 
@@ -172,8 +198,6 @@ function drawRoom(responseJson) {
         var sortedIds = Object.keys(teams).sort(function(a,b) {
             return teams[a].name.localeCompare(teams[b].name);
         });
-
-        console.log(sortedIds);
 
         $.each(sortedIds, function(i, teamId) {
             var team = teams[teamId];
@@ -327,35 +351,23 @@ function init() {
     //_ctx.scale(.9,.9);
     $("#game").show();
     $("#teams").hide();
-    
 }
 
-function drawBoard(data) {
+function drawBoard() {
+
+    var data = globalData;
     
     var board = data.board;
     var flags = data.flags;
     var colors = data.colors;
-
-    console.log(data.colors);
     
     var width = board.width;
     var height = board.height;
     
     tileWidth = CANVAS_X / width;
     tileHeight = CANVAS_Y / height;
-    
-    if(typeof(hexagon_grid) === 'undefined' || hexagon_grid == []){
-        hexagon_grid = new HT.Grid(width, height);
-        console.log(tileWidth);
-        findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
-        
-        console.log("A grid is born");
-    }
-    
+
     var tiles = board.tiles;
-    
-    globalBoard = board;
-    globalFlags = flags;
 
     if (board.type == "DEFAULT"){
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
@@ -413,7 +425,7 @@ function drawBoard(data) {
                 var y2 = tile.row * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
                 triangleDraw(x1, x2, x3, y1, y2, y3, tile);
-                if (isFlag(globalFlags, tile.column, tile.row)) {
+                if (isFlag(flags, tile.column, tile.row)) {
                     _ctx.drawImage(flagImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
                 }
                 if (tile.isBomb && tile.visited) {
@@ -430,7 +442,7 @@ function drawBoard(data) {
                 if (tile.isBomb && tile.visited) {
                     _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
                 }
-                if (isFlag(globalFlags, tile.column, tile.row)) {
+                if (isFlag(flags, tile.column, tile.row)) {
                     _ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
                 }
             } 
@@ -438,7 +450,7 @@ function drawBoard(data) {
    
         _ctx.stroke();
     } else if (board.type == "HEXAGONAL"){
-    	console.log("hexagonal");
+        console.log("hexagonal");
         drawHexGrid(hexagon_grid, _ctx);
         $.each(tiles, function(index, tile)
         {
@@ -446,7 +458,7 @@ function drawBoard(data) {
             console.log(hex);
             if(tile.visited){
                 if(tile.isBomb){
-                	console.log("this tile is a bomb");
+                    console.log("this tile is a bomb");
                     hex.fillColor = EXPLORED;
                 } else {
                     console.log("This is suppose to be visited");
@@ -454,10 +466,10 @@ function drawBoard(data) {
                     hex.fillColor = EXPLORED;
                 }
             } else {
-            	hex.fillColor = UNEXPLORED;
+                hex.fillColor = UNEXPLORED;
             }
             hex.Id = tile.adjacentBombs;
-            var hexIsFlag = isFlag(globalFlags, tile.column, tile.row);
+            var hexIsFlag = isFlag(flags, tile.column, tile.row);
             //ctx, color, isMine, isFlag, visited, numMines
             hex.preDraw(_ctx, hex.fillColor, tile.isBomb, hexIsFlag, tile.visited, tile.adjacentBombs);
             //hex.preDraw(_ctx, hex.fillColor);
@@ -466,39 +478,74 @@ function drawBoard(data) {
         _ctx.stroke();
         //drawHexGrid(hexagon_grid, _ctx);
     } else if (board.type == "RECTANGULAR"){
-    	console.log("Drawing Rectangle");
+        console.log("Drawing Rectangle");
         console.log(board);
+        tilesArray = board.tilesArray;
 
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
+            var x = index % globalBoard.width;
+            var y = Math.floor(index / globalBoard.width);
+
             var tileX = index % globalBoard.width * tileWidth;
             var tileY = Math.floor(index / globalBoard.width) * tileHeight;
+            if (tilesArray[x][y] === null) {
+                var newWidth = tileWidth;
+                var newHeight = tileHeight;
+                var newX = tileX;
+                var newY = tileY;
+            } else {
+                var otherTile = tilesArray[x][y];
+                var otherX = otherTile.column;
+                var otherY = otherTile.row;
+                if (x < otherX) {
+                    var newWidth = tileWidth * 2;
+                    var newHeight = tileHeight;
+                    var newX = tileX;
+                    var newY = tileY;
+                } else if (x > otherX) {
+                    var newWidth = tileWidth * 2;
+                    var newHeight = tileHeight;
+                    var newX = tileX - tileWidth;
+                    var newY = tileY;
+                } else if (y > otherY) {
+                    var newWidth = tileWidth;
+                    var newHeight = tileHeight * 2;
+                    var newX = tileX;
+                    var newY = tileY;
+                } else if (y < otherY) {
+                    var newWidth = tileWidth;
+                    var newHeight = tileHeight * 2;
+                    var newX = tileX;
+                    var newY = tileY - tileHeight;
+                }
+            }
             if (tile.visited) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = EXPLORED;
-                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.fillRect(newX, newY, newWidth, newHeight);
                     _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
                     _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeRect(newX, newY, newWidth, newHeight);
                 } else {
                     _ctx.fillStyle = EXPLORED;
-                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.fillRect(newX, newY, newWidth, newHeight);
                     _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.strokeRect(newX, newY, newWidth, newHeight);
                     if (tile.adjacentBombs > 0) {
                         _ctx.fillStyle = getTextColor(tile.adjacentBombs);
                         _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
                         _ctx.textAlign = "center";
                         _ctx.textBaseline = "middle";
-                        _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);
+                        _ctx.fillText(tile.adjacentBombs, newX + newWidth / 2, newY + newHeight / 2);
                     }
                 }
             } else {
                 _ctx.fillStyle = UNEXPLORED;
-                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                _ctx.fillRect(newX, newY, newWidth, newHeight);
                 _ctx.strokeStyle = NORMAL_BORDER;
-                _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
+                _ctx.strokeRect(newX, newY, newWidth, newHeight);
                 /*if (isFlag()) {
                     _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
                 }*/
@@ -513,8 +560,8 @@ function drawBoard(data) {
 
         var entangledCount =  0;
         $.each(tiles, function(index, tile) {
-            var tileX = index % globalBoard.width * tileWidth;
-            var tileY = Math.floor(index / globalBoard.width) * tileHeight;
+            var tileX = index % board.width * tileWidth;
+            var tileY = Math.floor(index / board.width) * tileHeight;
             if (tile.visited) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = EXPLORED;
@@ -537,13 +584,14 @@ function drawBoard(data) {
                     }
                     var link = board.neighborTable[neighbor.row][neighbor.col];
                     if (typeeof(link) != 'undefined'){
-                    	output += characters[entangledCount];
-                    	entangledCount++;
+                        output += characters[entangledCount];
+                        entangledCount++;
                     }
                     _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
                     _ctx.textAlign = "center";
                     _ctx.textBaseline = "middle";
-                    _ctx.fillText(tileX + tileWidth / 2, tileY + tileHeight / 2);
+                    //_ctx.fillText(tileX + tileWidth / 2, tileY + tileHeight / 2);
+                    _ctx.fillText(output, tileX + tileWidth / 2, tileY + tileHeight / 2);
 
                 }
             } else {
@@ -652,8 +700,8 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
 }
 
 $("#board").bind("contextmenu", function(e){
-   click("FLAG");
-   return false;
+ click("FLAG");
+ return false;
 }); 
 
 
@@ -663,19 +711,20 @@ $("#board").bind('click', function(event){
 
 function click(clickType) {
 
-    var board = $("#board")[0];
+    var boardCanvas = $("#board")[0];
 
-    var x = event.pageX - board.offsetLeft;
-    var y = event.pageY - board.offsetTop;
+    var x = event.pageX - boardCanvas.offsetLeft;
+    var y = event.pageY - boardCanvas.offsetTop;
 
-    if (globalBoard.type == "DEFAULT" || globalBoard.type == "RECTANGULAR" || globalBoard.type == "ENTANGLED") {
+    var board = globalData.board;
+    var flags = globalData.flags;
 
-        console.log("click");
+    if (board.type == "DEFAULT" || board.type == "RECTANGULAR" || board.type == "ENTANGLED") {
 
         var row = Math.floor(y / tileHeight);
         var column = Math.floor(x / tileWidth);
 
-        if (!isFlag(globalFlags, column, row) || clickType === "FLAG") {
+        if (!isFlag(flags, column, row) || clickType === "FLAG") {
 
             $.getScript("../js/js.cookie.js", function() {
                 var sendData = {
@@ -691,18 +740,18 @@ function click(clickType) {
             });
         }
 
-    } else if (globalBoard.type == "TRIANGULAR") {
+    } else if (board.type == "TRIANGULAR") {
         var row = Math.floor(y / tileHeight);
         var offset = row * tileWidth / 2;
         var estimate = Math.floor((x - offset) / tileWidth * 2);
         //console.log(row + " " + estimate);
 
 
-        var tiles = globalBoard.tiles;
+        var tiles = board.tiles;
         var selectedTile;
         var edge = false;
 
-        if (estimate === globalBoard.width) {
+        if (estimate === board.width) {
             estimate--;
             edge = true;
         }
@@ -744,7 +793,7 @@ function click(clickType) {
                 //console.log("Below border");
                 //console.log(row + " " + column);
 
-                if (!isFlag(globalFlags, column, row) || clickType === "FLAG") {
+                if (!isFlag(flags, column, row) || clickType === "FLAG") {
 
                     $.getScript("../js/js.cookie.js", function() {
                         var sendData = {
@@ -773,7 +822,7 @@ function click(clickType) {
                 //console.log("Below border");
             }
             //console.log(row + " " + column);
-            if (!isFlag(globalFlags, column, row) || clickType === "FLAG") {
+            if (!isFlag(flags, column, row) || clickType === "FLAG") {
 
                 $.getScript("../js/js.cookie.js", function() {
                     var sendData = {
@@ -789,13 +838,13 @@ function click(clickType) {
                 });
             }
         }
-    } else if (globalBoard.type == "HEXAGONAL"){
+    } else if (board.type == "HEXAGONAL"){
         var p = new HT.Point(x, y);
         var hex = hexagon_grid.GetHexAt(p);
         var row = hex.PathCoOrdY;
         var column = hex.PathCoOrdX;
 
-        if (!isFlag(globalFlags, column, row) || clickType === "FLAG") {
+        if (!isFlag(flags, column, row) || clickType === "FLAG") {
 
             $.getScript("../js/js.cookie.js", function() {
                 var sendData = {
