@@ -1,3 +1,18 @@
+var mineImage = new Image();
+mineImage.src = "/images/mine.png";
+var flagImage = new Image();
+flagImage.src = "/images/flag.png";
+
+TEXT_COLOR = "#000000";
+ONE_MINE = "#0000FF";
+TWO_MINE = "#00FF00";
+THREE_MINE = "#FF0000";
+FOUR_MINE = "#000066";
+FIVE_MINE = "#006600";
+SIX_MINE = "#660000";
+SEVEN_MINE = "#666666";
+EIGHT_MINE = "#000000";
+
 var HT = HT || {};
 /**
  * A Point is simply x and y coordinates
@@ -71,6 +86,7 @@ HT.Hexagon = function(id, x, y) {
 	this.MidPoint = new HT.Point(this.x + (HT.Hexagon.Static.WIDTH / 2), this.y + (HT.Hexagon.Static.HEIGHT / 2));
 	
 	this.P1 = new HT.Point(x + x1, y + y1);
+	this.P2 = new HT.Point(this.BottomRightPoint.X - x1, this.BottomRightPoint.Y);
 	
 	this.selected = false;
 	this.fillColor = "#C0C0C0";
@@ -146,7 +162,7 @@ HT.Hexagon.prototype.draw = function(ctx) {
 	}
 };
 
-HT.Hexagon.prototype.draw = function(ctx, color) {
+HT.Hexagon.prototype.draw = function(ctx, color, isFlag, isMine) {
 
 	if(!this.selected)
 		ctx.strokeStyle = "grey";
@@ -281,7 +297,9 @@ HT.Hexagon.prototype.preDraw = function(ctx) {
 	}
 };
 
-HT.Hexagon.prototype.preDraw = function(ctx, color) {
+HT.Hexagon.prototype.preDraw = function(ctx, color, isMine, isFlag, visited, numMines) {
+
+	console.log(numMines);
 
 	if(!this.selected)
 		ctx.strokeStyle = "grey";
@@ -300,6 +318,7 @@ HT.Hexagon.prototype.preDraw = function(ctx, color) {
 	ctx.fill();
 	//ctx.stroke();
 	
+	
 	if(this.Id)
 	{
 		//draw text for debugging
@@ -308,19 +327,31 @@ HT.Hexagon.prototype.preDraw = function(ctx, color) {
 		ctx.textAlign = "center";
 		ctx.textBaseline = 'middle';
 		//var textWidth = ctx.measureText(this.Planet.BoundingHex.Id);
-		ctx.fillText(this.Id, this.MidPoint.X, this.MidPoint.Y);
+		//ctx.fillText(this.Id, this.MidPoint.X, this.MidPoint.Y);
 	}
 	
 	if(this.PathCoOrdX !== null && this.PathCoOrdY !== null && typeof(this.PathCoOrdX) != "undefined" && typeof(this.PathCoOrdY) != "undefined")
 	{
 		//draw co-ordinates for debugging
+		console.log("MINE: " + isMine + " FLAG: " + isFlag);
+
 		ctx.fillStyle = "black"
 		ctx.font = "bolder 8pt Trebuchet MS,Tahoma,Verdana,Arial,sans-serif";
 		ctx.textAlign = "center";
 		ctx.textBaseline = 'middle';
 		//var textWidth = ctx.measureText(this.Planet.BoundingHex.Id);
-		ctx.fillText("("+this.PathCoOrdX+","+this.PathCoOrdY+")", this.MidPoint.X, this.MidPoint.Y + 10);
+		//ctx.fillText("("+this.PathCoOrdX+","+this.PathCoOrdY+")", this.MidPoint.X, this.MidPoint.Y + 10);
+		//ctx.fillText(numMines, this.MidPoint.X, this.MidPoint.Y);
+
 	}
+
+	if (visited && !isMine && numMines > 0) {
+			ctx.fillStyle = getTextColor(numMines);
+			ctx.font = "bolder 8pt Trebuchet MS,Tahoma,Verdana,Arial,sans-serif";
+			ctx.textAlign = "center";
+			ctx.textBaseline = 'middle';
+			ctx.fillText(numMines, this.MidPoint.X, this.MidPoint.Y);
+		}
 	
 	if(HT.Hexagon.Static.DRAWSTATS)
 	{
@@ -333,18 +364,30 @@ HT.Hexagon.prototype.preDraw = function(ctx, color) {
 		ctx.lineTo(this.x, this.P1.Y);
 		ctx.closePath();
 		//ctx.stroke();
-		
-		ctx.fillStyle = "black"
-		ctx.font = "bolder 8pt Trebuchet MS,Tahoma,Verdana,Arial,sans-serif";
-		ctx.textAlign = "left";
-		ctx.textBaseline = 'middle';
+		if (visited && !isMine && numMines > 0) {
+			ctx.fillStyle = getTextColor(numMines);
+			ctx.font = "bolder 8pt Trebuchet MS,Tahoma,Verdana,Arial,sans-serif";
+			ctx.textAlign = "center";
+			ctx.textBaseline = 'middle';
+			ctx.fillText(numMines, this.MidPoint.X, this.MidPoint.Y);
+		}
 		//var textWidth = ctx.measureText(this.Planet.BoundingHex.Id);
-		ctx.fillText("z", this.x + this.x1/2 - 8, this.y + this.y1/2);
+		/*ctx.fillText("z", this.x + this.x1/2 - 8, this.y + this.y1/2);
 		ctx.fillText("x", this.x + this.x1/2, this.P1.Y + 10);
 		ctx.fillText("y", this.P1.X + 2, this.y + this.y1/2);
 		ctx.fillText("z = " + HT.Hexagon.Static.SIDE, this.P1.X, this.P1.Y + this.y1 + 10);
-		ctx.fillText("(" + this.x1.toFixed(2) + "," + this.y1.toFixed(2) + ")", this.P1.X, this.P1.Y + 10);
+		ctx.fillText("(" + this.x1.toFixed(2) + "," + this.y1.toFixed(2) + ")", this.P1.X, this.P1.Y + 10);*/
 	}
+
+	if (isMine && visited) {
+		console.log("MINE");
+		console.log((this.P2.X - this.P1.X) + " " + (this.P2.Y - this.P1.Y));
+        _ctx.drawImage(mineImage, this.P1.X, 2 * this.P1.Y - this.P2.Y, this.P2.X - this.P1.X, 2 * (this.P2.Y - this.P1.Y));
+    }
+    if (isFlag) {
+    	console.log("FLAG");
+        _ctx.drawImage(flagImage, this.P1.X, 2 * this.P1.Y - this.P2.Y, this.P2.X - this.P1.X, 2 * (this.P2.Y - this.P1.Y));
+    }
 };
 
 
@@ -434,5 +477,27 @@ HT.Hexagon.Static = {HEIGHT:91.14378277661477
 					, SIDE:50.0
 					, ORIENTATION:HT.Hexagon.Orientation.Normal
 					, DRAWSTATS: false};//hexagons will have 25 unit sides for now
+
+function getTextColor(surrounding) {
+    if (surrounding === 1) {
+        return ONE_MINE;
+    } else if (surrounding === 2) {
+        return TWO_MINE;
+    } else if (surrounding === 3) {
+        return THREE_MINE;
+    } else if (surrounding === 4) {
+        return FOUR_MINE;
+    } else if (surrounding === 5) {
+        return FIVE_MINE;
+    } else if (surrounding === 6) {
+        return SIX_MINE;
+    } else if (surrounding === 7) {
+        return SEVEN_MINE;
+    } else if (surrounding === 8) {
+        return EIGHT_MINE;
+    } else {
+        return TEXT_COLOR;
+    }
+}
 
 

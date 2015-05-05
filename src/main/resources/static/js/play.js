@@ -365,7 +365,7 @@ function drawBoard(data) {
             if(tile.visited){
                 if(tile.isBomb){
                 	console.log("this tile is a bomb");
-                    hex.fillColor = BOMB;
+                    hex.fillColor = EXPLORED;
                 } else {
                     console.log("This is suppose to be visited");
                     
@@ -375,7 +375,10 @@ function drawBoard(data) {
             	hex.fillColor = UNEXPLORED;
             }
             hex.Id = tile.adjacentBombs;
-            hex.preDraw(_ctx, hex.fillColor);
+            hexIsFlag = isFlag(globalFlags, tile.column, tile.row);
+            //ctx, color, isMine, isFlag, visited, numMines
+            hex.preDraw(_ctx, hex.fillColor, tile.isBomb, hexIsFlag, tile.visited, tile.adjacentBombs);
+            //hex.preDraw(_ctx, hex.fillColor);
             
         });
         _ctx.stroke();
@@ -609,7 +612,7 @@ function click(clickType) {
                 //console.log("Below border");
                 //console.log(row + " " + column);
 
-                if (!isFlag(globalFlags, column, row) && clickType === "CHECK") {
+                if (!isFlag(globalFlags, column, row) || clickType === "FLAG") {
 
                     $.getScript("../js/js.cookie.js", function() {
                         var sendData = {
@@ -638,7 +641,7 @@ function click(clickType) {
                 //console.log("Below border");
             }
             //console.log(row + " " + column);
-            if (!isFlag(globalFlags, column, row) && clickType === "CHECK") {
+            if (!isFlag(globalFlags, column, row) || clickType === "FLAG") {
 
                 $.getScript("../js/js.cookie.js", function() {
                     var sendData = {
@@ -660,7 +663,7 @@ function click(clickType) {
         var row = hex.PathCoOrdY;
         var column = hex.PathCoOrdX;
 
-        if (!isFlag(globalFlags, column, row) && clickType === "CHECK") {
+        if (!isFlag(globalFlags, column, row) || clickType === "FLAG") {
 
             $.getScript("../js/js.cookie.js", function() {
                 var sendData = {
