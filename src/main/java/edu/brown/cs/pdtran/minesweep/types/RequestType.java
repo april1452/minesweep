@@ -6,5 +6,5 @@ package edu.brown.cs.pdtran.minesweep.types;
  * @author Clayton Sanford
  */
 public enum RequestType {
-  INITIALIZE, SWITCH_TEAM, ADD_AI, START_GAME, MAKE_MOVE
+  INITIALIZE, SWITCH_TEAM, ADD_AI, START_GAME, MAKE_MOVE, REMOVE_AIS, LEAVE_ROOM, DISBAND_ROOM
 }

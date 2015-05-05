@@ -1,11 +1,15 @@
 package edu.brown.cs.pdtran.minesweep.setup;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.metagame.Session;
 import edu.brown.cs.pdtran.minesweep.metagame.SessionFullException;
+import edu.brown.cs.pdtran.minesweep.metagame.Team;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 
 /**
@@ -23,8 +27,9 @@ public class Room extends Session {
    * @param name The string corresponding to the name of the game.
    * @param specs The specifications for the room from the Setup page.
    */
-  public Room(String name, GameSpecs specs) {
+  public Room(String hostId, String name, GameSpecs specs) {
     super(name, specs);
+    this.hostId = hostId;
     teams = new ConcurrentHashMap<String, TeamFormation>();
     for (int i = 0; i < specs.getNumTeams(); i++) {
       RequestHandler.addAndGetKey(teams, new TeamFormation("Team "
@@ -35,6 +40,10 @@ public class Room extends Session {
   @Override
   public ConcurrentMap<String, TeamFormation> getTeams() {
     return teams;
+  }
+
+  public boolean isHost(String id) {
+    return hostId.equals(id);
   }
 
   /**
@@ -100,6 +109,29 @@ public class Room extends Session {
   @Override
   public SessionType getSessionType() {
     return SessionType.SETUP;
+  }
+
+  public void removeAis(String teamId) {
+    // somewhat hacky method to remove all Ais
+    TeamFormation team = teams.get(teamId);
+    List<AIGamer> aiGamers = team.getAis();
+    List<String> toRemove = new ArrayList<>();
+    for (Entry<String, Gamer> entry : team.getPlayers().entrySet()) {
+      if (aiGamers.contains(entry.getValue())) {
+        toRemove.add(entry.getKey());
+      }
+    }
+    team.getAis().clear();
+    for (String removeId : toRemove) {
+      team.getPlayers().remove(removeId);
+    }
+
+  }
+
+  public void removeHuman(String teamId, String userId) {
+    Team team = teams.get(teamId);
+    team.getHumans().remove(userId);
+    team.getPlayers().remove(userId);
   }
 
 }
