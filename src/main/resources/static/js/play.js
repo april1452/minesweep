@@ -148,7 +148,7 @@ function drawInfo(responseJson) {
     });
     
     var board = globalData.board;
-    vard flags = globalData.flags;
+    var flags = globalData.flags;
     
     
     console.log(board.bombCount + " " + flags.length + revealedBombs);
