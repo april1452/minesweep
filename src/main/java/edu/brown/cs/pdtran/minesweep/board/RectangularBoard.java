@@ -19,7 +19,7 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  * @author agokasla
  */
 public class RectangularBoard extends DefaultBoard implements Board,
-Cloneable {
+    Cloneable {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
   // private Table<Integer, Integer, Tile> overWrittenTiles;
@@ -77,11 +77,11 @@ Cloneable {
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
           super
-              .getAdjacentTiles(row, col)
-              .stream()
-              .filter(
-                  (t) -> (t.getColumn() == col || t.getRow() == row)
-                      && !t.isBomb()).collect(Collectors.toList());
+          .getAdjacentTiles(row, col)
+          .stream()
+          .filter(
+              (t) -> (t.getColumn() == col || t.getRow() == row)
+              && !t.isBomb()).collect(Collectors.toList());
       if (candidateList.isEmpty()) {
         continue;
       }
@@ -101,6 +101,8 @@ Cloneable {
         + tile2merge.getAdjacentBombs());
     List<Tile> neighbors = super.getAdjacentTiles(row, col);
     neighbors.addAll(super.getAdjacentTiles(row2, col2));
+    neighbors.remove(super.getTile(row, col));
+    neighbors.remove(super.getTile(row2, col2));
     neighborTable.put(row, col, neighbors);
     neighborTable.put(row2, col2, neighbors);
     links[row][col] = tile2merge;
@@ -168,10 +170,10 @@ Cloneable {
      */
     boardJson.add("neighborTable",
         (new JsonParser()).parse(gson.toJson(neighborTable))
-        .getAsJsonObject());
+            .getAsJsonObject());
     boardJson.add("tilesArray",
         (new JsonParser()).parse(gson.toJson(links))
-        .getAsJsonArray());
+            .getAsJsonArray());
     return boardJson;
   }
 }
