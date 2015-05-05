@@ -6,7 +6,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.metagame.Session;
 import edu.brown.cs.pdtran.minesweep.metagame.Update;
@@ -27,6 +30,7 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 public abstract class Game extends Session {
 
   protected ConcurrentMap<String, PlayerTeam> teams;
+  protected String[][] colors;
 
   /**
    * The constructor that builds a Game by using the Session constructor
@@ -35,6 +39,13 @@ public abstract class Game extends Session {
    */
   protected Game(Room room) {
     super(room.getName(), room.getSpecs());
+    int[] dims = room.getSpecs().getBoardDims();
+    colors = new String[dims[0]][dims[1]];
+    for (int i = 0; i < dims[0]; i++) {
+      for (int j = 0; j < dims[1]; j++) {
+        colors[i][j] = "WHITE";
+      }
+    }
     teams = makeTeams(room.getTeams());
   }
 
@@ -44,6 +55,23 @@ public abstract class Game extends Session {
   @Override
   public ConcurrentMap<String, PlayerTeam> getTeams() {
     return teams;
+  }
+
+  public JsonElement getBoardInfo(String teamId) {
+    JsonArray colorsJson = new JsonArray();
+    for (int i = 0; i < colors.length; i++) {
+      JsonArray col = new JsonArray();
+      for (int j = 0; j < colors[0].length; j++) {
+        col.add(new JsonPrimitive(colors[i][j]));
+      }
+      colorsJson.add(col);
+    }
+
+    JsonObject boardInfo =
+        teams.get(teamId).getBoardInfo().getAsJsonObject();
+    boardInfo.add("colors", colorsJson);
+
+    return boardInfo;
   }
 
   /**

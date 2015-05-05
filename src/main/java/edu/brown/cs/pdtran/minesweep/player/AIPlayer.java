@@ -3,7 +3,6 @@ package edu.brown.cs.pdtran.minesweep.player;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import edu.brown.cs.pdtran.minesweep.board.Board;
@@ -37,7 +36,7 @@ public class AIPlayer extends GamePlayer {
   private static final double BASE_TIME = 5;
   private static final double TIME_MULTIPLIER = 25;
   private static final int MAX_DIFFICULTY = 10;
-  private static final double MISTAKE_MULTIPLIER = .01;
+  private static final double MISTAKE_MULTIPLIER = 0;
   private static final double FLAG_PROBABILITY = .3;
   private static final double RANDOM_SUBTRACTOR = .5;
   private static final double CUTOFF_PROBABILITY = .5;
@@ -269,7 +268,7 @@ public class AIPlayer extends GamePlayer {
       Tile tile = mp.getTile();
       int x = tile.getColumn();
       int y = tile.getRow();
-      if (!flaggedTiles[x][y]) {
+      if (!flaggedTiles[y][x]) {
         return MoveFactory.makeMove(mp.getXCoord(), mp.getYCoord(),
             MoveType.FLAG);
       }

@@ -37,6 +37,7 @@ public class PlayerTeam extends Team implements BoardData {
   private List<String> humanPlayers;
   private boolean[][] flaggedTiles;
 
+
   /**
    * Creates a new Team to last through a game.
    * @param tf A TeamFormation object that contains the information

@@ -5,5 +5,5 @@ package edu.brown.cs.pdtran.minesweep.types;
  * @author Clayton Sanford
  */
 public enum AiDifficulty {
-  EASY, MEDIUM, HARD;
+  EASY, MEDIUM, HARD
 }

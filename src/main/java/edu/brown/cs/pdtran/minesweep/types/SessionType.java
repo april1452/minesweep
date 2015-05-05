@@ -5,5 +5,5 @@ package edu.brown.cs.pdtran.minesweep.types;
  * @author Clayton
  */
 public enum SessionType {
-  SETUP, IN_GAME;
+  SETUP, IN_GAME
 }

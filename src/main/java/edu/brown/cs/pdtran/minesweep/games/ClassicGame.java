@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -104,7 +105,20 @@ public class ClassicGame extends Game {
       for (PlayerTeam tempTeam : getTeams().values()) {
         allHumans.addAll(tempTeam.getHumans());
       }
-      updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(),
+
+      JsonArray colorsJson = new JsonArray();
+      for (int i = 0; i < colors.length; i++) {
+        JsonArray col = new JsonArray();
+        for (int j = 0; j < colors[0].length; j++) {
+          col.add(new JsonPrimitive(colors[i][j]));
+        }
+        colorsJson.add(col);
+      }
+
+      JsonObject boardInfo = team.getBoardInfo().getAsJsonObject();
+      boardInfo.add("colors", colorsJson);
+
+      updates.add(new Update(UpdateType.BOARD_UPDATE, boardInfo,
           team
               .getHumans()));
       updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(),
