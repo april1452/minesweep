@@ -5,22 +5,26 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
- * This class adds an interesting element by linking some Tiles on the board.
+ * This class adds an interesting element by linking some Tiles on the
+ * board.
  * @author agokasla
  */
 public class EntangledBoard extends DefaultBoard implements Board {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
+  private Table<Integer, Integer, Tile> overWrittenTiles;
 
   /**
    * The constructor.
+   * @param width The desired width of the board.
+   * @param height The desired height of the board.
+   * @param mines The number of mines on the board.
    */
-  public EntangledBoard() {
-    super();
+  public EntangledBoard(int width, int height, int mines) {
+    super(width, height, mines);
     neighborTable = HashBasedTable.create();
     assert (neighborTable != null);
     reconfigureBoard(getWidth() * getHeight() / 10);
@@ -33,6 +37,23 @@ public class EntangledBoard extends DefaultBoard implements Board {
   public EntangledBoard(Tile[][] grid) {
     super(grid);
     neighborTable = HashBasedTable.create();
+    assert (neighborTable != null);
+  }
+
+  /**
+   * The constructor.
+   * @param grid Allows you to specify a grid.
+   * @param neighborTile A table that contains neighbors mapped to a
+   *        certain spot on the board.
+   * @param overWrittenTile A table that contains Tiles that have been
+   *        overwritten.
+   */
+  public EntangledBoard(Tile[][] grid,
+      Table<Integer, Integer, List<Tile>> neighborTile,
+      Table<Integer, Integer, Tile> overWrittenTiles) {
+    this(grid);
+    this.neighborTable = neighborTile;
+    this.overWrittenTiles = overWrittenTiles;
     assert (neighborTable != null);
   }
 
@@ -90,6 +111,8 @@ public class EntangledBoard extends DefaultBoard implements Board {
         newGrid[i][j] = grid[i][j].clone();
       }
     }
-    return new EntangledBoard(newGrid);
+    return new EntangledBoard(newGrid,
+        HashBasedTable.create(neighborTable),
+        HashBasedTable.create(overWrittenTiles));
   }
 }

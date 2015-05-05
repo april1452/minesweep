@@ -35,10 +35,14 @@ var globalData;
 
 var _ctx;
 
-$("#board").hide();
+$("#game").hide();
 $("#win").hide();
 $("#lose").hide();
-//$("#start").hide();
+
+var characters = ["☀", "☁", "☂", "☃", "☄", "★", "☆", "☇", "☈", "☉", "☊", "☋", 
+"☌", "☍", "☎", "☐", "☑", "☒", "☓", "☔", "☕", "☖", "☗", "☘", "☜", "☝", "☞", "☟",
+"☠", "☡", "☢", "☣", "☤", "☥", "☧", "☨", "☩", "☪", "☭", "☮", "☯", "♕", "♖", "♗",
+"♘", "♙", "♡", "♢", "♣", "♤", "♥", "♦", "♧", "♨", "♩", "♪", "♫", "♬", "♭", "♮"];
 
 var mineImage = new Image();
 mineImage.src = "/images/mine.gif";
@@ -134,24 +138,35 @@ function drawInfo(responseJson) {
 
     var isTimedMode = false;
     $("#infoBox").empty();
-    var info = "";
-    $.each(responseJson.data, function(id, teamInfo) {
-        info += "Name: " + teamInfo.name + "<br>" 
-        if(teamInfo.hasOwnProperty("lives")) {
-            info += "Lives: " + teamInfo.lives + "<br>";
-        } else if (teamInfo.hasOwnProperty("time")) {
-            isTimedMode = true;
-            info += 'Time Left: <div id="timer-' + id + '">' + Math.floor(teamInfo.time / 1000) + "</div><br>";
-        }
-    });
 
+    var info = "";
     var revealedBombs = 0;
     $.each(board.tiles, function(index, tile) {
         if (tile.isBomb && tile.visited) {
             revealedBombs++;
         }
-    })
-    info += "Mines Remaining: " + (board.bombCount - flags.length - revealedBombs) + "<br>";
+    });
+    
+    var board = globalData.board;
+    vard flags = globalData.flags;
+    
+    
+    console.log(board.bombCount + " " + flags.length + revealedBombs);
+    console.log(info);
+    info = "Mines Remaining: " + (board.bombCount - flags.length - revealedBombs) + "<br>";
+
+    $.each(responseJson.data, function(id, teamInfo) {
+        info += '<img class="info-icon" src="images/user.png">' + teamInfo.name + "<br>" 
+        if(teamInfo.hasOwnProperty("lives")) {
+            info += '<img class="info-icon" src="images/heart.png"> ' + teamInfo.lives + "<br>";
+        } else if (teamInfo.hasOwnProperty("time")) {
+            isTimedMode = true;
+            info += '<img class="info-icon" src="images/time.png"> <div id="timer-' + id + '">' + Math.floor(teamInfo.time / 1000) + "</div><br>";
+        }
+        info += "<br>"
+    });
+    
+    console.log(info);
     $("#infoBox").html(info);
 
     if(isTimedMode) {
@@ -220,7 +235,7 @@ function drawRoom(responseJson) {
         });
 
         
-        
+        // switch teach button
         $.each(teams, function(i, team) {
             $('#buttonId' + i).click(function(){
                 joinRoom(i);
@@ -286,8 +301,8 @@ function init() {
     canvasBoard.height = CANVAS_Y;
     canvasBoard.width = CANVAS_X;
     _ctx = canvasBoard.getContext("2d");
-    $("#board").show();
-    $("#start").hide();
+    //_ctx.scale(.9,.9);
+    $("#game").show();
     $("#teams").hide();
 }
 
@@ -347,90 +362,83 @@ function drawBoard() {
                 _ctx.strokeStyle = NORMAL_BORDER;
                 _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth  - 2, tileHeight  - 2);
             }
-
         });
-} else if (board.type == "TRIANGULAR"){
+    } else if (board.type == "TRIANGULAR"){
 
-   _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
-   tileWidth = CANVAS_X / (width / 2 + height / 2);
+         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
+         tileWidth = CANVAS_X / (width / 2 + height / 2);
 
-   $.each(tiles, function(index, tile) {
-    var offset = tile.row * tileWidth / 2;
-    if (tile.column % 2 === 0) {
-        var x1 = tile.column / 2 * tileWidth + offset;
-        var x2 = (tile.column / 2 + 1) * tileWidth + offset;
-        var x3 = (tile.column / 2 + 0.5) * tileWidth + offset;
-        var y1 = tile.row * tileHeight;
-        var y2 = tile.row * tileHeight;
-        var y3 = (tile.row + 1) * tileHeight;
-        triangleDraw(x1, x2, x3, y1, y2, y3, tile);
-        if (isFlag(flags, tile.column, tile.row)) {
-            _ctx.drawImage(flagImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
-        }
-        if (tile.isBomb && tile.visited) {
-            _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
-        }
-    } else {
-        var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
-        var x2 = tile.column / 2 * tileWidth + offset;
-        var x3 = (tile.column / 2 + 1) * tileWidth + offset;
-        var y1 = tile.row * tileHeight;
-        var y2 = (tile.row + 1) * tileHeight;
-        var y3 = (tile.row + 1) * tileHeight;
-        triangleDraw(x1, x2, x3, y1, y2, y3, tile);
-        if (tile.isBomb && tile.visited) {
-            _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
-        }
-        if (isFlag(flags, tile.column, tile.row)) {
-            _ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
-        }
-    } 
-});
-
-_ctx.stroke();
-} else if (board.type = "HEXAGONAL"){
-
-    if(typeof(hexagon_grid) === 'undefined' || hexagon_grid == []){
-        hexagon_grid = new HT.Grid(width, height);
-        findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
-    }
-    
-    console.log("hexagonal");
-    drawHexGrid(hexagon_grid, _ctx);
-    $.each(tiles, function(index, tile)
-    {
-        var hex = hexagon_grid.GetHexAtPos(tile.column, tile.row);
-        console.log(hex);
-        if(tile.visited){
-            if(tile.isBomb){
-               console.log("this tile is a bomb");
-               hex.fillColor = EXPLORED;
-           } else {
-            console.log("This is suppose to be visited");
-
-            hex.fillColor = EXPLORED;
-        }
-    } else {
-       hex.fillColor = UNEXPLORED;
-   }
-   hex.Id = tile.adjacentBombs;
-   hexIsFlag = isFlag(flags, tile.column, tile.row);
+        $.each(tiles, function(index, tile) {
+            var offset = tile.row * tileWidth / 2;
+            if (tile.column % 2 === 0) {
+                var x1 = tile.column / 2 * tileWidth + offset;
+                var x2 = (tile.column / 2 + 1) * tileWidth + offset;
+                var x3 = (tile.column / 2 + 0.5) * tileWidth + offset;
+                var y1 = tile.row * tileHeight;
+                var y2 = tile.row * tileHeight;
+                var y3 = (tile.row + 1) * tileHeight;
+                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                if (isFlag(flags, tile.column, tile.row)) {
+                    _ctx.drawImage(flagImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+                }
+                if (tile.isBomb && tile.visited) {
+                    _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+                }
+            } else {
+                var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
+                var x2 = tile.column / 2 * tileWidth + offset;
+                var x3 = (tile.column / 2 + 1) * tileWidth + offset;
+                var y1 = tile.row * tileHeight;
+                var y2 = (tile.row + 1) * tileHeight;
+                var y3 = (tile.row + 1) * tileHeight;
+                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                if (tile.isBomb && tile.visited) {
+                    _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+                }
+                if (isFlag(flags, tile.column, tile.row)) {
+                    _ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+                }
+            } 
+        });
+   
+        _ctx.stroke();
+    } else if (board.type == "HEXAGONAL"){
+        console.log("hexagonal");
+        drawHexGrid(hexagon_grid, _ctx);
+        $.each(tiles, function(index, tile)
+        {
+            var hex = hexagon_grid.GetHexAtPos(tile.column, tile.row);
+            console.log(hex);
+            if(tile.visited){
+                if(tile.isBomb){
+                    console.log("this tile is a bomb");
+                    hex.fillColor = EXPLORED;
+                } else {
+                    console.log("This is suppose to be visited");
+                    
+                    hex.fillColor = EXPLORED;
+                }
+            } else {
+                hex.fillColor = UNEXPLORED;
+            }
+            hex.Id = tile.adjacentBombs;
+            var hexIsFlag = isFlag(flags, tile.column, tile.row);
             //ctx, color, isMine, isFlag, visited, numMines
             hex.preDraw(_ctx, hex.fillColor, tile.isBomb, hexIsFlag, tile.visited, tile.adjacentBombs);
             //hex.preDraw(_ctx, hex.fillColor);
             
         });
-    _ctx.stroke();
+        _ctx.stroke();
         //drawHexGrid(hexagon_grid, _ctx);
-    } else if (board.type = "RECTANGULAR"){
+    } else if (board.type == "RECTANGULAR"){
         console.log("Drawing Rectangle");
         console.log(board);
 
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
-            var tileX = tile.column * tileWidth;
-            var tileY = tile.row * tileHeight;
+            var tileX = index % board.width * tileWidth;
+            var tileY = Math.floor(index / board.width) * tileHeight;
             if (tile.visited) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = EXPLORED;
@@ -462,9 +470,61 @@ _ctx.stroke();
             }
 
         });
-} else {
-    console.log("I had a stroke. Undefined board");
-}
+    } if (board.type == "ENTANGLED") {
+    console.log("Drawing Rectangle");
+        console.log(board);
+
+        _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
+
+        var entangledCount =  0;
+        $.each(tiles, function(index, tile) {
+            var tileX = index % board.width * tileWidth;
+            var tileY = Math.floor(index / board.width) * tileHeight;
+            if (tile.visited) {
+                if(tile.isBomb) {
+                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                    _ctx.drawImage(mineImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
+                    _ctx.strokeStyle = NORMAL_BORDER;
+                    _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
+                } else {
+                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+
+                    _ctx.strokeStyle = BOMB_BORDER;
+                    _ctx.lineWidth = 2;
+                    _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
+                    _ctx.lineWidth = 1;
+                    var output = "";
+                    if (tile.adjacentBombs > 0) {
+                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
+                        output+= tile.adjacentBombs;
+                    }
+                    var link = board.neighborTable[neighbor.row][neighbor.col];
+                    if (typeeof(link) != 'undefined'){
+                        output += characters[entangledCount];
+                        entangledCount++;
+                    }
+                    _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
+                    _ctx.textAlign = "center";
+                    _ctx.textBaseline = "middle";
+                    _ctx.fillText(output, tileX + tileWidth / 2, tileY + tileHeight / 2);
+
+                }
+            } else {
+                _ctx.fillStyle = UNEXPLORED;
+                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+                if (isFlag(flags, tile.column, tile.row)) {
+                    _ctx.drawImage(flagImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
+                }
+                _ctx.strokeStyle = NORMAL_BORDER;
+                _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth  - 2, tileHeight  - 2);
+            }
+        });
+        
+    } else {
+        console.log("I had a stroke. Undefined board");
+    }
 }
 
 function getTextColor(surrounding) {
@@ -576,9 +636,7 @@ function click(clickType) {
     var board = globalData.board;
     var flags = globalData.flags;
 
-    if (board.type == "DEFAULT") {
-
-        console.log("click");
+    if (board.type == "DEFAULT" || board.type == "RECTANGULAR" || board.type == "ENTANGLED") {
 
         var row = Math.floor(y / tileHeight);
         var column = Math.floor(x / tileWidth);
@@ -697,13 +755,13 @@ function click(clickType) {
                 });
             }
         }
-    } else if (board.type = "HEXAGONAL"){
+    } else if (board.type == "HEXAGONAL"){
         var p = new HT.Point(x, y);
         var hex = hexagon_grid.GetHexAt(p);
         var row = hex.PathCoOrdY;
         var column = hex.PathCoOrdX;
 
-        if (!isFlag(globalFlags, column, row) || clickType === "FLAG") {
+        if (!isFlag(flags, column, row) || clickType === "FLAG") {
 
             $.getScript("../js/js.cookie.js", function() {
                 var sendData = {
@@ -722,12 +780,14 @@ function click(clickType) {
 }
 
 function win() {
+    $("#game").hide();
     $("#board").hide();
     $("#infoBox").hide();
     $("#win").show();
 }
 
 function lose() {
+    $("#game").hide();
     $("#board").hide();
     $("#infoBox").hide();
     $("#lose").show();

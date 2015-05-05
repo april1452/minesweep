@@ -23,8 +23,26 @@ span.icon {
 }
 
 div.flickerplate {
-	height: 100%;
-	width: 100%;
-	margin: 0;
 	padding: 0;
+	height: 100%;
+}
+
+div.flick-inner {
+	margin-left: auto !important;
+	margin-right: auto !important;
+	width: 20% !important;
+}
+
+#board {
+	float: left;
+}
+
+#infoBox {
+	padding-top: 5px;
+	padding-left: 10px;
+	float: left;
+}
+
+img.info-icon {
+	width: 20px;
 }

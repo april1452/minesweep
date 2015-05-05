@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
 import edu.brown.cs.pdtran.minesweep.games.Game;
 import edu.brown.cs.pdtran.minesweep.games.GameFactory;
 import edu.brown.cs.pdtran.minesweep.move.Move;
@@ -275,7 +276,7 @@ public class RequestHandler {
     List<String> playersToUpdate = new ArrayList<>();
     playersToUpdate.add(gamerId);
     return new Update(UpdateType.ERROR, new JsonPrimitive(
-        "The team you tried to join was full."), playersToUpdate);
+        "Woops, this team is full."), playersToUpdate);
   }
 
   private Update getTeamAssignment(String teamId, String gamerId) {
