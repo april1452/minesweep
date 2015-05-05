@@ -202,7 +202,7 @@ function drawRoom(responseJson) {
         });
 
         
-        
+        // switch teach button
         $.each(teams, function(i, team) {
             $('#buttonId' + i).click(function(){
                 joinRoom(i);
@@ -707,21 +707,11 @@ function click(clickType) {
 }
 
 function win() {
-<<<<<<< HEAD
     $("#game").hide();
-=======
-    $("#board").hide();
-    $("#infoBox").hide();
->>>>>>> f49fd58e8dd076a4d31f11549f416bb1e01e4cc4
     $("#win").show();
 }
 
 function lose() {
-<<<<<<< HEAD
     $("#game").hide();
-=======
-    $("#board").hide();
-    $("#infoBox").hide();
->>>>>>> f49fd58e8dd076a4d31f11549f416bb1e01e4cc4
     $("#lose").show();
 }
