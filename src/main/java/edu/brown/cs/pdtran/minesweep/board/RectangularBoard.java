@@ -1,6 +1,8 @@
 package edu.brown.cs.pdtran.minesweep.board;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.HashBasedTable;
@@ -10,7 +12,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
@@ -23,6 +24,7 @@ public class RectangularBoard extends DefaultBoard implements Board,
 Cloneable {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
+  private Table<Integer, Integer, Tile> overWrittenTiles;
 
   /**
    * The constructor.
@@ -33,6 +35,7 @@ Cloneable {
   public RectangularBoard(int width, int height, int mines) {
     super(width, height, mines);
     neighborTable = HashBasedTable.create();
+    overWrittenTiles = HashBasedTable.create();
     assert (neighborTable != null);
     reconfigureBoard(getWidth() * getHeight() / 10);
   }
@@ -96,6 +99,8 @@ Cloneable {
     neighbors.addAll(super.getAdjacentTiles(row2, col2));
     neighborTable.put(row, col, neighbors);
     neighborTable.put(row2, col2, neighbors);
+    overWrittenTiles.put(row, col, tile2merge);
+    overWrittenTiles.put(row2, col2, tile);
     setTile(tile, row2, col2);
   }
 
@@ -149,9 +154,19 @@ Cloneable {
     boardJson.add("tiles", tilesJson);
     boardJson.addProperty("type", getBoardType().toString());
     Gson gson = new Gson();
+    Map<String, Tile> neighborMap = new HashMap<>();
+    for (Integer i : overWrittenTiles.columnKeySet()) {
+      String output = "(" + i;
+      Map<Integer, Tile> c = overWrittenTiles.column(i);
+      for (Integer j : c.keySet()) {
+        output += "," + j + ")";
+        neighborMap.put(output, overWrittenTiles.get(i, j));
+      }
+    }
     boardJson.add("neighborTable",
         (new JsonParser()).parse(gson.toJson(neighborTable))
-        .getAsJsonObject());
+            .getAsJsonObject());
+    (new JsonParser()).parse(gson.toJson(neighborMap)).getAsJsonObject();
     return boardJson;
   }
 }

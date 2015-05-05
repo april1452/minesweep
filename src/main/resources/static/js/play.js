@@ -28,6 +28,11 @@ $("#game").hide();
 $("#win").hide();
 $("#lose").hide();
 
+var characters = ["☀", "☁", "☂", "☃", "☄", "★", "☆", "☇", "☈", "☉", "☊", "☋", 
+"☌", "☍", "☎", "☐", "☑", "☒", "☓", "☔", "☕", "☖", "☗", "☘", "☜", "☝", "☞", "☟",
+"☠", "☡", "☢", "☣", "☤", "☥", "☧", "☨", "☩", "☪", "☭", "☮", "☯", "♕", "♖", "♗",
+"♘", "♙", "♡", "♢", "♣", "♤", "♥", "♦", "♧", "♨", "♩", "♪", "♫", "♬", "♭", "♮"];
+
 var mineImage = new Image();
 mineImage.src = "/images/mine.gif";
 var flagImage = new Image();
@@ -416,8 +421,8 @@ function drawBoard(data) {
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
-            var tileX = tile.column * tileWidth;
-            var tileY = tile.row * tileHeight;
+            var tileX = index % globalBoard.width * tileWidth;
+            var tileY = Math.floor(index / globalBoard.width) * tileHeight;
             if (tile.visited) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = EXPLORED;
@@ -449,16 +454,20 @@ function drawBoard(data) {
             }
 
         });
-    } else if (board.type == "ENTANGLED"){
+    } if (board.type == "ENTANGLED") {
+    console.log("Drawing Rectangle");
+        console.log(board);
+
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
-            var tileX = tile.column * tileWidth;
-            var tileY = tile.row * tileHeight;
+            var tileX = index % globalBoard.width * tileWidth;
+            var tileY = Math.floor(index / globalBoard.width) * tileHeight;
             if (tile.visited) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = EXPLORED;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
+<<<<<<< Updated upstream
                     _ctx.drawImage(mineImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
                     _ctx.strokeStyle = NORMAL_BORDER;
                     _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
@@ -600,7 +609,7 @@ function click(clickType) {
     var x = event.pageX - board.offsetLeft;
     var y = event.pageY - board.offsetTop;
 
-    if (globalBoard.type == "DEFAULT") {
+    if (globalBoard.type == "DEFAULT" || globalBoard.type == "RECTANGULAR" || globalBoard.type == "ENTANGLED") {
 
         console.log("click");
 
