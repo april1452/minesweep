@@ -55,7 +55,7 @@ server_ip = server_ip.substring(0, server_ip.length - 5);
 var socket = new WebSocket("ws://" + server_ip + ":7777");
 var hexagon_grid;
 
-$('#teams').hide();
+$('#teams').show();
 
 // set up cookies js
 socket.onopen = function(event) {
@@ -148,7 +148,7 @@ function drawInfo(responseJson) {
     });
     
     var board = globalData.board;
-    vard flags = globalData.flags;
+    var flags = globalData.flags;
     
     
     console.log(board.bombCount + " " + flags.length + revealedBombs);
