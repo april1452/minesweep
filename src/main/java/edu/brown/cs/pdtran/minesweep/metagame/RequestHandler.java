@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
 import edu.brown.cs.pdtran.minesweep.games.Game;
 import edu.brown.cs.pdtran.minesweep.games.GameFactory;
 import edu.brown.cs.pdtran.minesweep.move.Move;
@@ -308,7 +307,7 @@ public class RequestHandler {
     hostRoom.addProperty("isHost", true);
 
     JsonObject nonHostRoom = room.getRoomInfo().toJson();
-    hostRoom.addProperty("isHost", false);
+    nonHostRoom.addProperty("isHost", false);
 
     updates.add(new Update(UpdateType.ROOM_UPDATE, hostRoom, host));
     updates.add(new Update(UpdateType.ROOM_UPDATE, nonHostRoom, nonHosts));
