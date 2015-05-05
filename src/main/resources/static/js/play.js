@@ -112,17 +112,8 @@ var timer;
 function drawInfo(responseJson) {
     var isTimedMode = false;
     $("#infoBox").empty();
-    var info = "";
-    $.each(responseJson.data, function(id, teamInfo) {
-        info += "Name: " + teamInfo.name + "<br>" 
-        if(teamInfo.hasOwnProperty("lives")) {
-            info += "Lives: " + teamInfo.lives + "<br>";
-        } else if (teamInfo.hasOwnProperty("time")) {
-            isTimedMode = true;
-            info += 'Time Left: <div id="timer-' + id + '">' + Math.floor(teamInfo.time / 1000) + "</div><br>";
-        }
-    });
 
+    var info = "";
     var revealedBombs = 0;
     $.each(globalBoard.tiles, function(index, tile) {
         if (tile.isBomb && tile.visited) {
@@ -131,7 +122,19 @@ function drawInfo(responseJson) {
     })
     console.log(globalBoard.bombCount + " " + globalFlags.length + revealedBombs);
     console.log(info);
-    info += "Mines Remaining: " + (globalBoard.bombCount - globalFlags.length - revealedBombs) + "<br>";
+    info = "Mines Remaining: " + (globalBoard.bombCount - globalFlags.length - revealedBombs) + "<br>";
+
+    $.each(responseJson.data, function(id, teamInfo) {
+        info += '<img class="info-icon" src="images/user.png">' + teamInfo.name + "<br>" 
+        if(teamInfo.hasOwnProperty("lives")) {
+            info += '<img class="info-icon" src="images/heart.png"> ' + teamInfo.lives + "<br>";
+        } else if (teamInfo.hasOwnProperty("time")) {
+            isTimedMode = true;
+            info += '<img class="info-icon" src="images/time.png"> <div id="timer-' + id + '">' + Math.floor(teamInfo.time / 1000) + "</div><br>";
+        }
+        info += "<br>"
+    });
+    
     console.log(info);
     $("#infoBox").html(info);
 
