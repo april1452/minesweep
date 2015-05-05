@@ -24,7 +24,8 @@ import edu.brown.cs.pdtran.minesweep.types.RequestType;
  * games can be run through at once.
  * @author Clayton
  */
-public class GameServer extends WebSocketServer implements MoveHandler {
+public class GameServer extends WebSocketServer implements MoveHandler,
+UpdateSender {
 
   private JsonParser parser;
   private ConcurrentMap<String, WebSocket> clients;
@@ -170,7 +171,8 @@ public class GameServer extends WebSocketServer implements MoveHandler {
    */
   public void startGame(String sessionId, String userId) {
     // TODO do something with team id?
-    List<Update> updates = handler.startGame(sessionId, userId, this);
+    List<Update> updates =
+        handler.startGame(this, sessionId, userId, this);
 
     sendUpdates(updates);
   }
@@ -183,7 +185,8 @@ public class GameServer extends WebSocketServer implements MoveHandler {
     sendUpdates(updates);
   }
 
-  private void sendUpdates(List<Update> updates) {
+  @Override
+  public void sendUpdates(List<Update> updates) {
     for (Update update : updates) {
       sendUpdate(update);
     }

@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.google.gson.JsonPrimitive;
+
 import edu.brown.cs.pdtran.minesweep.games.Game;
 import edu.brown.cs.pdtran.minesweep.games.GameFactory;
 import edu.brown.cs.pdtran.minesweep.move.Move;
@@ -55,8 +56,8 @@ public class RequestHandler {
         new ArrayList<Entry<String, SessionInfo>>();
     for (Entry<String, Session> entry : sessions.entrySet()) {
       sessionsInfo
-          .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(
-              entry.getKey(), entry.getValue().getRoomInfo()));
+      .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(
+          entry.getKey(), entry.getValue().getRoomInfo()));
     }
     return sessionsInfo;
   }
@@ -129,7 +130,7 @@ public class RequestHandler {
             return updates;
           } else if (team.getSize() < smallestSize
               || (team.getSize() == smallestSize && team.getName()
-                  .compareTo(smallestTeam.getValue().getName()) < 0)) {
+              .compareTo(smallestTeam.getValue().getName()) < 0)) {
             smallestTeam = entry;
           }
         }
@@ -224,7 +225,7 @@ public class RequestHandler {
     List<String> playersToUpdate = new ArrayList<>();
     playersToUpdate.add(gamerId);
     return new Update(UpdateType.ERROR, new JsonPrimitive(
-        "The team you tried to join was full."), playersToUpdate);
+        "Woops, this team is full."), playersToUpdate);
   }
 
   private Update getTeamAssignment(String teamId, String gamerId) {
@@ -242,21 +243,12 @@ public class RequestHandler {
         playersToUpdate);
   }
 
-  private List<Update> getAllBoardsUpdate(Game game) {
-    List<Update> updates = new ArrayList<>();
-    for (PlayerTeam team : game.getTeams().values()) {
-      List<String> playersToUpdate = team.getHumans();
-      updates.add(new Update(UpdateType.BOARD_UPDATE, team.getBoardInfo(),
-          playersToUpdate));
-    }
-    return updates;
-  }
-
   private List<Update> getInitBoardUpdate(Game game) {
     List<Update> updates = new ArrayList<>();
-    for (PlayerTeam team : game.getTeams().values()) {
-      List<String> playersToUpdate = team.getHumans();
-      updates.add(new Update(UpdateType.INIT_BOARD, team.getBoardInfo(),
+    for (Entry<String, PlayerTeam> entry : game.getTeams().entrySet()) {
+      List<String> playersToUpdate = entry.getValue().getHumans();
+      updates.add(new Update(UpdateType.INIT_BOARD, game
+          .getBoardInfo(entry.getKey()),
           playersToUpdate));
     }
     return updates;
@@ -265,12 +257,6 @@ public class RequestHandler {
   private Update getInitInfo(Game game) {
     List<String> playersToUpdate = getHumans(game);
     return new Update(UpdateType.INIT_INFO, game.getGameData(),
-        playersToUpdate);
-  }
-
-  private Update getGameInfo(Game game) {
-    List<String> playersToUpdate = getHumans(game);
-    return new Update(UpdateType.INFO_UPDATE, game.getGameData(),
         playersToUpdate);
   }
 
@@ -325,7 +311,8 @@ public class RequestHandler {
    * @param handler The object that manages moves.
    * @return A list of updates to be sent to the board.
    */
-  public List<Update> startGame(String sessionId,
+  public List<Update> startGame(UpdateSender updateSender,
+      String sessionId,
       String userId,
       MoveHandler handler) {
     try {
@@ -333,7 +320,7 @@ public class RequestHandler {
       if (room == null || sessions.remove(sessionId) == null) {
         throw new NoSuchSessionException();
       }
-      Game game = GameFactory.generateGame(room);
+      Game game = GameFactory.generateGame(room, updateSender);
       games.put(sessionId, game);
       sessions.put(sessionId, game);
 

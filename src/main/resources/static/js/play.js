@@ -24,13 +24,12 @@ var globalFlags;
 
 var _ctx;
 
-$("#board").hide();
+$("#game").hide();
 $("#win").hide();
 $("#lose").hide();
-//$("#start").hide();
 
 var mineImage = new Image();
-mineImage.src = "/images/mine.png";
+mineImage.src = "/images/mine.gif";
 var flagImage = new Image();
 flagImage.src = "/images/flag.png";
 
@@ -76,7 +75,7 @@ socket.onmessage = function (event) {
     else if (updateType === "INIT_BOARD") {
         init();
         drawBoard(responseJson.data);
-        $("#board").show();
+        $("#game").show();
         $("#teams").hide();
 
     }
@@ -108,12 +107,22 @@ socket.onmessage = function (event) {
     }
 }
 
+var timer;
+
 function drawInfo(responseJson) {
+    var isTimedMode = false;
     $("#infoBox").empty();
     var info = "";
     $.each(responseJson.data, function(id, teamInfo) {
-        info += "Name: " + teamInfo.name + "<br>" + "Lives: " + teamInfo.lives + "<br>";
+        info += "Name: " + teamInfo.name + "<br>" 
+        if(teamInfo.hasOwnProperty("lives")) {
+            info += "Lives: " + teamInfo.lives + "<br>";
+        } else if (teamInfo.hasOwnProperty("time")) {
+            isTimedMode = true;
+            info += 'Time Left: <div id="timer-' + id + '">' + Math.floor(teamInfo.time / 1000) + "</div><br>";
+        }
     });
+
     var revealedBombs = 0;
     $.each(globalBoard.tiles, function(index, tile) {
         if (tile.isBomb && tile.visited) {
@@ -125,6 +134,21 @@ function drawInfo(responseJson) {
     info += "Mines Remaining: " + (globalBoard.bombCount - globalFlags.length - revealedBombs) + "<br>";
     console.log(info);
     $("#infoBox").html(info);
+
+    if(isTimedMode) {
+        if(timer !== undefined) {
+            clearInterval(timer);
+        }
+        timer = setInterval(function() {
+            $('[id^="timer-"]').each(function() {
+                var currTime = $(this).html();
+                if(currTime > 0) {
+                    $(this).html($(this).html() - 1)
+                }
+            });
+        }, 1000);
+    }
+
 }
 
 // draw pre game rooms
@@ -244,8 +268,8 @@ function init() {
     canvasBoard.height = CANVAS_Y;
     canvasBoard.width = CANVAS_X;
     _ctx = canvasBoard.getContext("2d");
-    $("#board").show();
-    $("#start").hide();
+    //_ctx.scale(.9,.9);
+    $("#game").show();
     $("#teams").hide();
     
 }
@@ -254,8 +278,9 @@ function drawBoard(data) {
     
     var board = data.board;
     var flags = data.flags;
-    
-    console.log(board);
+    var colors = data.colors;
+
+    console.log(data.colors);
     
     var width = board.width;
     var height = board.height;
@@ -282,34 +307,36 @@ function drawBoard(data) {
         $.each(tiles, function(index, tile) {
             var tileX = tile.column * tileWidth;
             var tileY = tile.row * tileHeight;
+            var color = colors[tile.row][tile.column];
+            _ctx.lineWidth = 1;
             if (tile.visited) {
                 if(tile.isBomb) {
-                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillStyle = color;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                    _ctx.drawImage(mineImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
+                    _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
                     _ctx.strokeStyle = NORMAL_BORDER;
                     _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
                 } else {
-                    _ctx.fillStyle = EXPLORED;
+                    _ctx.fillStyle = color;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-
-                    _ctx.strokeStyle = BOMB_BORDER;
-                    _ctx.lineWidth = 2;
+                    _ctx.strokeStyle = NORMAL_BORDER;
+                    //_ctx.lineWidth = 2;
                     _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
-                    _ctx.lineWidth = 1;
+                    //_ctx.lineWidth = 1;
                     if (tile.adjacentBombs > 0) {
                         _ctx.fillStyle = getTextColor(tile.adjacentBombs);
                         _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
                         _ctx.textAlign = "center";
                         _ctx.textBaseline = "middle";
                         _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);
+                        _ctx.strokeText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);
                     }
                 }
             } else {
                 _ctx.fillStyle = UNEXPLORED;
                 _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
                 if (isFlag(flags, tile.column, tile.row)) {
-                    _ctx.drawImage(flagImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
+                    _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
                 }
                 _ctx.strokeStyle = NORMAL_BORDER;
                 _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth  - 2, tileHeight  - 2);
@@ -557,14 +584,12 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
 }
 
 $("#board").bind("contextmenu", function(e){
-   console.log("Right click!!");
    click("FLAG");
    return false;
 }); 
 
 
 $("#board").bind('click', function(event){
-	console.log(event.which);
     click("CHECK");
 });
 
@@ -721,11 +746,21 @@ function click(clickType) {
 }
 
 function win() {
+<<<<<<< HEAD
+    $("#game").hide();
+=======
     $("#board").hide();
+    $("#infoBox").hide();
+>>>>>>> f49fd58e8dd076a4d31f11549f416bb1e01e4cc4
     $("#win").show();
 }
 
 function lose() {
+<<<<<<< HEAD
+    $("#game").hide();
+=======
     $("#board").hide();
+    $("#infoBox").hide();
+>>>>>>> f49fd58e8dd076a4d31f11549f416bb1e01e4cc4
     $("#lose").show();
 }

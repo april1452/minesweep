@@ -8,9 +8,12 @@
   </div>
 </div>
 
-<canvas id="board"></canvas>
-
-<div id="infoBox">
+<div id="game">
+  <div id="boardDiv">
+    <canvas id="board"></canvas>
+  </div>
+  <div id="infoBox">
+  </div>
 </div>
 
 <div class="flickerplate" data-dot-navigation="false" data-auto-flick="false" data-theme="dark" id="win">
