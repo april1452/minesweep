@@ -28,6 +28,11 @@ $("#game").hide();
 $("#win").hide();
 $("#lose").hide();
 
+var characters = ["☀", "☁", "☂", "☃", "☄", "★", "☆", "☇", "☈", "☉", "☊", "☋", 
+"☌", "☍", "☎", "☐", "☑", "☒", "☓", "☔", "☕", "☖", "☗", "☘", "☜", "☝", "☞", "☟",
+"☠", "☡", "☢", "☣", "☤", "☥", "☧", "☨", "☩", "☪", "☭", "☮", "☯", "♕", "♖", "♗",
+"♘", "♙", "♡", "♢", "♣", "♤", "♥", "♦", "♧", "♨", "♩", "♪", "♫", "♬", "♭", "♮"];
+
 var mineImage = new Image();
 mineImage.src = "/images/mine.gif";
 var flagImage = new Image();
@@ -419,8 +424,8 @@ function drawBoard(data) {
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
-            var tileX = tile.column * tileWidth;
-            var tileY = tile.row * tileHeight;
+            var tileX = index % globalBoard.width * tileWidth;
+            var tileY = Math.floor(index / globalBoard.width) * tileHeight;
             if (tile.visited) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = EXPLORED;
@@ -452,12 +457,16 @@ function drawBoard(data) {
             }
 
         });
-    } else if (board.type == "ENTANGLED"){
+    } if (board.type == "ENTANGLED") {
+    console.log("Drawing Rectangle");
+        console.log(board);
+
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
+        var entangledCount =  0;
         $.each(tiles, function(index, tile) {
-            var tileX = tile.column * tileWidth;
-            var tileY = tile.row * tileHeight;
+            var tileX = index % globalBoard.width * tileWidth;
+            var tileY = Math.floor(index / globalBoard.width) * tileHeight;
             if (tile.visited) {
                 if(tile.isBomb) {
                     _ctx.fillStyle = EXPLORED;
@@ -473,13 +482,21 @@ function drawBoard(data) {
                     _ctx.lineWidth = 2;
                     _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
                     _ctx.lineWidth = 1;
+                    var output = "";
                     if (tile.adjacentBombs > 0) {
-                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
-                        _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
-                        _ctx.textAlign = "center";
-                        _ctx.textBaseline = "middle";
-                        _ctx.fillText(tile.adjacentBombs, tileX + tileWidth / 2, tileY + tileHeight / 2);
+                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);]
+                        output+= tile.adjacentBombs;
                     }
+                    var link = board.neighborTable[neighbor.row][neighbor.col];
+                    if (typeeof(link) != 'undefined'){
+                    	output += characters[entangledCount];
+                    	entangledCount++;
+                    }
+                    _ctx.font= getFontSize(tileHeight, tileWidth) + "px Verdana";
+                    _ctx.textAlign = "center";
+                    _ctx.textBaseline = "middle";
+                    _ctx.fillText(, tileX + tileWidth / 2, tileY + tileHeight / 2);
+
                 }
             } else {
                 _ctx.fillStyle = UNEXPLORED;
@@ -603,7 +620,7 @@ function click(clickType) {
     var x = event.pageX - board.offsetLeft;
     var y = event.pageY - board.offsetTop;
 
-    if (globalBoard.type == "DEFAULT") {
+    if (globalBoard.type == "DEFAULT" || globalBoard.type == "RECTANGULAR" || globalBoard.type == "ENTANGLED") {
 
         console.log("click");
 
@@ -750,10 +767,14 @@ function click(clickType) {
 
 function win() {
     $("#game").hide();
+    $("#board").hide();
+    $("#infoBox").hide();
     $("#win").show();
 }
 
 function lose() {
     $("#game").hide();
+    $("#board").hide();
+    $("#infoBox").hide();
     $("#lose").show();
 }
