@@ -118,7 +118,7 @@ public class Room extends Session {
     List<String> toRemove = new ArrayList<>();
     for (Entry<String, Gamer> entry : team.getPlayers().entrySet()) {
       for (AIGamer ai : aiGamers) {
-        if (entry.getValue().equals(ai)) {
+        if (entry.getValue() == ai) {
           toRemove.add(entry.getKey());
         }
       }

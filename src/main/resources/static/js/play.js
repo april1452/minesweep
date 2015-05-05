@@ -277,7 +277,7 @@ function drawRoom(responseJson) {
                     var sendData = {
                         requestType: "REMOVE_AIS",
                         minesweepId: $.cookie("minesweepId"),
-                        minesweepTeamId: $.cookie("minesweepTeamId"),
+                        minesweepTeamId: i,
                         minesweepRoomId: $.cookie("minesweepRoomId")
                     };  
                     socket.send(JSON.stringify(sendData));
@@ -357,12 +357,10 @@ function init() {
 }
 
 function drawBoard() {
-
-    var data = globalData;
     
-    var board = data.board;
-    var flags = data.flags;
-    var colors = data.colors;
+    var board = globalData.board;
+    var flags = globalData.flags;
+    var colors = globalData.colors;
     
     var width = board.width;
     var height = board.height;
@@ -419,6 +417,7 @@ function drawBoard() {
          tileWidth = CANVAS_X / (width / 2 + height / 2);
 
         $.each(tiles, function(index, tile) {
+        
             var offset = tile.row * tileWidth / 2;
             if (tile.column % 2 === 0) {
                 var x1 = tile.column / 2 * tileWidth + offset;
@@ -647,23 +646,21 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
     _ctx.beginPath();
     _ctx.moveTo(x1, y1);
     _ctx.lineTo(x2, y2);
-    //_ctx.moveTo(x2, y2);
     _ctx.lineTo(x3, y3);
-    //_ctx.moveTo(x3, y3);
     _ctx.lineTo(x1, y1);
     _ctx.closePath();
     _ctx.strokeStyle = NORMAL_BORDER;
     _ctx.stroke();
 
+    var colors = globalData.colors;
+    var color = colors[tile.row][tile.column];
     if (tile.visited) {
         if(tile.isBomb) {
-            _ctx.fillStyle = EXPLORED;
+            _ctx.fillStyle = color;
             _ctx.fill();
-            //_ctx.strokeStyle = NORMAL_BORDER;
         } else {
-            _ctx.fillStyle = EXPLORED;
+            _ctx.fillStyle = color;
             _ctx.fill();
-            //_ctx.strokeStyle = NORMAL_BORDER;
             if (tile.adjacentBombs > 0) {
                 _ctx.fillStyle = getTextColor(tile.adjacentBombs);
                 _ctx.font = getFontSize(tileHeight, tileWidth) + "px Verdana";
@@ -677,7 +674,6 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tile) {
         _ctx.fill();
         //_ctx.strokeStyle = NORMAL_BORDER;
     }
-
 
     /*if (tile.isBomb) {
         fillColor = BOMB;
