@@ -29,13 +29,13 @@ public final class BoardFactory {
       case DEFAULT:
         return new DefaultBoard(width, height, mines);
       case RECTANGULAR:
-        return new RectangularBoard();
+        return new RectangularBoard(width, height, mines);
       case TRIANGULAR:
         return new TriangularBoard(width, height, mines);
       case HEXAGONAL:
         return new HexagonalBoard(width, height, mines);
       case ENTANGLED:
-        return new EntangledBoard();
+        return new EntangledBoard(width, height, mines);
       default:
         return null;
     }

@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
@@ -18,15 +19,19 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  * board.
  * @author agokasla
  */
-public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
+public class RectangularBoard extends DefaultBoard implements Board,
+Cloneable {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
 
   /**
    * The constructor.
+   * @param width The desired width of the board.
+   * @param height The desired height of the board.
+   * @param mines The number of mines on the board.
    */
-  public RectangularBoard() {
-    super();
+  public RectangularBoard(int width, int height, int mines) {
+    super(width, height, mines);
     neighborTable = HashBasedTable.create();
     assert (neighborTable != null);
     reconfigureBoard(getWidth() * getHeight() / 10);
@@ -112,7 +117,8 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
         newGrid[i][j] = grid[i][j].clone();
       }
     }
-    return new RectangularBoard(newGrid, HashBasedTable.create(neighborTable));
+    return new RectangularBoard(newGrid,
+        HashBasedTable.create(neighborTable));
   }
 
   @Override
@@ -144,7 +150,8 @@ public class RectangularBoard extends DefaultBoard implements Board, Cloneable {
     boardJson.addProperty("type", getBoardType().toString());
     Gson gson = new Gson();
     boardJson.add("neighborTable",
-        (new JsonParser()).parse(gson.toJson(neighborTable)).getAsJsonObject());
+        (new JsonParser()).parse(gson.toJson(neighborTable))
+        .getAsJsonObject());
     return boardJson;
   }
 }

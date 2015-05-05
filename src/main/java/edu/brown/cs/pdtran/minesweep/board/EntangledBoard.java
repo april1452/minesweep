@@ -9,7 +9,8 @@ import com.google.common.collect.Table;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 /**
- * This class adds an interesting element by linking some Tiles on the board.
+ * This class adds an interesting element by linking some Tiles on the
+ * board.
  * @author agokasla
  */
 public class EntangledBoard extends DefaultBoard implements Board {
@@ -18,9 +19,12 @@ public class EntangledBoard extends DefaultBoard implements Board {
 
   /**
    * The constructor.
+   * @param width The desired width of the board.
+   * @param height The desired height of the board.
+   * @param mines The number of mines on the board.
    */
-  public EntangledBoard() {
-    super();
+  public EntangledBoard(int width, int height, int mines) {
+    super(width, height, mines);
     neighborTable = HashBasedTable.create();
     assert (neighborTable != null);
     reconfigureBoard(getWidth() * getHeight() / 10);
@@ -46,8 +50,8 @@ public class EntangledBoard extends DefaultBoard implements Board {
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
           super.getAdjacentTiles(row, col).stream()
-              .filter((t) -> t.isBomb() == getTile(row, col).isBomb())
-              .collect(Collectors.toList());
+          .filter((t) -> t.isBomb() == getTile(row, col).isBomb())
+          .collect(Collectors.toList());
       if (candidateList.isEmpty()) {
         continue;
       }
