@@ -210,22 +210,23 @@ function drawRoom(responseJson) {
             });
             // add ai button
             innerBox += '<a class="button aqua modal-trigger" data-modal-open="ai-choose-'+ teamId +'" id="ai' + teamId + '">' + "Add AI</a><br>";
+            // remove all ais
+            if (isHost) {
+                console.log('heya');
+                innerBox += '<a class="button aqua" id="removeAI-' + teamId + '">' + "Remove All AIs</a><br>";
+            }
             // join team button
             innerBox += '<a class="button purple" id="buttonId' + teamId + '">' + "Join Team</a></div>";  
             // choose ai difficulty modal
             innerBox += '<div class="modalplate" data-modal-id="ai-choose-'+ teamId +'"><div class="modalplate-title-bar"><a class="close">Close</a><h4>Choose AI Difficulty</h4></div><div class="modalplate-content"><div class="row"><div class="ai span-2"><a class="button aqua large icon close" id="easy'+ teamId +'"><span class="icon icon-smile"></span></a>Easy</div><div class="span-2"><a class="button aqua large icon close" id="medium'+ teamId +'"><span class="icon icon-evil"></span></a>Medium</div><div class="span-2"><a class="button aqua large icon close" id="hard'+ teamId +'"><span class="icon icon-crying"></span></a>Hard</div><div class="span-2"><a class="button aqua large icon close" id="random'+ teamId +'"><span class="icon icon-hipster"></span></a>Random</div></div></div></div>';  
-            // remove all ais
-            if (isHost) {
-                innerBox += '<a class="button aqua" id="removeAI-' + teamId + '">' + "Add AI</a><br>";
-            }
         });
 
         // have to readd the sidebar; css issues
         var sidebar;
         if (isHost) {
-            sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a href="/" class="button line-white large" id="disbandButton">Disband</a></div>';
+            sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="startButton">Start Game!</a><a class="button line-white large" id="disbandButton">Disband</a></div>';
         } else {
-            sidebar = '<div id="start" class="span-2"><a href="/" class="button line-white large" id="leaveButton">Leave Room</a></div>';
+            sidebar = '<div id="start" class="span-2"><a class="button line-white large" id="leaveButton">Leave Room</a></div>';
         }
 
         $("#teams").html(sidebar + innerBox);
@@ -252,6 +253,7 @@ function drawRoom(responseJson) {
                     minesweepRoomId: $.cookie("minesweepRoomId")
                 };  
                 socket.send(JSON.stringify(sendData));
+                window.location.href = '/';
             });
         });
 
@@ -265,6 +267,7 @@ function drawRoom(responseJson) {
                     minesweepRoomId: $.cookie("minesweepRoomId")
                 };  
                 socket.send(JSON.stringify(sendData));
+                window.location.href = '/';
             });
         });
         

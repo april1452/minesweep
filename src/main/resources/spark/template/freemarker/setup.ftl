@@ -33,8 +33,6 @@
     <label for="hexagonal">Hexagon</label>
     <input type="radio" name="boardType" value="RECTANGULAR" id="rectangular">
     <label for="rectangular">Rectangular</label>
-    <input type="radio" name="boardType" value="ENTANGLED" id="entangled">
-    <label for="entangled">Entangled</label>
     <br>
 
     <label>Dimensions:</label>
