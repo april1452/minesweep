@@ -453,6 +453,14 @@ function drawBoard() {
         _ctx.stroke();
     } else if (board.type == "HEXAGONAL"){
         console.log("hexagonal");
+
+        if (typeof(hexagon_grid) === 'undefined' || hexagon_grid == []){
+            hexagon_grid = new HT.Grid(width, height);
+            console.log(tileWidth);
+            findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
+            
+            console.log("A grid is born");
+        }
         drawHexGrid(hexagon_grid, _ctx);
         $.each(tiles, function(index, tile)
         {
@@ -487,40 +495,55 @@ function drawBoard() {
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
-            var x = index % globalBoard.width;
-            var y = Math.floor(index / globalBoard.width);
+            var x = index % board.width;
+            var y = Math.floor(index / board.width);
 
-            var tileX = index % globalBoard.width * tileWidth;
-            var tileY = Math.floor(index / globalBoard.width) * tileHeight;
-            if (tilesArray[x][y] === null) {
-                var newWidth = tileWidth;
-                var newHeight = tileHeight;
-                var newX = tileX;
-                var newY = tileY;
-            } else {
-                var otherTile = tilesArray[x][y];
-                var otherX = otherTile.column;
-                var otherY = otherTile.row;
-                if (x < otherX) {
-                    var newWidth = tileWidth * 2;
+            var tileX = index % board.width * tileWidth;
+            var tileY = Math.floor(index / board.width) * tileHeight;
+
+            var contained = false;
+            for (var i = 0; i < board.height; i++) {
+                for (var j = 0; j < board.width; j++) {
+                    aTile = tilesArray[i][j];
+                    if (aTile != null) {
+                        if (aTile.column === x && aTile.row === y) {
+                            contained = true;
+                        }
+                    }
+                }
+            }
+
+            if (!contained) {
+                if (tilesArray[y][x] === null) {
+                    var newWidth = tileWidth;
                     var newHeight = tileHeight;
                     var newX = tileX;
                     var newY = tileY;
-                } else if (x > otherX) {
-                    var newWidth = tileWidth * 2;
-                    var newHeight = tileHeight;
-                    var newX = tileX - tileWidth;
-                    var newY = tileY;
-                } else if (y > otherY) {
-                    var newWidth = tileWidth;
-                    var newHeight = tileHeight * 2;
-                    var newX = tileX;
-                    var newY = tileY;
-                } else if (y < otherY) {
-                    var newWidth = tileWidth;
-                    var newHeight = tileHeight * 2;
-                    var newX = tileX;
-                    var newY = tileY - tileHeight;
+                } else {
+                    var otherTile = tilesArray[y][x];
+                    var otherX = otherTile.column;
+                    var otherY = otherTile.row;
+                    if (x < otherX) {
+                        var newWidth = tileWidth * 2;
+                        var newHeight = tileHeight;
+                        var newX = tileX;
+                        var newY = tileY;
+                    } else if (x > otherX) {
+                        var newWidth = tileWidth * 2;
+                        var newHeight = tileHeight;
+                        var newX = tileX - tileWidth;
+                        var newY = tileY;
+                    } else if (y < otherY) {
+                        var newWidth = tileWidth;
+                        var newHeight = tileHeight * 2;
+                        var newX = tileX;
+                        var newY = tileY;
+                    } else if (y > otherY) {
+                        var newWidth = tileWidth;
+                        var newHeight = tileHeight * 2;
+                        var newX = tileX;
+                        var newY = tileY - tileHeight;
+                    }
                 }
             }
             if (tile.visited) {
@@ -545,6 +568,9 @@ function drawBoard() {
                 }
             } else {
                 _ctx.fillStyle = UNEXPLORED;
+                /*if (tilesArray[y][x] != null) {
+                    _ctx.fillStyle = "#000000";
+                }    */  
                 _ctx.fillRect(newX, newY, newWidth, newHeight);
                 _ctx.strokeStyle = NORMAL_BORDER;
                 _ctx.strokeRect(newX, newY, newWidth, newHeight);
@@ -838,6 +864,9 @@ function click(clickType) {
             }
         }
     } else if (board.type == "HEXAGONAL"){
+
+        
+
         var p = new HT.Point(x, y);
         var hex = hexagon_grid.GetHexAt(p);
         var row = hex.PathCoOrdY;
