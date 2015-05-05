@@ -419,7 +419,7 @@ function drawBoard() {
                 var y1 = tile.row * tileHeight;
                 var y2 = tile.row * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
-                triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile);
             } else {
                 var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
                 var x2 = tile.column / 2 * tileWidth + offset;
@@ -428,6 +428,46 @@ function drawBoard() {
                 var y2 = (tile.row + 1) * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
                 triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile);
+/*=======
+                //triangleDraw(x1, x2, x3, y1, y2, y3, tile);
+                if (tile.isBomb && tile.visited) {
+                    _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+                }
+                if (isFlag(flags, tile.column, tile.row)) {
+                    _ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+                }
+            } 
+        });
+   
+        _ctx.stroke();
+    } else if (board.type == "HEXAGONAL"){
+        console.log("hexagonal");
+
+        if (typeof(hexagon_grid) === 'undefined' || hexagon_grid == []){
+            hexagon_grid = new HT.Grid(width, height);
+            console.log(tileWidth);
+            
+            console.log("A grid is born");
+        }
+        findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
+
+        drawHexGrid(hexagon_grid, _ctx);
+        $.each(tiles, function(index, tile)
+        {
+            var hex = hexagon_grid.GetHexAtPos(tile.column, tile.row);
+            console.log(hex);
+            if(tile.visited){
+                if(tile.isBomb){
+                    console.log("this tile is a bomb");
+                    hex.fillColor = EXPLORED;
+                } else {
+                    console.log("This is suppose to be visited");
+                    
+                    hex.fillColor = EXPLORED;
+                }
+            } else {
+                hex.fillColor = UNEXPLORED;
+>>>>>>> Stashed changes*/
             }
         });
 
@@ -738,7 +778,7 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile) {
     } else {
         _ctx.fillStyle = UNEXPLORED;
         _ctx.fill();
-        if (isFlag(flags, tile.row, tile.column)) {
+        if (isFlag(globalData.flags, tile.row, tile.column)) {
             _ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
         }
     }
