@@ -19,7 +19,7 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  * @author agokasla
  */
 public class RectangularBoard extends DefaultBoard implements Board,
-    Cloneable {
+Cloneable {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
   // private Table<Integer, Integer, Tile> overWrittenTiles;
@@ -77,11 +77,11 @@ public class RectangularBoard extends DefaultBoard implements Board,
       int col = (int) (Math.random() * getWidth());
       List<Tile> candidateList =
           super
-          .getAdjacentTiles(row, col)
-          .stream()
-          .filter(
-              (t) -> (t.getColumn() == col || t.getRow() == row)
-              && !t.isBomb()).collect(Collectors.toList());
+              .getAdjacentTiles(row, col)
+              .stream()
+              .filter(
+                  (t) -> (t.getColumn() == col || t.getRow() == row)
+                      && !t.isBomb()).collect(Collectors.toList());
       if (candidateList.isEmpty()) {
         continue;
       }
@@ -168,10 +168,10 @@ public class RectangularBoard extends DefaultBoard implements Board,
      */
     boardJson.add("neighborTable",
         (new JsonParser()).parse(gson.toJson(neighborTable))
-            .getAsJsonObject());
+        .getAsJsonObject());
     boardJson.add("tilesArray",
         (new JsonParser()).parse(gson.toJson(links))
-            .getAsJsonObject());
+        .getAsJsonArray());
     return boardJson;
   }
 }
