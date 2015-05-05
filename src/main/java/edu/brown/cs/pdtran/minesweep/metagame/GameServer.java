@@ -86,10 +86,21 @@ UpdateSender {
               .getAsString(), userId, messageJson.get("newTeamId")
               .getAsString());
           break;
+        case LEAVE_ROOM:
+          leaveRoom(sessionId, messageJson.get("minesweepTeamId")
+              .getAsString(), userId);
+          break;
         case ADD_AI:
           addAi(sessionId, messageJson.get("minesweepTeamId")
               .getAsString(),
               userId, messageJson.get("difficulty").getAsString());
+          break;
+        case REMOVE_AIS:
+          removeAis(sessionId, messageJson.get("minesweepTeamId")
+              .getAsString(), userId);
+          break;
+        case DISBAND_ROOM:
+          disbandRoom(sessionId, userId);
           break;
         case START_GAME:
           startGame(sessionId, userId);
@@ -110,6 +121,12 @@ UpdateSender {
           + e.getMessage());
       e.printStackTrace();
     }
+  }
+
+  private void disbandRoom(String sessionId, String userId) {
+    List<Update> updates = handler.disbandRoom(sessionId, userId);
+
+    sendUpdates(updates);
   }
 
   /**
@@ -142,6 +159,13 @@ UpdateSender {
     sendUpdates(updates);
   }
 
+  private void leaveRoom(String sessionId, String teamId, String userId) {
+    List<Update> updates =
+        handler.removeHuman(sessionId, teamId, userId);
+
+    sendUpdates(updates);
+  }
+
   /**
    * Adds an AI to a team.
    * @param sessionId The unique ID for the session.
@@ -159,9 +183,19 @@ UpdateSender {
     AiDifficulty aiDifficulty = AiDifficulty.valueOf(difficultyString);
     AIGamer gamer = new AIGamer(aiDifficulty);
 
-    Update update = handler.aiJoin(sessionId, teamId, userId, aiId, gamer);
+    List<Update> update =
+        handler.aiJoin(sessionId, teamId, userId, aiId, gamer);
 
-    sendUpdate(update);
+    sendUpdates(update);
+  }
+
+  private void removeAis(String sessionId,
+      String teamId,
+      String requesterId) {
+    List<Update> updates =
+        handler.removeAis(sessionId, teamId, requesterId);
+
+    sendUpdates(updates);
   }
 
   /**

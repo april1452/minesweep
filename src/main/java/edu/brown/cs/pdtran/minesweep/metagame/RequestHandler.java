@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import edu.brown.cs.pdtran.minesweep.games.Game;
@@ -56,8 +57,8 @@ public class RequestHandler {
         new ArrayList<Entry<String, SessionInfo>>();
     for (Entry<String, Session> entry : sessions.entrySet()) {
       sessionsInfo
-      .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(
-          entry.getKey(), entry.getValue().getRoomInfo()));
+          .add(new AbstractMap.SimpleImmutableEntry<String, SessionInfo>(
+              entry.getKey(), entry.getValue().getRoomInfo()));
     }
     return sessionsInfo;
   }
@@ -109,6 +110,13 @@ public class RequestHandler {
 
       Map<String, TeamFormation> teams = room.getTeams();
 
+      for (Entry<String, TeamFormation> entry : teams.entrySet()) {
+        if (entry.getValue().getPlayers().containsKey(gamerId)) {
+          // this updates everyone which is not necessary but doesn't
+          // affect the implementation
+          return getRoomUpdate(room);
+        }
+      }
 
       Entry<String, TeamFormation> smallestTeam = null;
 
@@ -130,7 +138,7 @@ public class RequestHandler {
             return updates;
           } else if (team.getSize() < smallestSize
               || (team.getSize() == smallestSize && team.getName()
-              .compareTo(smallestTeam.getValue().getName()) < 0)) {
+                  .compareTo(smallestTeam.getValue().getName()) < 0)) {
             smallestTeam = entry;
           }
         }
@@ -140,13 +148,23 @@ public class RequestHandler {
 
       updates.add(getTeamAssignment(smallestTeam.getKey(), gamerId));
 
-      updates.add(getRoomUpdate(room));
+      updates.addAll(getRoomUpdate(room));
 
       return updates;
     } catch (NoSuchSessionException e) {
-      List<Update> updates = new ArrayList<>();
-      updates.add(getNoSessionError(gamerId));
-      return updates;
+      try {
+        Game game = getGame(sessionId);
+
+        List<Update> updates = new ArrayList<>();
+        updates.addAll(getInitBoardUpdate(game));
+        updates.add(getInitInfo(game));
+
+        return updates;
+      } catch (NoSuchSessionException e2) {
+        List<Update> updates = new ArrayList<>();
+        updates.add(getNoSessionError(gamerId));
+        return updates;
+      }
     } catch (SessionFullException e) {
       List<Update> updates = new ArrayList<>();
       updates.add(getFullTeamError(gamerId));
@@ -174,7 +192,7 @@ public class RequestHandler {
       room.switchTeam(teamId, gamerId, newTeamId);
 
       updates.add(getTeamAssignment(newTeamId, gamerId));
-      updates.add(getRoomUpdate(room));
+      updates.addAll(getRoomUpdate(room));
 
       return updates;
     } catch (NoSuchSessionException e) {
@@ -197,7 +215,7 @@ public class RequestHandler {
    * @param g The AIGamer to be added.
    * @return An update that the AI has been added.
    */
-  public Update aiJoin(String sessionId,
+  public List<Update> aiJoin(String sessionId,
       String teamId,
       String requesterId,
       String aiId,
@@ -208,11 +226,44 @@ public class RequestHandler {
       room.addAi(teamId, aiId, g);
       return getRoomUpdate(room);
     } catch (NoSuchSessionException e) {
-      return getNoSessionError(requesterId);
+      List<Update> updates = new ArrayList<>();
+      updates.add(getNoSessionError(requesterId));
+      return updates;
     } catch (SessionFullException e) {
-      return getFullTeamError(requesterId);
+      List<Update> updates = new ArrayList<>();
+      updates.add(getFullTeamError(requesterId));
+      return updates;
     }
   }
+
+  public List<Update> removeHuman(String sessionId,
+      String teamId,
+      String userId) {
+    try {
+      Room room = getRoom(sessionId);
+      room.removeHuman(teamId, userId);
+      return getRoomUpdate(room);
+    } catch (NoSuchSessionException e) {
+      List<Update> updates = new ArrayList<>();
+      updates.add(getNoSessionError(userId));
+      return updates;
+    }
+  }
+
+  public List<Update> removeAis(String sessionId,
+      String teamId,
+      String requesterId) {
+    try {
+      Room room = getRoom(sessionId);
+      room.removeAis(teamId);
+      return getRoomUpdate(room);
+    } catch (NoSuchSessionException e) {
+      List<Update> updates = new ArrayList<>();
+      updates.add(getNoSessionError(requesterId));
+      return updates;
+    }
+  }
+
 
   private Update getNoSessionError(String gamerId) {
     List<String> playersToUpdate = new ArrayList<>();
@@ -237,10 +288,32 @@ public class RequestHandler {
 
   }
 
-  private Update getRoomUpdate(Room room) {
-    List<String> playersToUpdate = getHumans(room);
-    return new Update(UpdateType.ROOM_UPDATE, room.getRoomInfo().toJson(),
-        playersToUpdate);
+  private List<Update> getRoomUpdate(Room room) {
+    List<Update> updates = new ArrayList<>();
+
+    List<String> nonHosts = new ArrayList<>();
+    List<String> host = new ArrayList<>();
+
+    for (TeamFormation tf : room.getTeams().values()) {
+      for (String human : tf.getHumans()) {
+        if (room.isHost(human)) {
+          host.add(human);
+        } else {
+          nonHosts.add(human);
+        }
+      }
+    }
+
+    JsonObject hostRoom = room.getRoomInfo().toJson();
+    hostRoom.addProperty("isHost", true);
+
+    JsonObject nonHostRoom = room.getRoomInfo().toJson();
+    hostRoom.addProperty("isHost", false);
+
+    updates.add(new Update(UpdateType.ROOM_UPDATE, hostRoom, host));
+    updates.add(new Update(UpdateType.ROOM_UPDATE, nonHostRoom, nonHosts));
+
+    return updates;
   }
 
   private List<Update> getInitBoardUpdate(Game game) {
@@ -266,6 +339,24 @@ public class RequestHandler {
       humans.addAll(team.getHumans());
     }
     return humans;
+  }
+
+  public List<Update> disbandRoom(String sessionId, String userId) {
+    try {
+      List<Update> updates = new ArrayList<>();
+      Room room = getRoom(sessionId);
+      if (room.isHost(userId)) {
+        rooms.remove(sessionId);
+        updates.add(new Update(UpdateType.SESSION_DISBAND,
+            new JsonPrimitive("The session was disbanded."),
+            getHumans(room)));
+      }
+      return updates;
+    } catch (NoSuchSessionException e) {
+      List<Update> updates = new ArrayList<>();
+      updates.add(getNoSessionError(userId));
+      return updates;
+    }
   }
 
   /**
@@ -296,9 +387,9 @@ public class RequestHandler {
    * @throws NoSuchSessionException Thrown when the the room is in does not
    *         exist.
    */
-  public SessionInfo getSessionInfo(String id)
+  public SessionInfo getSessionInfo(String sessionId)
       throws NoSuchSessionException {
-    Room room = getRoom(id);
+    Room room = getRoom(sessionId);
     return room.getRoomInfo();
   }
 
@@ -357,6 +448,7 @@ public class RequestHandler {
     return id;
   }
 
+
   /**
    * Adds a user to the RequestHandler and generates an id for it.
    * @return The unique string generated for the new user.
@@ -382,5 +474,4 @@ public class RequestHandler {
       return new ArrayList<Update>();
     }
   }
-
 }
