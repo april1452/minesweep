@@ -69,12 +69,13 @@ public class TimerGame extends Game {
       long newDelay = remainingTime - MINE_LOSS_MILLIS;
       if (newDelay <= 0) {
         updates.addAll(getLossUpdate(teamId));
+      } else {
+        PlayerTimer newTimer =
+            new PlayerTimer(this, teamId, System.currentTimeMillis(),
+                newDelay);
+        timer.schedule(newTimer, newDelay);
+        timers.put(teamId, newTimer);
       }
-      PlayerTimer newTimer =
-          new PlayerTimer(this, teamId, System.currentTimeMillis(),
-              newDelay);
-      timer.schedule(newTimer, newDelay);
-      timers.put(teamId, newTimer);
     } else if (response == MoveResponse.NOT_MINE) {
       PlayerTimer oldTimer = timers.get(teamId);
       oldTimer.cancel();
@@ -125,7 +126,7 @@ public class TimerGame extends Game {
 
       updates.add(new Update(UpdateType.BOARD_UPDATE, boardInfo,
           team
-              .getHumans()));
+          .getHumans()));
       updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(),
           allHumans));
 
@@ -158,8 +159,8 @@ public class TimerGame extends Game {
         if (!otherTeam.getIsLoser()) {
           otherTeam.setIsWinner();
           updates
-          .add(new Update(UpdateType.VICTORY, new JsonPrimitive(
-              entry.getKey()), otherTeam.getHumans()));
+              .add(new Update(UpdateType.VICTORY, new JsonPrimitive(
+                  entry.getKey()), otherTeam.getHumans()));
         }
       }
     }
