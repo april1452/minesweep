@@ -525,6 +525,13 @@ function drawBoard() {
                 } else {
                     _ctx.fillStyle = UNEXPLORED;
                     _ctx.fillRect(newX, newY, newWidth, newHeight);
+                    if (isFlag(flags, tile.row, tile.column)) {
+                    var newMidX = newX + (newWidth / 2);
+                    var newMidY = newY + (newHeight / 2);
+                    var newStartX = newMidX - (tileWidth / 2);
+                    var newStartY = newMidY - (tileHeight / 2);
+                    _ctx.drawImage(flagImage, newStartX, newStartY, tileWidth, tileHeight);
+                    }
                     _ctx.strokeStyle = NORMAL_BORDER;
                     _ctx.strokeRect(newX, newY, newWidth, newHeight);
                 }

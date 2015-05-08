@@ -19,7 +19,7 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  * @author agokasla
  */
 public class RectangularBoard extends DefaultBoard implements Board,
-Cloneable {
+    Cloneable {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
   // private Table<Integer, Integer, Tile> overWrittenTiles;
@@ -88,13 +88,13 @@ Cloneable {
 
       List<Tile> candidateList =
           super
-              .getAdjacentTiles(finalRow, finalCol)
-              .stream()
-              .filter(
-                  (t) -> (t.getColumn() == finalCol || t.getRow() == finalRow)
-                      && (links[t.getRow()][t.getColumn()] == null)
-              && !(t.getColumn() == finalCol && t.getRow() == finalRow)
-                      && !t.isBomb()).collect(Collectors.toList());
+          .getAdjacentTiles(finalRow, finalCol)
+          .stream()
+          .filter(
+              (t) -> (t.getColumn() == finalCol || t.getRow() == finalRow)
+              && (links[t.getRow()][t.getColumn()] == null)
+                      && !(t.getColumn() == finalCol && t.getRow() == finalRow)
+              && !t.isBomb()).collect(Collectors.toList());
 
       if (candidateList.isEmpty()) {
         i--;
@@ -180,6 +180,7 @@ Cloneable {
     JsonObject boardJson = new JsonObject();
     boardJson.addProperty("width", getWidth());
     boardJson.addProperty("height", getHeight());
+    boardJson.addProperty("bombCount", bombCount);
     JsonArray tilesJson = new JsonArray();
     for (int i = 0; i < getHeight(); i++) {
       for (int j = 0; j < getWidth(); j++) {
@@ -207,7 +208,7 @@ Cloneable {
      */
     boardJson.add("tilesArray",
         (new JsonParser()).parse(gson.toJson(links))
-        .getAsJsonArray());
+            .getAsJsonArray());
 
     System.out.println(boardJson.toString());
 

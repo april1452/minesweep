@@ -1,14 +1,14 @@
 package edu.brown.cs.pdtran.minesweep.board;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
-
-import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import edu.brown.cs.pdtran.minesweep.tile.Tile;
 
 public class BoardTest {
 
@@ -80,23 +80,6 @@ public class BoardTest {
     }
   }
 
-  @Test
-  public void dumbEntangledBoard() {
-    EntangledBoard board =
-        new EntangledBoard(Arrays.copyOf(dumbBoard, dumbBoard.length));
-    for (int i = 0; i < board.getHeight(); i++) {
-      for (int j = 0; j < board.getWidth(); j++) {
-        assertFalse(board.getTile(i, j).isBomb());
-        assertFalse(board.getTile(i, j).hasBeenVisited());
-      }
-    }
-    board.makeMove(board.getHeight() / 2, board.getWidth() / 2);
-    for (int i = 0; i < board.getHeight(); i++) {
-      for (int j = 0; j < board.getWidth(); j++) {
-        assertTrue(board.getTile(i, j).hasBeenVisited());
-      }
-    }
-  }
 
   @Test
   public void dumbHexagonalBoard() {
