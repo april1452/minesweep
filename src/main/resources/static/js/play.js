@@ -227,15 +227,32 @@ function drawRoom() {
         $("#teams").html(sidebar + innerBox);
 
         $("#startButton").click(function() {
-            console.log('start button clicked');
-            $.getScript("../js/js.cookie.js", function() {
-                var sendData = {
-                    requestType: "START_GAME",
-                    minesweepId: $.cookie("minesweepId"),
-                    minesweepRoomId: $.cookie("minesweepRoomId")
-                };
-                socket.send(JSON.stringify(sendData));
+            
+            var specs = roomInfo.gameSpecs;
+            var totalPlayers = specs.numTeamPlayers * specs.numTeams;
+
+            var numPlayer = 0;
+            $.each(roomInfo.teams, function(index, team) {
+                $.each(team.players, function(index, player) {
+                    numPlayer++;
+                });
             });
+
+            console.log(numPlayer);
+
+            if(numPlayer == totalPlayers) {
+                $.getScript("../js/js.cookie.js", function() {
+                    var sendData = {
+                        requestType: "START_GAME",
+                        minesweepId: $.cookie("minesweepId"),
+                        minesweepRoomId: $.cookie("minesweepRoomId")
+                    };
+                    socket.send(JSON.stringify(sendData));
+                });
+            } else {
+                alert("You require more players to start the game!");
+            }
+
         });
 
         $("#disbandButton").click(function() {
