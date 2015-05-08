@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
@@ -65,6 +66,13 @@ public class RectangularBoard extends DefaultBoard implements Board,
     this.links = links;
     // this.overWrittenTiles = overWrittenTiles;
     assert (neighborTable != null);
+  }
+
+  /**
+   * The default constructor.
+   */
+  public RectangularBoard() {
+    this(16, 16, 40);
   }
 
   /**
