@@ -1,8 +1,8 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
+import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.websockets.MoveHandler;
 import edu.brown.cs.pdtran.minesweep.websockets.NoSuchSessionException;
-import edu.brown.cs.pdtran.minesweep.move.Move;
 
 /**
  * Represents the thread that an AI Player runs on.

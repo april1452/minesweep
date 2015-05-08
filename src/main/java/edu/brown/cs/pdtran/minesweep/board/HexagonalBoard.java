@@ -11,7 +11,7 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  * @author Clayton Sanford
  */
 public class HexagonalBoard extends DefaultBoard implements Board,
-Cloneable {
+    Cloneable {
 
   private static final int ADJACENT_ARRAY_SIZE = 3;
   private static final int SURROUNDING_TILES = 6;

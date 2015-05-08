@@ -6,9 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.websockets.Update;
-
-import edu.brown.cs.pdtran.minesweep.session.Session;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -18,8 +15,10 @@ import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
+import edu.brown.cs.pdtran.minesweep.session.Session;
 import edu.brown.cs.pdtran.minesweep.setup.Room;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
+import edu.brown.cs.pdtran.minesweep.websockets.Update;
 
 /**
  * An Abstract class representing a Game.
@@ -58,6 +57,11 @@ public abstract class Game extends Session {
     return teams;
   }
 
+  /**
+   * Gets the Board info to be send in an update to the front end.
+   * @param teamId The unique id for a given team.
+   * @return A JsonElement that can be send to the front end.
+   */
   public JsonElement getBoardInfo(String teamId) {
     JsonArray colorsJson = new JsonArray();
     for (int i = 0; i < colors.length; i++) {

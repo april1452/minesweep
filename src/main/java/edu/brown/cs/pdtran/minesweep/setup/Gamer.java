@@ -2,11 +2,10 @@ package edu.brown.cs.pdtran.minesweep.setup;
 
 import java.util.List;
 
-import edu.brown.cs.pdtran.minesweep.session.Player;
-
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
+import edu.brown.cs.pdtran.minesweep.session.Player;
 
 /**
  * Represents pregame/setup phase gamer. Turned into a Player object once

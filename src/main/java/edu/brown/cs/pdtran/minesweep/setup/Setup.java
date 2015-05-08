@@ -49,6 +49,7 @@ public final class Setup {
 
   /**
    * Sets up a room with a room name and specifications.
+   * @param hostId A string that represents the id of the host.
    * @param roomName A string that represents the name of the room.
    * @param specs The GameSpecs that define the rules of play for the game.
    * @return A Room with the corresponding attributes.
