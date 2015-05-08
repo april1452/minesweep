@@ -31,9 +31,7 @@ public class HomeRoute implements TemplateViewRoute {
 
     String id = handler.getUserId();
 
-    if (req.cookie("minesweepId") == null) {
-      res.cookie("minesweepId", id);
-    }
+    res.cookie("minesweepId", id);
 
     return new ModelAndView(variables, "main.ftl");
   }
