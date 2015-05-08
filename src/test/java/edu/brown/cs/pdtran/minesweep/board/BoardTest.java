@@ -126,12 +126,6 @@ public class BoardTest {
   }
 
   @Test
-  public void lossTestEngtangledBoard() {
-    EntangledBoard board = new EntangledBoard();
-    checkLoss(board);
-  }
-
-  @Test
   public void invalidMove() {
     DefaultBoard board = new DefaultBoard();
     checkInvalidMove(board);
@@ -146,12 +140,6 @@ public class BoardTest {
   @Test
   public void invalidMoveTri() {
     DefaultBoard board = new TriangularBoard();
-    checkInvalidMove(board);
-  }
-
-  @Test
-  public void invalidMoveEntangled() {
-    EntangledBoard board = new EntangledBoard();
     checkInvalidMove(board);
   }
 
@@ -183,18 +171,6 @@ public class BoardTest {
   public void cloneTestTri() {
     TriangularBoard board = new TriangularBoard();
     TriangularBoard board2 = board.clone();
-    assertTrue(board != board2);
-    for (int row = 0; row < board.getHeight(); row++) {
-      for (int col = 0; col < board.getWidth(); col++) {
-        assertTrue(board.getTile(row, col) != board2.getTile(row, col));
-      }
-    }
-  }
-
-  @Test
-  public void cloneEntangledBoard() {
-    EntangledBoard board = new EntangledBoard();
-    EntangledBoard board2 = board.clone();
     assertTrue(board != board2);
     for (int row = 0; row < board.getHeight(); row++) {
       for (int col = 0; col < board.getWidth(); col++) {
