@@ -1,6 +1,6 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
-import edu.brown.cs.pdtran.minesweep.metagame.Player;
+import edu.brown.cs.pdtran.minesweep.session.Player;
 
 /**
  * This interface represents what a player controls within a game of

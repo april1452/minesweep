@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.metagame.Team;
+import edu.brown.cs.pdtran.minesweep.session.Team;
 
 /**
  * Pregame/setup phase team. Sets up a team of Gamers who will be turned

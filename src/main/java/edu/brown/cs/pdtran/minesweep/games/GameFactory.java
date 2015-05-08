@@ -1,6 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.games;
 
-import edu.brown.cs.pdtran.minesweep.metagame.UpdateSender;
+import edu.brown.cs.pdtran.minesweep.websockets.UpdateSender;
+
 import edu.brown.cs.pdtran.minesweep.setup.Room;
 
 /**

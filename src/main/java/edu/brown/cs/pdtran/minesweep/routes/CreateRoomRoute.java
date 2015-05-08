@@ -1,14 +1,14 @@
 package edu.brown.cs.pdtran.minesweep.routes;
 
-import spark.QueryParamsMap;
-import spark.Request;
-import spark.Response;
-import spark.Route;
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.setup.GameSpecs;
 import edu.brown.cs.pdtran.minesweep.setup.Room;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
 import edu.brown.cs.pdtran.minesweep.types.GameMode;
+import spark.QueryParamsMap;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 /**
  * Creates a Room using information from entered on the setup page.
@@ -37,19 +37,34 @@ public class CreateRoomRoute implements Route {
     GameMode gameMode = GameMode.valueOf(gameModeString);
     int difficulty = Integer.parseInt(params.value("difficulty"));
 
+    if (difficulty > 10) {
+      difficulty = 10;
+    } else if (difficulty < 0) {
+      difficulty = 0;
+    }
+
     String boardTypeString = params.value("boardType");
     BoardType boardType = BoardType.valueOf(boardTypeString);
 
     int boardWidth = Integer.parseInt(params.value("boardWidth"));
+    if (boardWidth > 32) {
+      boardWidth = 32;
+    } else if (boardWidth < 0) {
+      boardWidth = 0;
+    }
     int boardHeight = Integer.parseInt(params.value("boardHeight"));
+    if (boardHeight > 32) {
+      boardHeight = 32;
+    } else if (boardHeight < 0) {
+      boardHeight = 0;
+    }
 
     int numTeams = Integer.parseInt(params.value("numTeams"));
     int numPlayers = Integer.parseInt(params.value("numPlayers"));
+
     int numLives = Integer.parseInt(params.value("numLives"));
 
     String hostId = params.value("hostId");
-    System.out.println("hostName" + roomName);
-    System.out.println("hostid: " + hostId);
 
     int[] boardDims = {boardWidth, boardHeight};
     GameSpecs specs =

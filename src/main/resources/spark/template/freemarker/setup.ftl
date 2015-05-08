@@ -36,8 +36,8 @@
     <br>
 
     <label>Dimensions:</label>
-    <input type="number" name="width" id="width" placeholder="Width" value="16" min="1" required> x
-    <input type="number" name="height" id="height" placeholder="Height" value="16" min="1" required>
+    <input type="number" name="width" id="width" placeholder="Width" value="16" min="2" max="32" required> x
+    <input type="number" name="height" id="height" placeholder="Height" value="16" min="2" max="32" required>
 
     <br><br>
 

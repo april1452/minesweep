@@ -1,4 +1,4 @@
-package edu.brown.cs.pdtran.minesweep.metagame;
+package edu.brown.cs.pdtran.minesweep.websockets;
 
 import java.util.List;
 

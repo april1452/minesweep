@@ -1,4 +1,4 @@
-package edu.brown.cs.pdtran.minesweep.metagame;
+package edu.brown.cs.pdtran.minesweep.websockets;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -12,6 +12,7 @@ import org.java_websocket.server.WebSocketServer;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.move.MoveFactory;
 import edu.brown.cs.pdtran.minesweep.setup.AIGamer;

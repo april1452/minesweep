@@ -8,14 +8,15 @@ import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import edu.brown.cs.pdtran.minesweep.websockets.UpdateSender;
+
+import edu.brown.cs.pdtran.minesweep.websockets.Update;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.board.BoardFactory;
-import edu.brown.cs.pdtran.minesweep.metagame.Update;
-import edu.brown.cs.pdtran.minesweep.metagame.UpdateSender;
 import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.GamePlayer;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;

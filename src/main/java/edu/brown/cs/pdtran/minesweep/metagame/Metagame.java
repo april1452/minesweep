@@ -8,6 +8,7 @@ import edu.brown.cs.pdtran.minesweep.routes.GamesRoute;
 import edu.brown.cs.pdtran.minesweep.routes.HomeRoute;
 import edu.brown.cs.pdtran.minesweep.routes.PlayHandler;
 import edu.brown.cs.pdtran.minesweep.routes.SetupHandler;
+import edu.brown.cs.pdtran.minesweep.websockets.GameServer;
 import freemarker.template.Configuration;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;

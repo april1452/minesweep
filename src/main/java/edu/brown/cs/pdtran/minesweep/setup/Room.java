@@ -6,10 +6,11 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import edu.brown.cs.pdtran.minesweep.websockets.SessionFullException;
+
+import edu.brown.cs.pdtran.minesweep.session.Session;
+import edu.brown.cs.pdtran.minesweep.session.Team;
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
-import edu.brown.cs.pdtran.minesweep.metagame.Session;
-import edu.brown.cs.pdtran.minesweep.metagame.SessionFullException;
-import edu.brown.cs.pdtran.minesweep.metagame.Team;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 
 /**

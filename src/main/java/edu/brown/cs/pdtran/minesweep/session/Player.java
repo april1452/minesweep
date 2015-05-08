@@ -1,4 +1,4 @@
-package edu.brown.cs.pdtran.minesweep.metagame;
+package edu.brown.cs.pdtran.minesweep.session;
 
 import edu.brown.cs.pdtran.minesweep.types.PlayerType;
 

@@ -1,4 +1,4 @@
-package edu.brown.cs.pdtran.minesweep.metagame;
+package edu.brown.cs.pdtran.minesweep.websockets;
 
 /**
  * An exception when an ID for a game that does not exist is used.

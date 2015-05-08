@@ -3,9 +3,10 @@ package edu.brown.cs.pdtran.minesweep.routes;
 import java.util.List;
 import java.util.Map;
 
+import edu.brown.cs.pdtran.minesweep.session.SessionInfo;
+
 import com.google.gson.JsonObject;
 import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
-import edu.brown.cs.pdtran.minesweep.metagame.SessionInfo;
 import spark.Request;
 import spark.Response;
 import spark.Route;
