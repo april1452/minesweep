@@ -72,6 +72,7 @@ public class AIPlayer extends GamePlayer {
 
     usedUncertain = new ArrayList<>();
     usedNotMine = new ArrayList<>();
+    generateMovePossibilities();
   }
 
   /**

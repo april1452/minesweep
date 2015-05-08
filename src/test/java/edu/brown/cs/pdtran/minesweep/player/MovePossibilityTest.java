@@ -12,8 +12,8 @@ public class MovePossibilityTest {
   public void basicFunctionality() {
     Tile tile = new Tile(false, 2, false, 4, 3);
     MovePossibility mp = new MovePossibility(tile, .5);
-    assertTrue(mp.getXCoord() == 4);
-    assertTrue(mp.getYCoord() == 3);
+    assertTrue(mp.getXCoord() == 3);
+    assertTrue(mp.getYCoord() == 4);
     assertTrue(mp.getMineProbability() == .5);
     mp.setMineProbability(.6);
     assertTrue(mp.getMineProbability() == .6);

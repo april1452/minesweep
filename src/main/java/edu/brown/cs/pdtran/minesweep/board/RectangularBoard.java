@@ -10,7 +10,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import edu.brown.cs.pdtran.minesweep.tile.Tile;
 import edu.brown.cs.pdtran.minesweep.types.BoardType;
 
@@ -20,7 +19,7 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  * @author agokasla
  */
 public class RectangularBoard extends DefaultBoard implements Board,
-    Cloneable {
+Cloneable {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
   // private Table<Integer, Integer, Tile> overWrittenTiles;
@@ -48,6 +47,7 @@ public class RectangularBoard extends DefaultBoard implements Board,
   public RectangularBoard(Tile[][] grid) {
     super(grid);
     neighborTable = HashBasedTable.create();
+    links = new Tile[getHeight()][getWidth()];
     assert (neighborTable != null);
   }
 
@@ -96,13 +96,13 @@ public class RectangularBoard extends DefaultBoard implements Board,
 
       List<Tile> candidateList =
           super
-          .getAdjacentTiles(finalRow, finalCol)
-          .stream()
-          .filter(
-              (t) -> (t.getColumn() == finalCol || t.getRow() == finalRow)
-              && (links[t.getRow()][t.getColumn()] == null)
-                      && !(t.getColumn() == finalCol && t.getRow() == finalRow)
-              && !t.isBomb()).collect(Collectors.toList());
+              .getAdjacentTiles(finalRow, finalCol)
+              .stream()
+              .filter(
+                  (t) -> (t.getColumn() == finalCol || t.getRow() == finalRow)
+                      && (links[t.getRow()][t.getColumn()] == null)
+              && !(t.getColumn() == finalCol && t.getRow() == finalRow)
+                      && !t.isBomb()).collect(Collectors.toList());
 
       if (candidateList.isEmpty()) {
         i--;
@@ -216,7 +216,7 @@ public class RectangularBoard extends DefaultBoard implements Board,
      */
     boardJson.add("tilesArray",
         (new JsonParser()).parse(gson.toJson(links))
-            .getAsJsonArray());
+        .getAsJsonArray());
 
     System.out.println(boardJson.toString());
 

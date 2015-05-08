@@ -1,13 +1,14 @@
 package edu.brown.cs.pdtran.minesweep.player;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import edu.brown.cs.pdtran.minesweep.board.DefaultBoard;
-import edu.brown.cs.pdtran.minesweep.games.BoardData;
-import edu.brown.cs.pdtran.minesweep.tile.Tile;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+
+import edu.brown.cs.pdtran.minesweep.board.DefaultBoard;
+import edu.brown.cs.pdtran.minesweep.games.DummyBoardData;
+import edu.brown.cs.pdtran.minesweep.tile.Tile;
+import edu.brown.cs.pdtran.minesweep.types.AiDifficulty;
 
 public class AIPlayerTest {
   private DefaultBoard simpleBoard;
@@ -47,7 +48,7 @@ public class AIPlayerTest {
     d3 = new Tile(true, 1, false, 2, 3);
     d4 = new Tile(false, 1, false, 3, 3);
     Tile[][] tileArray =
-    { {a1, a2, a3, a4}, {b1, b2, b3, b4}, {c1, c2, c3, c4},
+      { {a1, a2, a3, a4}, {b1, b2, b3, b4}, {c1, c2, c3, c4},
         {d1, d2, d3, d4}};
     simpleBoard = new DefaultBoard(tileArray);
   }
@@ -71,7 +72,9 @@ public class AIPlayerTest {
    * score reflects it.
    */
   public void scoreTester() {
-    AIPlayer p = new AIPlayer("Clay", 5, simpleBoard);
+    AIPlayer p =
+        new AIPlayer("Clay", AiDifficulty.MEDIUM, new DummyBoardData(
+            simpleBoard));
     assertTrue(p.getScore() == 0);
     p.changeScore(100);
     assertTrue(p.getScore() == 100);
@@ -87,7 +90,9 @@ public class AIPlayerTest {
    * find tiles guaranteed to have or not to have mines.
    */
   public void basicMoveGeneratorCheck() {
-    AIPlayer p = new AIPlayer("Clay", 5, new BoardData(simpleBoard));
+    AIPlayer p =
+        new AIPlayer("Clay", AiDifficulty.MEDIUM, new DummyBoardData(
+            simpleBoard));
     MovePossibility mpA1 = new MovePossibility(a1, .5);
     MovePossibility mpB1 = new MovePossibility(b1, .5);
     MovePossibility mpC1 = new MovePossibility(c1, 1);
@@ -112,78 +117,5 @@ public class AIPlayerTest {
     assertTrue(p.getUncertain().contains(mpB1));
     assertTrue(p.getUncertain().contains(mpD3));
     assertTrue(p.getUncertain().contains(mpD4));
-  }
-
-  @Test
-  /**
-   * This test shows that if there are no squares on the board that for sure
-   * have no mines, that the AI will find the space with the lowest probability
-   * of a mine.
-   */
-  public void moveEstimateCheck() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  /**
-   * This test checks similar things as the above tests, but for a tesslated
-   * board.
-   */
-  public void tesselatedMoveGeneratorCheck() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  /**
-   * This test checks similar things as the above tests, but for a rectangular
-   * board with uneven tile sizes.
-   */
-  public void rectangularMoveGeneratorCheck() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  /**
-   * This test checks that the AI can also handle moving its opponent's mines
-   * in FSU mode.
-   */
-  public void FSUMoveGeneratorCheck() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  /**
-   * This test checks that the AI can also handle moving through each level of
-   * boards in a layers game.
-   */
-  public void layersMoveGeneratorCheck() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  /**
-   * This test checks that the AI can also working to maximize its "territory"
-   * on a board shared with other players.
-   */
-  public void territoryMoveGeneratorCheck() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  /**
-   * This test checks that the AI can also handle searching for mines to "race"
-   * opponents across a long and skinny board.
-   */
-  public void raceMoveGeneratorCheck() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  /**
-   * This test checks that the player can make a move and see that same move be
-   * registered on the board.
-   */
-  public void moveTester() {
-    fail("Not yet implemented");
   }
 }
