@@ -412,22 +412,25 @@ function drawBoard() {
         $.each(tiles, function(index, tile) {
 
             var offset = tile.row * tileWidth / 2;
+            var isUp;
             if (tile.column % 2 === 0) {
+                isUp = false;
                 var x1 = tile.column / 2 * tileWidth + offset;
                 var x2 = (tile.column / 2 + 1) * tileWidth + offset;
                 var x3 = (tile.column / 2 + 0.5) * tileWidth + offset;
                 var y1 = tile.row * tileHeight;
                 var y2 = tile.row * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
-                triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile);
+                triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile, isUp);
             } else {
+                isUp = true;
                 var x1 = (tile.column / 2 + 0.5) * tileWidth + offset;
                 var x2 = tile.column / 2 * tileWidth + offset;
                 var x3 = (tile.column / 2 + 1) * tileWidth + offset;
                 var y1 = tile.row * tileHeight;
                 var y2 = (tile.row + 1) * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
-                triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile);
+                triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile, isUp);
 /*=======
                 //triangleDraw(x1, x2, x3, y1, y2, y3, tile);
                 if (tile.isBomb && tile.visited) {
@@ -748,7 +751,7 @@ function getFontSize(tileHeight, tileWidth) {
     return Math.min(Math.floor(tileHeight / 2), Math.floor(tileWidth / 1.5));
 }
 
-function triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile) {
+function triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile, isUp) {
     _ctx.beginPath();
     _ctx.moveTo(x1, y1);
     _ctx.lineTo(x2, y2);
@@ -764,7 +767,11 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile) {
         _ctx.fillStyle = color;
         _ctx.fill();
         if (tile.isBomb) {
-            _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+            if (isUp) {
+                _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+            } else {
+                _ctx.drawImage(mineImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+            }
         } else {
             if (tile.adjacentBombs > 0) {
                 _ctx.fillStyle = getTextColor(tile.adjacentBombs);
@@ -779,7 +786,12 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile) {
         _ctx.fillStyle = UNEXPLORED;
         _ctx.fill();
         if (isFlag(globalData.flags, tile.row, tile.column)) {
-            _ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+            //_ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+            if (isUp) {
+                _ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
+            } else {
+                _ctx.drawImage(flagImage, x1 + tileWidth / 4, y1, tileWidth / 2, tileHeight / 2);
+            }
         }
     }
 
