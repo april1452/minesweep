@@ -1,38 +1,33 @@
 minesweep+
 ===============================================================================
+Your classic, beloved Minesweeper...plus some. Featuring three new game modes: Layers, Territories, and Timer and three new board shapes: triangles, hexagons, and rectangle mismatch. Up to four teams of up to four players (human or AI) can play. With novel play options and a sleek web interface, we present: MINESWEEP+
 
-
-Design
+Package/Class Design
 ===============================================================================
-
-
-Design Questions
-===============================================================================
-
-
-UI
-===============================================================================
-
+* minesweep
+* board
+* games
+* metagame
+* move
+* player
+* routes
+* session
+* setup
+* tile
+* types
+* websockets
 
 Testing
 ===============================================================================
-
+* Junit testing in the backend
+* Web requests printed to terminal
+* Console print statements for GUI
+* No system tests :-(
 
 Bugs
 ===============================================================================
+* Numbers don't always match up in rectangular board shape
 
-
-Checkstyle appeals
-===============================================================================
-
-
-TODO
-=====
-* disband team functionality
-* team names?
-* player name
-* notify user if too many ais or players on a team when trying to add/join
-* don't allow players to join full room
 
 
 
