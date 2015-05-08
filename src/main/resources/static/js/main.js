@@ -1,7 +1,7 @@
 document.onload = getGames();
 
 $("#refresh").click(function() {
-    getGames();
+    location.reload();
 });
 
 var clicked;
@@ -15,10 +15,10 @@ function getGames() {
     $.get("/games", function(responseJSON) {
         var response = JSON.parse(responseJSON);
         $("#gamesList").empty();
-        gameIds = new Array();
+        var gameIds = new Array();
         
-        fullRooms = new Array();
-        notFull = new Array();
+        var fullRooms = new Array();
+        var notFull = new Array();
 
         $.each(response, function(roomId, roomInfo) {
             // Get number of players currently in room
@@ -36,7 +36,7 @@ function getGames() {
                 var button;
                 if (numPlayer == totalPlayers) {
                     fullRooms.push(roomId);
-                    button = '<li><a id="' + roomId + '" class="button line-purple">'+specs.mode + ": " + roomInfo.roomName + " (" + numPlayer + "/" + totalPlayers +  " players)</a>";   
+                    button = '<li><a id="' + roomId + '" class="button line-purple" data-modal-open="modal-name-'+roomId+'">'+specs.mode + ": " + roomInfo.roomName + " (" + numPlayer + "/" + totalPlayers +  " players)</a>";   
                 } else {
                     notFull.push(roomId);
                     button = '<li><a id="' + roomId + '" class="button line-purple modal-trigger" data-modal-open="modal-name-'+roomId+'">'+specs.mode + ": " + roomInfo.roomName + " (" + numPlayer + "/" + totalPlayers +  " players)</a>";
@@ -46,24 +46,28 @@ function getGames() {
             }
         });
 
+
         // bind alert to full room buttons
-        for (var room in fullRooms) {
-            console.log(room + ': ' + fullRooms[room]);
-            $("#" + fullRooms[room]).click(function() {
+        $.each(fullRooms, function(index, roomId) {
+            $("#" + roomId).on("click", function() {
                 alert('Go away, the room is full.');
             });
-        }
+        });
 
-        for (var room in notFull) {
-            console.log(room + ': ' + notFull[room]);
-            var roomId = notFull[room];
-            $("#join-" + roomId).click(function() {
-                $.getScript("../js/js.cookie.js", function() {
-                    $.cookie("minesweepRoomId", roomId);
-                    $.cookie("minesweepName", $("#player-name-"+roomId).val());
-                });
-                window.location.href = "/play";
+        $.each(notFull, function(index, roomId) {
+            $("#join-" + roomId).on("click", function() {
+                console.log("test");
+                var name = $("#player-name-"+roomId).val();
+                if(name != "") {
+                    $.getScript("../js/js.cookie.js", function() {
+                        $.cookie("minesweepRoomId", roomId);
+                        $.cookie("minesweepName", name);
+                    });
+                    window.location.href = "/play";
+                } else {
+                    alert("NO ANONS. Enter your name to join a game.");
+                }
             });
-        }
+        });
     });
 }
