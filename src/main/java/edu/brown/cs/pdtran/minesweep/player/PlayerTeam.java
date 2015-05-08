@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.session.Team;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,6 +13,7 @@ import com.google.gson.JsonPrimitive;
 import edu.brown.cs.pdtran.minesweep.board.Board;
 import edu.brown.cs.pdtran.minesweep.games.BoardData;
 import edu.brown.cs.pdtran.minesweep.move.Move;
+import edu.brown.cs.pdtran.minesweep.session.Team;
 import edu.brown.cs.pdtran.minesweep.setup.Gamer;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.tile.Tile;

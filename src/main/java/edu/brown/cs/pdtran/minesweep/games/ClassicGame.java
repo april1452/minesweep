@@ -7,8 +7,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.websockets.Update;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +21,7 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 import edu.brown.cs.pdtran.minesweep.types.UpdateType;
+import edu.brown.cs.pdtran.minesweep.websockets.Update;
 
 /**
  * The class that represents code needed for the classic game mode.

@@ -8,9 +8,6 @@ import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.websockets.UpdateSender;
-
-import edu.brown.cs.pdtran.minesweep.websockets.Update;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,7 +22,15 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 import edu.brown.cs.pdtran.minesweep.types.UpdateType;
+import edu.brown.cs.pdtran.minesweep.websockets.Update;
+import edu.brown.cs.pdtran.minesweep.websockets.UpdateSender;
 
+/**
+ * The game mode where players race against the clock to compete the board,
+ * adding time when they check mines and subtracting it when the hit a
+ * mine.
+ * @author Clayton Sanford
+ */
 public class TimerGame extends Game {
   UpdateSender updateSender;
   private Timer timer;
@@ -40,6 +45,7 @@ public class TimerGame extends Game {
    * A constructor for a ClassicGame.
    * @param room Uses a room with game information to generate the game
    *        object.
+   * @param updateSender An object that sends updates to players.
    */
   public TimerGame(Room room, UpdateSender updateSender) {
     super(room);
@@ -136,6 +142,10 @@ public class TimerGame extends Game {
     return updates;
   }
 
+  /**
+   * Decrements a team's time by a previously-selected amount.
+   * @param teamId The unique id for a specified team.
+   */
   public void timerLoss(String teamId) {
     updateSender.sendUpdates(getLossUpdate(teamId));
   }
@@ -222,10 +232,10 @@ public class TimerGame extends Game {
       PlayerTeam team = entry.getValue();
       JsonObject teamJson = new JsonObject();
       teamJson.addProperty("name", team.getName());
-      PlayerTimer timer = timers.get(entry.getKey());
+      PlayerTimer aTimer = timers.get(entry.getKey());
       long elapsedTime =
-          System.currentTimeMillis() - timer.getStartTime();
-      long remainingTime = timer.getDelay() - elapsedTime;
+          System.currentTimeMillis() - aTimer.getStartTime();
+      long remainingTime = aTimer.getDelay() - elapsedTime;
       teamJson.addProperty("time", remainingTime);
       gameData.add(entry.getKey(), teamJson);
     }

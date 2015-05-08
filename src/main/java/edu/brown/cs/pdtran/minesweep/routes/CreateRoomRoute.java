@@ -17,6 +17,8 @@ import spark.Route;
 public class CreateRoomRoute implements Route {
 
   private RequestHandler handler;
+  private static final int MAX_DIFFICULTY = 10;
+  private static final int MAX_SIZE = 32;
 
   /**
    * Constructs a new CreateRoomRoute.
@@ -37,8 +39,8 @@ public class CreateRoomRoute implements Route {
     GameMode gameMode = GameMode.valueOf(gameModeString);
     int difficulty = Integer.parseInt(params.value("difficulty"));
 
-    if (difficulty > 10) {
-      difficulty = 10;
+    if (difficulty > MAX_DIFFICULTY) {
+      difficulty = MAX_DIFFICULTY;
     } else if (difficulty < 0) {
       difficulty = 0;
     }
@@ -47,14 +49,14 @@ public class CreateRoomRoute implements Route {
     BoardType boardType = BoardType.valueOf(boardTypeString);
 
     int boardWidth = Integer.parseInt(params.value("boardWidth"));
-    if (boardWidth > 32) {
-      boardWidth = 32;
+    if (boardWidth > MAX_SIZE) {
+      boardWidth = MAX_SIZE;
     } else if (boardWidth < 0) {
       boardWidth = 0;
     }
     int boardHeight = Integer.parseInt(params.value("boardHeight"));
-    if (boardHeight > 32) {
-      boardHeight = 32;
+    if (boardHeight > MAX_SIZE) {
+      boardHeight = MAX_SIZE;
     } else if (boardHeight < 0) {
       boardHeight = 0;
     }

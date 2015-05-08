@@ -6,12 +6,11 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.websockets.SessionFullException;
-
+import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.session.Session;
 import edu.brown.cs.pdtran.minesweep.session.Team;
-import edu.brown.cs.pdtran.minesweep.metagame.RequestHandler;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
+import edu.brown.cs.pdtran.minesweep.websockets.SessionFullException;
 
 /**
  * This class contains data for the Room information before the room is
@@ -25,6 +24,7 @@ public class Room extends Session {
   /**
    * Create a room that has been processed from the GUI. This room contains
    * specs that will be used to create an actual game.
+   * @param hostId The id string corresponding to the host.
    * @param name The string corresponding to the name of the game.
    * @param specs The specifications for the room from the Setup page.
    */
@@ -43,6 +43,11 @@ public class Room extends Session {
     return teams;
   }
 
+  /**
+   * Checks whether a given player is the host.
+   * @param id The unique id of the player.
+   * @return True if the player is the host.
+   */
   public boolean isHost(String id) {
     return hostId.equals(id);
   }
@@ -112,6 +117,10 @@ public class Room extends Session {
     return SessionType.SETUP;
   }
 
+  /**
+   * Removes all AI players from a team.
+   * @param teamId The unique id for a team.
+   */
   public void removeAis(String teamId) {
     // somewhat hacky method to remove all Ais
     TeamFormation team = teams.get(teamId);
@@ -130,6 +139,11 @@ public class Room extends Session {
     }
   }
 
+  /**
+   * Removes a human player from the game.
+   * @param teamId The unique id corresponding to that player's team.
+   * @param userId The unique id corresponding to the removed user.
+   */
   public void removeHuman(String teamId, String userId) {
     Team team = teams.get(teamId);
     team.getHumans().remove(userId);

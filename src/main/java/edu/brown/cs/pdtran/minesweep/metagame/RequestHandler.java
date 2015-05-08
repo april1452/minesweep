@@ -10,28 +10,27 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.session.SessionInfo;
-
-import edu.brown.cs.pdtran.minesweep.player.AIRunnable;
-import edu.brown.cs.pdtran.minesweep.websockets.MoveHandler;
-import edu.brown.cs.pdtran.minesweep.websockets.UpdateSender;
-import edu.brown.cs.pdtran.minesweep.websockets.Update;
-import edu.brown.cs.pdtran.minesweep.websockets.SessionFullException;
-import edu.brown.cs.pdtran.minesweep.websockets.NoSuchSessionException;
-import edu.brown.cs.pdtran.minesweep.session.Session;
-import edu.brown.cs.pdtran.minesweep.session.Team;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import edu.brown.cs.pdtran.minesweep.games.Game;
 import edu.brown.cs.pdtran.minesweep.games.GameFactory;
 import edu.brown.cs.pdtran.minesweep.move.Move;
 import edu.brown.cs.pdtran.minesweep.player.AIPlayer;
+import edu.brown.cs.pdtran.minesweep.player.AIRunnable;
 import edu.brown.cs.pdtran.minesweep.player.PlayerTeam;
+import edu.brown.cs.pdtran.minesweep.session.Session;
+import edu.brown.cs.pdtran.minesweep.session.SessionInfo;
+import edu.brown.cs.pdtran.minesweep.session.Team;
 import edu.brown.cs.pdtran.minesweep.setup.AIGamer;
 import edu.brown.cs.pdtran.minesweep.setup.HumanGamer;
 import edu.brown.cs.pdtran.minesweep.setup.Room;
 import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.types.UpdateType;
+import edu.brown.cs.pdtran.minesweep.websockets.MoveHandler;
+import edu.brown.cs.pdtran.minesweep.websockets.NoSuchSessionException;
+import edu.brown.cs.pdtran.minesweep.websockets.SessionFullException;
+import edu.brown.cs.pdtran.minesweep.websockets.Update;
+import edu.brown.cs.pdtran.minesweep.websockets.UpdateSender;
 
 /**
  * Keeps records of games, sessions, users, and rooms by storing maps that
@@ -245,6 +244,13 @@ public class RequestHandler {
     }
   }
 
+  /**
+   * Removes a human player from the room.
+   * @param sessionId The unique id for the session.
+   * @param teamId The unique id for the team losing a player.
+   * @param userId The unique id for the player leaving.
+   * @return A list of updates to all players to show the player has left.
+   */
   public List<Update> removeHuman(String sessionId,
       String teamId,
       String userId) {
@@ -259,6 +265,14 @@ public class RequestHandler {
     }
   }
 
+  /**
+   * Removes the AI players from the room and sends updates to all players.
+   * @param sessionId The unique id for the session.
+   * @param teamId The unique id for the team having its AIs removed.
+   * @param requesterId The player requesting that AIs be removed.
+   * @return A list of updates to be sent to players to show the AIs have
+   *         been removed.
+   */
   public List<Update> removeAis(String sessionId,
       String teamId,
       String requesterId) {
@@ -350,6 +364,12 @@ public class RequestHandler {
     return humans;
   }
 
+  /**
+   * Shuts down a room and sends updates to all players.
+   * @param sessionId The unique id for a session.
+   * @param userId The user id of the host.
+   * @return A list of updates to be sent out to all players.
+   */
   public List<Update> disbandRoom(String sessionId, String userId) {
     try {
       List<Update> updates = new ArrayList<>();
@@ -392,7 +412,7 @@ public class RequestHandler {
 
   /**
    * Gets the room info corresponding to the room specified by an id.
-   * @param id The unique id that corresponds to a room.
+   * @param sessionId The unique id that corresponds to a session.
    * @return The RoomInfo object corresponding to the same room.
    * @throws NoSuchSessionException Thrown when the the room is in does not
    *         exist.
@@ -407,6 +427,7 @@ public class RequestHandler {
    * Creates a game from a room id. Removes the id corresponding to that
    * room from the Rooms map and creates a new Game with the specified
    * information in the Games map.
+   * @param updateSender An object that sends updates to users.
    * @param sessionId The unique string corresponding to a room.
    * @param userId The string corresponding to the host.
    * @param handler The object that manages moves.

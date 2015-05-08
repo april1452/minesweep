@@ -1,8 +1,7 @@
 package edu.brown.cs.pdtran.minesweep.games;
 
-import edu.brown.cs.pdtran.minesweep.websockets.UpdateSender;
-
 import edu.brown.cs.pdtran.minesweep.setup.Room;
+import edu.brown.cs.pdtran.minesweep.websockets.UpdateSender;
 
 /**
  * Builds Game objects according to the mode enum specified by each room.
@@ -17,6 +16,7 @@ public final class GameFactory {
   /**
    * Generates a Game object based on the mode enum assigned.
    * @param room A PreRoom object with information on the game's setup.
+   * @param updateSender An object that sends updates to players.
    * @return A Game object of the mode corresponding to the enum.
    */
   public static Game generateGame(Room room, UpdateSender updateSender) {

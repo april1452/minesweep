@@ -7,8 +7,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.websockets.Update;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +21,7 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 import edu.brown.cs.pdtran.minesweep.types.UpdateType;
+import edu.brown.cs.pdtran.minesweep.websockets.Update;
 
 /**
  * The class that represents code needed for the layers game mode.
@@ -99,7 +98,7 @@ public class LayersGame extends Game {
               entry.getValue().setIsLoser();
               updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(
                   entry
-                  .getKey()), entry.getValue().getHumans()));
+                      .getKey()), entry.getValue().getHumans()));
             }
           }
         }
@@ -125,7 +124,7 @@ public class LayersGame extends Game {
 
       updates.add(new Update(UpdateType.BOARD_UPDATE, boardInfo,
           team
-              .getHumans()));
+          .getHumans()));
       updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(),
           allHumans));
     }
