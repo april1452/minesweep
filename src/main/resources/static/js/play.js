@@ -140,9 +140,9 @@ function drawInfo(responseJson) {
     var board = globalData.board;
     var flags = globalData.flags;
     var numFlags = 0;
-    for(var i = 0; i < board.width; i++) {
-        for(var j = 0; j < board.height; j++) {
-            if(flags[i][j]) {
+    for (var i = 0; i < board.width; i++) {
+        for (var j = 0; j < board.height; j++) {
+            if (flags[i][j]) {
                 numFlags++;
             }
         }
@@ -345,7 +345,6 @@ function init() {
     canvasBoard.height = CANVAS_Y;
     canvasBoard.width = CANVAS_X;
     _ctx = canvasBoard.getContext("2d");
-    //_ctx.scale(.9,.9);
     $("#game").show();
     $("#teams").hide();
 }
@@ -382,9 +381,7 @@ function drawBoard() {
                     _ctx.fillStyle = color;
                     _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
                     _ctx.strokeStyle = NORMAL_BORDER;
-                    //_ctx.lineWidth = 2;
                     _ctx.strokeRect(tileX, tileY, tileWidth, tileHeight);
-                    //_ctx.lineWidth = 1;
                     if (tile.adjacentBombs > 0) {
                         _ctx.fillStyle = getTextColor(tile.adjacentBombs);
                         _ctx.font = getFontSize(tileHeight, tileWidth) + "px Verdana";
@@ -431,46 +428,6 @@ function drawBoard() {
                 var y2 = (tile.row + 1) * tileHeight;
                 var y3 = (tile.row + 1) * tileHeight;
                 triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile, isUp);
-/*=======
-                //triangleDraw(x1, x2, x3, y1, y2, y3, tile);
-                if (tile.isBomb && tile.visited) {
-                    _ctx.drawImage(mineImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
-                }
-                if (isFlag(flags, tile.column, tile.row)) {
-                    _ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
-                }
-            } 
-        });
-   
-        _ctx.stroke();
-    } else if (board.type == "HEXAGONAL"){
-        console.log("hexagonal");
-
-        if (typeof(hexagon_grid) === 'undefined' || hexagon_grid == []){
-            hexagon_grid = new HT.Grid(width, height);
-            console.log(tileWidth);
-            
-            console.log("A grid is born");
-        }
-        findHexWithWidthAndHeight(tileWidth * 68/50, tileHeight *  36/50);
-
-        drawHexGrid(hexagon_grid, _ctx);
-        $.each(tiles, function(index, tile)
-        {
-            var hex = hexagon_grid.GetHexAtPos(tile.column, tile.row);
-            console.log(hex);
-            if(tile.visited){
-                if(tile.isBomb){
-                    console.log("this tile is a bomb");
-                    hex.fillColor = EXPLORED;
-                } else {
-                    console.log("This is suppose to be visited");
-                    
-                    hex.fillColor = EXPLORED;
-                }
-            } else {
-                hex.fillColor = UNEXPLORED;
->>>>>>> Stashed changes*/
             }
         });
 
@@ -486,33 +443,29 @@ function drawBoard() {
             drawHexagon(segmentX, segmentY, tile);
         });
     } else if (board.type == "RECTANGULAR") {
-        console.log("Drawing Rectangle");
-        console.log(board);
+
         tilesArray = board.tilesArray;
 
         _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
 
         $.each(tiles, function(index, tile) {
-            var x = index % board.width;
-            var y = Math.floor(index / board.width);
+            var x = tile.column;
+            var y = tile.row;
 
-            var tileX = index % board.width * tileWidth;
-            var tileY = Math.floor(index / board.width) * tileHeight;
+            var tileX = x * tileWidth;
+            var tileY = y * tileHeight;
+
 
             var contained = false;
-            for (var i = 0; i < board.height; i++) {
-                for (var j = 0; j < board.width; j++) {
-                    aTile = tilesArray[i][j];
-                    if (aTile != null) {
-                        if (aTile.column === x && aTile.row === y) {
-                            contained = true;
-                        }
-                    }
+            var aTile = tilesArray[y][x];
+            if(aTile != null) {
+                if(aTile.column == x && aTile.row == y) {
+                    contained = true;
                 }
             }
 
             if (!contained) {
-                if (tilesArray[y][x] === null) {
+                if (aTile == null) {
                     var newWidth = tileWidth;
                     var newHeight = tileHeight;
                     var newX = tileX;
@@ -543,94 +496,41 @@ function drawBoard() {
                         var newY = tileY - tileHeight;
                     }
                 }
-            }
-            if (tile.visited) {
-                if (tile.isBomb) {
+                if(x == 0 && y == 0) {
+                    console.log(tile);
+                }
+                if (tile.visited) {
                     _ctx.fillStyle = colors[tile.column][tile.row];
                     _ctx.fillRect(newX, newY, newWidth, newHeight);
-                    _ctx.drawImage(mineImage, tileX, tileY, tileWidth, tileHeight);
-                    _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(newX, newY, newWidth, newHeight);
+                    if (tile.isBomb) {
+                        var newMidX = newX + (newWidth / 2);
+                        var newMidY = newY + (newHeight / 2);
+                        var newStartX = newMidX - (tileWidth / 2);
+                        var newStartY = newMidY - (tileHeight / 2);
+                        _ctx.drawImage(mineImage, newStartX, newStartY, tileWidth, tileHeight);
+
+                        _ctx.strokeStyle = NORMAL_BORDER;
+                        _ctx.strokeRect(newX, newY, newWidth, newHeight);
+                    } else {
+                        _ctx.strokeStyle = NORMAL_BORDER;
+                        _ctx.strokeRect(newX, newY, newWidth, newHeight);
+                        if (tile.adjacentBombs > 0) {
+                            _ctx.fillStyle = getTextColor(tile.adjacentBombs);
+                            _ctx.font = getFontSize(tileHeight, tileWidth) + "px Verdana";
+                            _ctx.textAlign = "center";
+                            _ctx.textBaseline = "middle";
+                            _ctx.fillText(tile.adjacentBombs, newX + newWidth / 2, newY + newHeight / 2);
+                        }
+                    }
                 } else {
-                    _ctx.fillStyle = [tile.column][tile.row];
+                    _ctx.fillStyle = UNEXPLORED;
                     _ctx.fillRect(newX, newY, newWidth, newHeight);
                     _ctx.strokeStyle = NORMAL_BORDER;
                     _ctx.strokeRect(newX, newY, newWidth, newHeight);
-                    if (tile.adjacentBombs > 0) {
-                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
-                        _ctx.font = getFontSize(tileHeight, tileWidth) + "px Verdana";
-                        _ctx.textAlign = "center";
-                        _ctx.textBaseline = "middle";
-                        _ctx.fillText(tile.adjacentBombs, newX + newWidth / 2, newY + newHeight / 2);
-                    }
                 }
-            } else {
-                _ctx.fillStyle = UNEXPLORED;
-                /*if (tilesArray[y][x] != null) {
-                    _ctx.fillStyle = "#000000";
-                }    */
-                _ctx.fillRect(newX, newY, newWidth, newHeight);
-                _ctx.strokeStyle = NORMAL_BORDER;
-                _ctx.strokeRect(newX, newY, newWidth, newHeight);
-                /*if (isFlag()) {
-                    _ctx.drawImage(flagImage, tileX, tileY, tileWidth, tileHeight);
-                }*/
             }
 
         });
-    } else if (board.type == "ENTANGLED") {
-        console.log("Drawing Rectangle");
-        console.log(board);
-
-        _ctx.clearRect(0, 0, CANVAS_X, CANVAS_Y);
-
-        var entangledCount = 0;
-        $.each(tiles, function(index, tile) {
-            var tileX = index % board.width * tileWidth;
-            var tileY = Math.floor(index / board.width) * tileHeight;
-            if (tile.visited) {
-                if (tile.isBomb) {
-                    _ctx.fillStyle = EXPLORED;
-                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                    _ctx.drawImage(mineImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
-                    _ctx.strokeStyle = NORMAL_BORDER;
-                    _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
-                } else {
-                    _ctx.fillStyle = EXPLORED;
-                    _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-
-                    _ctx.strokeStyle = BOMB_BORDER;
-                    _ctx.lineWidth = 2;
-                    _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
-                    _ctx.lineWidth = 1;
-                    var output = "";
-                    if (tile.adjacentBombs > 0) {
-                        _ctx.fillStyle = getTextColor(tile.adjacentBombs);
-                        output += tile.adjacentBombs;
-                    }
-                    var link = board.neighborTable[neighbor.row][neighbor.col];
-                    if (typeeof(link) != 'undefined') {
-                        output += characters[entangledCount];
-                        entangledCount++;
-                    }
-                    _ctx.font = getFontSize(tileHeight, tileWidth) + "px Verdana";
-                    _ctx.textAlign = "center";
-                    _ctx.textBaseline = "middle";
-                    //_ctx.fillText(tileX + tileWidth / 2, tileY + tileHeight / 2);
-                    _ctx.fillText(output, tileX + tileWidth / 2, tileY + tileHeight / 2);
-
-                }
-            } else {
-                _ctx.fillStyle = UNEXPLORED;
-                _ctx.fillRect(tileX, tileY, tileWidth, tileHeight);
-                if (isFlag(flags, tile.row, tile.column)) {
-                    _ctx.drawImage(flagImage, tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
-                }
-                _ctx.strokeStyle = NORMAL_BORDER;
-                _ctx.strokeRect(tileX + 1, tileY + 1, tileWidth - 2, tileHeight - 2);
-            }
-        });
-
     } else {
         console.log("I had a stroke. Undefined board: " + board.type);
     }
@@ -684,12 +584,12 @@ function drawHexagon(segmentX, segmentY, tile) {
             var yEnd = ((y4 + y5) / 2);
             var xLength = xEnd - xStart;
             var yLength = yEnd - yStart;
-            var xMid = xStart + xLength/2;
-            var yMid = yStart + yLength/2;
+            var xMid = xStart + xLength / 2;
+            var yMid = yStart + yLength / 2;
             var size = Math.min(xLength, yLength);
-            var xFinalStart = xMid - size/2;
-            var yFinalStart = yMid - size/2;
-            _ctx.drawImage(mineImage, xFinalStart, yFinalStart, size,  size);
+            var xFinalStart = xMid - size / 2;
+            var yFinalStart = yMid - size / 2;
+            _ctx.drawImage(mineImage, xFinalStart, yFinalStart, size, size);
         } else {
             if (tile.adjacentBombs > 0) {
                 _ctx.fillStyle = getTextColor(tile.adjacentBombs);
@@ -710,12 +610,12 @@ function drawHexagon(segmentX, segmentY, tile) {
             var yEnd = ((y4 + y5) / 2);
             var xLength = xEnd - xStart;
             var yLength = yEnd - yStart;
-            var xMid = xStart + xLength/2;
-            var yMid = yStart + yLength/2;
+            var xMid = xStart + xLength / 2;
+            var yMid = yStart + yLength / 2;
             var size = Math.min(xLength, yLength);
-            var xFinalStart = xMid - size/2;
-            var yFinalStart = yMid - size/2;
-            _ctx.drawImage(flagImage, xFinalStart, yFinalStart, size,  size);
+            var xFinalStart = xMid - size / 2;
+            var yFinalStart = yMid - size / 2;
+            _ctx.drawImage(flagImage, xFinalStart, yFinalStart, size, size);
         }
     }
     _ctx.stroke();
@@ -786,7 +686,6 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile, isUp)
         _ctx.fillStyle = UNEXPLORED;
         _ctx.fill();
         if (isFlag(globalData.flags, tile.row, tile.column)) {
-            //_ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
             if (isUp) {
                 _ctx.drawImage(flagImage, x1 - tileWidth / 4, y1 + tileHeight / 2, tileWidth / 2, tileHeight / 2);
             } else {
@@ -794,28 +693,6 @@ function triangleDraw(x1, x2, x3, y1, y2, y3, tileWidth, tileHeight, tile, isUp)
             }
         }
     }
-
-    /*if (tile.isBomb) {
-        fillColor = BOMB;
-        _ctx.strokeStyle = BOMB_BORDER;
-    } else if (tile.visited) {
-        fillColor = EXPLORED;
-        _ctx.strokeStyle = NORMAL_BORDER;
-    } else {
-        fillColor = UNEXPLORED;
-        _ctx.strokeStyle = NORMAL_BORDER;
-    }
-    _ctx.fillStyle = fillColor;
-    _ctx.beginPath();
-    _ctx.moveTo(x1, y1);
-    _ctx.lineTo(x2, y2);
-    _ctx.moveTo(x2, y2);
-    _ctx.lineTo(x3, y3);
-    _ctx.moveTo(x3, y3);
-    _ctx.lineTo(x1, y1);
-    _ctx.fill();
-    _ctx.fillStyle = TEXT_COLOR;
-    _ctx.fillText(tile.adjacentBombs, (x1 + http://localhost:4686/playx2 + x3) / 3, (y1 + y2 + y3) / 3);  */
 }
 
 $("#board").bind("contextmenu", function(e) {
@@ -838,7 +715,7 @@ function click(clickType) {
     var board = globalData.board;
     var flags = globalData.flags;
 
-    if (board.type == "DEFAULT" || board.type == "RECTANGULAR" || board.type == "ENTANGLED") {
+    if (board.type == "DEFAULT") {
 
         var row = Math.floor(y / tileHeight);
         var column = Math.floor(x / tileWidth);
@@ -863,7 +740,6 @@ function click(clickType) {
         var row = Math.floor(y / tileHeight);
         var offset = row * tileWidth / 2;
         var estimate = Math.floor((x - offset) / tileWidth * 2);
-        //console.log(row + " " + estimate);
 
 
         var tiles = board.tiles;
@@ -877,7 +753,6 @@ function click(clickType) {
 
         $.each(tiles, function(index, tile) {
             if (tile.row == row && tile.column == estimate) {
-                //console.log(tile.row + " " + tile.column);
                 selectedTile = tile;
             }
 
@@ -901,17 +776,9 @@ function click(clickType) {
 
         if (edge) {
             var borderSlope = (y3 - y2) / (x3 - x2);
-            //console.log("y1:" + y1 + ", y2:" + y2 + ", x1:" + x1 + ", x2:" + x2 + "y:" + y + ", x:" + x);
             var clickSlope = (y - y2) / (x - x2);
-            //console.log(borderSlope + " " + clickSlope);
-            if (Math.abs(borderSlope) < Math.abs(clickSlope)) {
-                //var column = estimate - 1;
-                //console.log("Above border");
-            } else {
+            if (Math.abs(borderSlope) < Math.abs(clickSlope)) {} else {
                 var column = estimate;
-                //console.log("Below border");
-                //console.log(row + " " + column);
-
                 if (!isFlag(flags, row, column) || clickType === "FLAG") {
 
                     $.getScript("../js/js.cookie.js", function() {
@@ -932,15 +799,11 @@ function click(clickType) {
         } else {
             var borderSlope = (y3 - y1) / (x3 - x1);
             var clickSlope = (y - y1) / (x - x1);
-            //console.log(borderSlope + " " + clickSlope);
             if (Math.abs(borderSlope) < Math.abs(clickSlope)) {
                 var column = estimate - 1;
-                //console.log("Above border");
             } else {
                 var column = estimate;
-                //console.log("Below border");
             }
-            //console.log(row + " " + column);
             if (!isFlag(flags, row, column) || clickType === "FLAG") {
 
                 $.getScript("../js/js.cookie.js", function() {
@@ -967,7 +830,7 @@ function click(clickType) {
         var segmentY = CANVAS_Y / ((height * 2) + 1);
 
         $.each(globalData.board.tiles, function(i, tile) {
-            if(isWithinTile(x, y, segmentX, segmentY, tile)) {
+            if (isWithinTile(x, y, segmentX, segmentY, tile)) {
                 var row = tile.row;
                 var column = tile.column;
                 if (!isFlag(flags, row, column) || clickType === "FLAG") {
@@ -987,9 +850,42 @@ function click(clickType) {
                 }
             }
         });
+    } else if (board.type == "RECTANGULAR") {
+        var row = Math.floor(y / tileHeight);
+        var column = Math.floor(x / tileWidth);
 
+        for(var i = 0; i < board.height; i++) {
+            for (var j = 0; j < board.width; j++) {
+                var aTile = tilesArray[i][j];
+                if(aTile != null) {
+                    console.log(i + " " + j + " " + aTile);
+                    if((i != row || j != column) && aTile.column == column && aTile.row == row) {
+                        console.log("changed");
+                        row = i;
+                        column = j;
+                    }
+                }
+            }
+        }
 
-        
+        console.log(row);
+        console.log(column);
+
+        if (!isFlag(flags, row, column) || clickType === "FLAG") {
+
+            $.getScript("../js/js.cookie.js", function() {
+                var sendData = {
+                    requestType: "MAKE_MOVE",
+                    minesweepId: $.cookie("minesweepId"),
+                    minesweepRoomId: $.cookie("minesweepRoomId"),
+                    minesweepTeamId: $.cookie("minesweepTeamId"),
+                    row: row,
+                    col: column,
+                    moveType: clickType
+                };
+                socket.send(JSON.stringify(sendData));
+            });
+        }
     }
 }
 
@@ -1012,24 +908,24 @@ function isWithinTile(x, y, segmentX, segmentY, tile) {
     var y2 = y1 - segmentY;
     var y3 = y1 + segmentY;
 
-    if(y >= y2 && y <= y3) {
-        if(x >= x2 && x <= x3) {
+    if (y >= y2 && y <= y3) {
+        if (x >= x2 && x <= x3) {
             return true;
         } else if (x >= x1 && x <= x2) {
-            var slopeTop = (y2 - y1)/(x2 - x1);
-            var slopeBot = (y3 - y1)/(x2 - x1);
-            var tentativeSlope = (y - y1)/(x - x1);
-            if(tentativeSlope >= slopeTop && tentativeSlope <= slopeBot) {
+            var slopeTop = (y2 - y1) / (x2 - x1);
+            var slopeBot = (y3 - y1) / (x2 - x1);
+            var tentativeSlope = (y - y1) / (x - x1);
+            if (tentativeSlope >= slopeTop && tentativeSlope <= slopeBot) {
                 return true;
             }
         } else if (x >= x3 && x <= x4) {
-            var slopeTop = (y2 - y1)/(x3 - x4);
-            var slopeBot = (y3 - y1)/(x3 - x4);
-            var tentativeSlope = (y - y1)/(x - x4);
-            if(tentativeSlope <= slopeTop && tentativeSlope >= slopeBot) {
+            var slopeTop = (y2 - y1) / (x3 - x4);
+            var slopeBot = (y3 - y1) / (x3 - x4);
+            var tentativeSlope = (y - y1) / (x - x4);
+            if (tentativeSlope <= slopeTop && tentativeSlope >= slopeBot) {
                 return true;
             }
-        } 
+        }
     }
     return false;
 }

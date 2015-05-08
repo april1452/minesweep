@@ -7,8 +7,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.websockets.Update;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +21,7 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 import edu.brown.cs.pdtran.minesweep.types.UpdateType;
+import edu.brown.cs.pdtran.minesweep.websockets.Update;
 
 /**
  * An object that represents the data held by a Territory game, where teams
@@ -36,7 +35,7 @@ public class TerritoryGame extends Game {
   private Map<String, Integer> numTerritories;
 
   public static final String[] COLOR_CHOICES = {
-    "Cyan", "LightGreen", "LightSalmon", "PaleVioletRed"
+      "Cyan", "LightGreen", "LightSalmon", "PaleVioletRed"
   };
 
   /**
@@ -63,7 +62,7 @@ public class TerritoryGame extends Game {
   }
 
   @Override
-  public List<Update> makeMove(String teamId, Move m) {
+  public synchronized List<Update> makeMove(String teamId, Move m) {
     List<Update> updates = new ArrayList<>();
     PlayerTeam team = teams.get(teamId);
     MoveResponse response = team.makeMove(m);
@@ -130,7 +129,7 @@ public class TerritoryGame extends Game {
             entry.getValue().setIsLoser();
             updates.add(new Update(UpdateType.DEFEAT, new JsonPrimitive(
                 entry
-                    .getKey()), entry.getValue().getHumans()));
+                .getKey()), entry.getValue().getHumans()));
           }
         }
       }

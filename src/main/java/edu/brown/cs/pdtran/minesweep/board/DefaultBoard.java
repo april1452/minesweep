@@ -23,9 +23,9 @@ import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 public class DefaultBoard implements Board, Cloneable {
 
   protected Tile[][] grid;
-  private final int width;
-  private final int height;
-  private final int bombCount;
+  protected final int width;
+  protected final int height;
+  protected final int bombCount;
 
   private static final int DEFAULT_SIZE = 16;
   private static final int DEFAULT_MINES = 40;
@@ -172,6 +172,7 @@ public class DefaultBoard implements Board, Cloneable {
 
   @Override
   public MoveResponse makeMove(final int row, final int column) {
+    System.out.println(row + " " + column);
     MoveResponse moveResponse;
     if (isWithinBoard(column, row)) {
       Tile target = grid[row][column];

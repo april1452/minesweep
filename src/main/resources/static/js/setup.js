@@ -36,8 +36,6 @@ $("#create").click(function(event) {
 	} else {
 		alert("NO ANONS. Enter your name to host a game.");
 	}
-
-	
 });
 
 // display game mode info

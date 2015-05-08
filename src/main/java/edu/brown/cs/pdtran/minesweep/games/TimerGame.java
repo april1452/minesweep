@@ -8,9 +8,6 @@ import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import edu.brown.cs.pdtran.minesweep.websockets.UpdateSender;
-
-import edu.brown.cs.pdtran.minesweep.websockets.Update;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,6 +22,8 @@ import edu.brown.cs.pdtran.minesweep.setup.TeamFormation;
 import edu.brown.cs.pdtran.minesweep.types.MoveResponse;
 import edu.brown.cs.pdtran.minesweep.types.SessionType;
 import edu.brown.cs.pdtran.minesweep.types.UpdateType;
+import edu.brown.cs.pdtran.minesweep.websockets.Update;
+import edu.brown.cs.pdtran.minesweep.websockets.UpdateSender;
 
 public class TimerGame extends Game {
   UpdateSender updateSender;
@@ -57,7 +56,7 @@ public class TimerGame extends Game {
   }
 
   @Override
-  public List<Update> makeMove(String teamId, Move m) {
+  public synchronized List<Update> makeMove(String teamId, Move m) {
     List<Update> updates = new ArrayList<>();
     PlayerTeam team = teams.get(teamId);
     MoveResponse response = team.makeMove(m);
@@ -127,7 +126,7 @@ public class TimerGame extends Game {
 
       updates.add(new Update(UpdateType.BOARD_UPDATE, boardInfo,
           team
-          .getHumans()));
+              .getHumans()));
       updates.add(new Update(UpdateType.INFO_UPDATE, getGameData(),
           allHumans));
 
@@ -160,8 +159,8 @@ public class TimerGame extends Game {
         if (!otherTeam.getIsLoser()) {
           otherTeam.setIsWinner();
           updates
-              .add(new Update(UpdateType.VICTORY, new JsonPrimitive(
-                  entry.getKey()), otherTeam.getHumans()));
+          .add(new Update(UpdateType.VICTORY, new JsonPrimitive(
+              entry.getKey()), otherTeam.getHumans()));
         }
       }
     }

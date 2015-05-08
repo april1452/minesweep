@@ -19,7 +19,7 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  * @author agokasla
  */
 public class RectangularBoard extends DefaultBoard implements Board,
-    Cloneable {
+Cloneable {
 
   private Table<Integer, Integer, List<Tile>> neighborTable;
   // private Table<Integer, Integer, Tile> overWrittenTiles;
@@ -37,7 +37,7 @@ public class RectangularBoard extends DefaultBoard implements Board,
     // overWrittenTiles = HashBasedTable.create();
     links = new Tile[getHeight()][getWidth()];
     assert (neighborTable != null);
-    reconfigureBoard(getWidth() * getHeight() / 10);
+    reconfigureBoard(getWidth() * getHeight() / 5);
   }
 
   /**
@@ -72,29 +72,64 @@ public class RectangularBoard extends DefaultBoard implements Board,
    * @param mergeNum The number you wish to merge together.
    */
   public void reconfigureBoard(int mergeNum) {
+
+
     for (int i = 0; i < mergeNum; i++) {
       int row = (int) (Math.random() * getHeight());
       int col = (int) (Math.random() * getWidth());
+
+      while (links[row][col] != null) {
+        row = (int) (Math.random() * getHeight());
+        col = (int) (Math.random() * getWidth());
+      }
+
+      final int finalRow = row;
+      final int finalCol = col;
+
       List<Tile> candidateList =
           super
-          .getAdjacentTiles(row, col)
-          .stream()
-          .filter(
-              (t) -> (t.getColumn() == col || t.getRow() == row)
-              && !t.isBomb()).collect(Collectors.toList());
+              .getAdjacentTiles(finalRow, finalCol)
+              .stream()
+              .filter(
+                  (t) -> (t.getColumn() == finalCol || t.getRow() == finalRow)
+                      && (links[t.getRow()][t.getColumn()] == null)
+              && !(t.getColumn() == finalCol && t.getRow() == finalRow)
+                      && !t.isBomb()).collect(Collectors.toList());
+
       if (candidateList.isEmpty()) {
+        i--;
         continue;
       }
       Tile randomTile =
           candidateList.get((int) (Math.random() * candidateList.size()));
       assert (!randomTile.isBomb());
       assert (!randomTile.hasBeenVisited());
-      mergeTiles(row, col, randomTile.getRow(), randomTile.getColumn());
+      mergeTiles(finalRow, finalCol, randomTile.getRow(),
+          randomTile.getColumn());
       assert (randomTile != null);
     }
   }
 
+  @Override
+  public Tile getTile(int row, int col) {
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        Tile tempTile = links[i][j];
+        if (tempTile != null) {
+          if ((i != row || j != col) && tempTile.getRow() == row
+              && tempTile.getColumn() == col) {
+            row = i;
+            col = j;
+          }
+        }
+      }
+    }
+    return super.getTile(row, col);
+  }
+
   private void mergeTiles(int row, int col, int row2, int col2) {
+    System.out.println("merging row " + row + " column " + col
+        + " with row " + row2 + " and col " + col2);
     Tile tile = getTile(row, col);
     Tile tile2merge = getTile(row2, col2);
     tile.setAdjacentBombs(tile.getAdjacentBombs()
@@ -106,13 +141,15 @@ public class RectangularBoard extends DefaultBoard implements Board,
     neighborTable.put(row, col, neighbors);
     neighborTable.put(row2, col2, neighbors);
     links[row][col] = tile2merge;
+    links[row2][col2] = tile2merge;
     // overWrittenTiles.put(row2, col2, tile);
-    setTile(tile, row2, col2);
+    // WE CANT DO THIS BECAUSE IT SCREWS UP THE DRAWING
+    // FOR WHATEVER REASON, THE TILE DOESNT GET UPDATED>
+    // setTile(tile, row2, col2);
   }
 
   @Override
   public List<Tile> getAdjacentTiles(int row, int col) {
-    System.out.println(neighborTable);// Something is wrong here...
     if (neighborTable != null && neighborTable.contains(row, col)) {
       return neighborTable.get(row, col);
     } else {
@@ -168,12 +205,12 @@ public class RectangularBoard extends DefaultBoard implements Board,
      * c.keySet()) { output += "," + j + ")"; neighborMap.put(output,
      * overWrittenTiles.get(i, j)); } }
      */
-    boardJson.add("neighborTable",
-        (new JsonParser()).parse(gson.toJson(neighborTable))
-            .getAsJsonObject());
     boardJson.add("tilesArray",
         (new JsonParser()).parse(gson.toJson(links))
-            .getAsJsonArray());
+        .getAsJsonArray());
+
+    System.out.println(boardJson.toString());
+
     return boardJson;
   }
 }
