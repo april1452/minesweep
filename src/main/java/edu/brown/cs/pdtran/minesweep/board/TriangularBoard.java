@@ -11,7 +11,7 @@ import edu.brown.cs.pdtran.minesweep.types.BoardType;
  * @author agokasla
  */
 public class TriangularBoard extends DefaultBoard implements Board,
-    Cloneable {
+Cloneable {
 
   private static final int ADJACENT_ARRAY_SIZE = 3;
 
@@ -50,7 +50,7 @@ public class TriangularBoard extends DefaultBoard implements Board,
     int newRow = goDown ? row - 1 : row + 1;
     int newCol = goDown ? col + 1 : col - 1;
 
-    if (isWithinBoard(newRow, newCol)) {
+    if (isWithinBoard(newCol, newRow)) {
       tiles.add(grid[newRow][newCol]);
     }
 
