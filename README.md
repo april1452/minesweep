@@ -24,9 +24,6 @@ Testing
 * Console print statements for GUI
 * No system tests :-(
 
-Bugs
-===============================================================================
-* Numbers don't always match up in rectangular board shape
 
 
 
